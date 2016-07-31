@@ -30,7 +30,6 @@ module.exports = {
                     this.$http.get('admin/osamaker/api/group/get')
                         .then(function (data){
                             this.$set('questiongroups', data.data);
-
                     })
                     .catch(function (err){
                         console.log(err);
@@ -52,16 +51,16 @@ module.exports = {
 
                     var data = {questiongroup: this.questiongroup};
 
-                    this.$http.post('admin/osamaker/api/group/save', data,
-                        function(){
-
+                    this.$http.post('admin/osamaker/api/group/save', data)
+                        .then(function () {
                             // use the getQuestiongroups method for updating
                             // the questiongroups-array
                             // the view gets an update without a refresh
                             this.getQuestiongroups();
-                            UIkit.notify('Saved');
-                        }).error(function() {
-                            UIkit.notify('Oops');
+                            UIkit.notify('Saved')
+                        })
+                        .catch(function() {
+                            UIkit.notify('Something went wrong');
                         });
 
                     this.questiongroup = {
@@ -74,8 +73,9 @@ module.exports = {
 
                 addQuestion: function (question, questiongroup_id, questions) {
                     var data = {question: _.merge(question, {questiongroup_id: questiongroup_id}) };
-                    this.$http.post('admin/osamaker/api/question/save', data,
-                        function(response){
+
+                    this.$http.post('admin/osamaker/api/question/save', data)
+                        .then(function (response) {
                             // console.log(response.question);
                             // this.$set('questions', response.question);
                             // console.log(questions);
@@ -84,8 +84,9 @@ module.exports = {
                                 text: ''
                             };
                             UIkit.notify('Suxx');
-                        }).error(function() {
-                            UIkit.notify('Oops');
+                        })
+                        .catch(function() {
+                            UIkit.notify('Something went wrong');
                         });
                 },
 
@@ -100,23 +101,25 @@ module.exports = {
 
                     var data = questiongroup;
 
-                    this.$http.post('admin/osamaker/api/group/delete', data,
-                        function(){
+                    this.$http.post('admin/osamaker/api/group/delete', data)
+                        .then(function () {
                             questiongroups.$remove(questiongroup);
                             UIkit.notify('Deleted');
-                        }).error(function() {
-                            UIkit.notify('Oops');
+                        })
+                        .catch(function () {
+                            UIkit.notify('Something went wrong');
                         });
 
                 },
 
                 update: function (questiongroup) {
                     var data = {questiongroup: questiongroup};
-                    this.$http.post('admin/osamaker/api/group/edit', data,
-                    function(){
+                    this.$http.post('admin/osamaker/api/group/edit', data)
+                    .then( function() {
                         UIkit.notify('Saved');
-                    }).error(function() {
-                        UIkit.notify('Sometweweggwehing went wrong');
+                    })
+                    .catch(function() {
+                        UIkit.notify('Something went wrong');
                     });
                 }
 

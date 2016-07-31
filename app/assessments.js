@@ -63,11 +63,12 @@ $(function(){
 
                 var data = {assessment: this.assessment};
 
-                this.$http.post('admin/osamaker/api/assessment/save', data,
-                function(){
+                this.$http.post('admin/osamaker/api/assessment/save', data)
+                .then(function () {
                     this.getAssessments();
                     UIkit.notify('Saved');
-                }).error(function() {
+                })
+                .catch(function() {
                     UIkit.notify('Oops');
                 });
 
@@ -84,12 +85,13 @@ $(function(){
 
                 var data = assessment;
 
-                this.$http.post('admin/osamaker/api/assessment/delete', data,
-                function(){
-                    this.getAssessments()
-                    UIkit.notify('Deleted');
-                }).error(function() {
-                    UIkit.notify('Oops');
+                this.$http.post('admin/osamaker/api/assessment/delete', data)
+                    .then(function () {
+                        this.getAssessments()
+                        UIkit.notify('Deleted');
+                    })
+                    .catch(function() {
+                        UIkit.notify('Oops');
                 });
 
             },
@@ -98,11 +100,12 @@ $(function(){
                 //var questiongroup = this.assessment.questiongroup;
                 var data = {assessment: assessment, questiongroup: questiongroup};
 
-                this.$http.post('admin/osamaker/api/assessment/addquestiongroup', data,
-                    function(){
+                this.$http.post('admin/osamaker/api/assessment/addquestiongroup', data)
+                    .then(function () {
                         UIkit.notify('Werkt');
                         this.getAssessments();
-                    }).error(function() {
+                    })
+                    .catch(function() {
                         UIkit.notify('Oops');
                     });
             },
@@ -114,8 +117,8 @@ $(function(){
                     questiongroup: questiongroup_id
                 }
 
-                this.$http.post('admin/osamaker/api/assessment/removequestiongroup', data,
-                    function(){
+                this.$http.post('admin/osamaker/api/assessment/removequestiongroup', data)
+                    .then(function () {
                         UIkit.notify('Wörkt');
                         this.getAssessments();
                     }).error(function() {
