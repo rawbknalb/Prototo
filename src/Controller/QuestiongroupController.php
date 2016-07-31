@@ -66,13 +66,13 @@ class QuestiongroupController
     public function editAction($data)
     {
 
-
-
         if ($questiongroup = Questiongroup::query()->where(['id' => $data['id']])->related('questions')->first()) {
-            // question edit
+
+            // sets the question_order in the db
             foreach($data['questions'] as $i => $questionData){
                 $questionData['question_order'] = $i;
 
+                // saves each question with the posted questionData in the db
                 $question = Question::find($questionData['id']);
                 $question->save([
                     'text' => $questionData['text'],
@@ -84,20 +84,16 @@ class QuestiongroupController
                 ]);
             }
 
-            // $query = App::db()->createQueryBuilder();
-            // $questions = $query
-            //     ->select('*')
-            //     ->from('@osa_questions')
-            //     ->where('questiongroup_id = ?', [$data]);
-            //
-            // $questions = Question::where(['questiongroup_id' => $data['id']])->get();
-
+            // puts each question id which was posted in the $data in an array
             $questionKeysInData = [];
             foreach($data['questions'] as $question){
                 $questionKeysInData[] = $question['id'];
                 // [1,2,3,4,5]
             }
 
+            // checking for each question in the db, if the id's in the db
+            // are in the posted $data. If a questionID ist not in the array
+            // $questionsKeysInData, the question gets deleted.
             foreach($questiongroup->questions as $question){
                 $questionExistsInData = in_array($question->id, $questionKeysInData);
 
