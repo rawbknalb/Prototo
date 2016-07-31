@@ -1,0 +1,10 @@
+{
+
+    "name": "osa/osamaker",
+    "version": "0.1",
+    "type": "pagekit-extension",
+    "title": "Osa Maker",
+    "extra": {
+      "scripts": "scripts.php"
+    }
+}
