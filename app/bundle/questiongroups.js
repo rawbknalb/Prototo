@@ -21140,7 +21140,8 @@
 	                handle: '.handle',
 	                chosenClass: "chosen",
 	                ghostClass: "ghost",
-	                edit: false
+	                edit: false,
+	                animation: 300
 	            }
 	        };
 	    }

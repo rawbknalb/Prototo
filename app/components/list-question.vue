@@ -43,6 +43,7 @@
                     chosenClass: "chosen",
                     ghostClass: "ghost",
                     edit: false,
+                    animation: 300
                 },
             };
         },
