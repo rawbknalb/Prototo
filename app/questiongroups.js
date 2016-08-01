@@ -83,7 +83,7 @@ module.exports = {
                             this.question = {
                                 text: ''
                             };
-                            UIkit.notify('Suxx');
+                            UIkit.notify('Question saved');
                         })
                         .catch(function() {
                             UIkit.notify('Something went wrong');
@@ -104,7 +104,7 @@ module.exports = {
                     this.$http.post('admin/osamaker/api/group/delete', data)
                         .then(function () {
                             questiongroups.$remove(questiongroup);
-                            UIkit.notify('Deleted');
+                            UIkit.notify('Questiongroup removed');
                         })
                         .catch(function () {
                             UIkit.notify('Something went wrong');
