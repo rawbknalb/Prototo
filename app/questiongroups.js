@@ -1,6 +1,7 @@
 Vue.use(require('vue-mdl').default);
 // Vue.use(require('vue-sortable'));
 Vue.use(require('VueDragableFor'));
+Vue.use(require('vuikit'));
 
 module.exports = {
 

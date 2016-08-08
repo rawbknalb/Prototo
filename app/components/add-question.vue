@@ -1,14 +1,9 @@
 <template>
-    <div class="mdl-card__actions mdl-card--border">
-        <form>
+        <form @submit.prevent="this.$root.addQuestion(question, questiongroup.id, questiongroup.questions)">
             <mdl-textfield floating-label="New Question" :value.sync="question.text" ></mdl-textfield>
 
-            <mdl-button type="submit" class="mdl-button--icon uk-modal-close" fab accent @click.prevent="this.$root.addQuestion(question, questiongroup.id, questiongroup.questions)"><i class="material-icons">add</i></mdl-button>
+            <mdl-button fab accent><i class="material-icons">add</i></mdl-button>
         </form>
-
-    </div>
-
-
 </template>
 
 <script>

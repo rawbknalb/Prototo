@@ -1,13 +1,19 @@
 <?php $view->script('mdl', 'osamaker:app/assets/js/material.js') ?>
-
 <?php $view->script('osamaker', 'osamaker:app/bundle/questiongroups.js', 'vue') ?>
-
 <link rel="stylesheet" href="https://code.getmdl.io/1.1.3/material.purple-green.min.css" />
 <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
 <style>
     .card-wide{
-        width: 630px;
+        width: 100%;
+    }
+
+    .card-narrow {
+        width: 30%;
+    }
+
+    .card-high{
+        height: 100%;
     }
 
     .content-grid {
@@ -52,6 +58,9 @@
         color: #000000;
         background-color: #68EFAD;
     }
+    .uk-modal-dialog.modal-tweak {
+        background: #fff;
+    }
 </style>
 
 <div id="questiongroups" v-cloak>
@@ -73,16 +82,23 @@
 
     <h2>Your Questiongroups</h2>
     <div class="mdl-grid" v-cloak>
-        <template class="mdl-cell--stretch" v-for="questiongroup in questiongroups">
+        <template v-for="questiongroup in questiongroups">
 
-        <!-- This is the modal -->
-        <div id="{{ questiongroup.id }}" class="uk-modal">
-            <div class="uk-modal-dialog">
-                <a class="uk-modal-close uk-close"></a>
-                <add-question :questiongroup.sync="questiongroup" >
-                </add-question>
+            <!-- This is the modal -->
+            <div id="{{ questiongroup.id }}" class="uk-modal">
+                <div class="uk-modal-dialog modal-tweak uk-modal-dialog-large">
+                    <a class="uk-modal-close uk-close"></a>
+                    <div class="mdl-cell mdl-cell--top mdl-cell--6-col mdl-cell--4-col-tablet mdl-cell--4-col-phone">
+                        <list-question :questiongroup.sync="questiongroup" >
+                        </list-question>
+                        <add-question :questiongroup.sync="questiongroup" >
+                        </add-question>
+                    </div>
+
+
+                </div>
             </div>
-        </div>
+
             <div class="mdl-cell--strech">
 
             </div>
@@ -99,11 +115,11 @@
                             Description: Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquam accusamus, consectetur.
                         </p>
                     </div>
-
+<!--
                     <div class="">
                         <list-question :questiongroup.sync="questiongroup" >
                         </list-question>
-                    </div>
+                    </div> -->
                     <!-- This is an anchor toggling the modal -->
                     <!-- <a href="#my-id" data-uk-modal>..f.</a> -->
 
@@ -111,7 +127,7 @@
                     <div class="mdl-card__actions">
                         <mdl-button colored accent raised data-uk-modal="{target:'#{{ questiongroup.id }}'}">
                             <i class="material-icons">add</i>
-                            Add Items
+                            Show Items
                         </mdl-button>
                     </div>
                     <!-- <pre>
