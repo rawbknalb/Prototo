@@ -2,7 +2,7 @@ module.exports = [
 
     {
         entry: {
-            "questiongroups": "./app/questiongroups.js",
+            "modules": "./app/modules.js",
         },
         output: {
             filename: "./app/bundle/[name].js"

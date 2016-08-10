@@ -32,8 +32,8 @@
     <ul class="mdl-menu mdl-menu--bottom-left mdl-js-menu mdl-js-ripple-effect"
         for="demo-menu-lower-left">
 
-        <li class="mdl-menu__item" v-for="questiongroup in questiongroups">
-            {{questiongroup.title}}
+        <li class="mdl-menu__item" v-for="module in modules">
+            {{module.title}}
         </li>
     </ul>
 
@@ -41,16 +41,16 @@
 
     <div>
         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label getmdl-select" >
-            <input class="mdl-textfield__input" type="text" id="sample2" readonly tabIndex="-1" v-model="questiongroup.selected">
+            <input class="mdl-textfield__input" type="text" id="sample2" readonly tabIndex="-1" v-model="module.selected">
             <label for="sample2" class="mdl-textfield__label">Cofuntry</label>
             <ul for="sample2" class="mdl-menu mdl-menu--bottom-left mdl-js-menu">
 
 
                 <li class="mdl-menu__item"
-                v-for="questiongroup in questiongroups"
-                v-bind:value="questiongroup.title"
+                v-for="module in modules"
+                v-bind:value="module.title"
                 >
-                    {{questiongroup.title}}
+                    {{module.title}}
                 </li>
             </ul>
         </div>
@@ -79,11 +79,11 @@
                         </div>
                         <div class="mdl-card__supporting-text">
                             <ul>
-                                Questiongroups
-                                <li v-for="questiongroup in assessment.questiongroups">
-                                    {{ questiongroup.title }}
+                                modules
+                                <li v-for="module in assessment.modules">
+                                    {{ module.title }}
                                     <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-js-ripple-effect mdl-button--colored"
-                                        @click="removeQuestiongroup(assessment.id, questiongroup.id)"
+                                        @click="removeModule(assessment.id, module.id)"
                                     >
                                         <i class="material-icons">delete</i>
                                     </button>
@@ -92,13 +92,13 @@
                         </div>
 
                         <div class="mdl-card__actions mdl-card--border">
-                            <a class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-js-ripple-effect mdl-button--colored" @click="addQuestiongroup(assessment.id, assessment.selected)">
+                            <a class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-js-ripple-effect mdl-button--colored" @click="addModule(assessment.id, assessment.selected)">
                                 <i class="material-icons">add</i>
                             </a>
 
                             <select v-model="assessment.selected">
-                                <option v-for="questiongroup in questiongroups" v-bind:value="questiongroup.id">
-                                   {{ questiongroup.title }}
+                                <option v-for="module in modules" v-bind:value="module.id">
+                                   {{ module.title }}
                                 </option>
                             </select>
 

@@ -14,8 +14,8 @@ return [
 				$table->setPrimaryKey(['id']);
 			});
 		}
-        if ($util->tableExists('@osa_questiongroups') === false) {
-			$util->createTable('@osa_questiongroups', function ($table) {
+        if ($util->tableExists('@osa_modules') === false) {
+			$util->createTable('@osa_modules', function ($table) {
 				$table->addColumn('id', 'integer', ['unsigned' => true, 'length' => 10, 'autoincrement' => true]);
 				$table->addColumn('title', 'string', ['length' => 255]);
                 $table->addColumn('roles', 'integer', ['unsigned' => true, 'length' => 2, 'notnull' => false]);
@@ -27,15 +27,15 @@ return [
 				$table->setPrimaryKey(['id']);
 			});
 		}
-		if ($util->tableExists('@osa_questions') === false) {
-			$util->createTable('@osa_questions', function ($table) {
+		if ($util->tableExists('@osa_items') === false) {
+			$util->createTable('@osa_items', function ($table) {
 				$table->addColumn('id', 'integer', ['unsigned' => true, 'length' => 10, 'autoincrement' => true]);
                 $table->addColumn('title', 'string', ['length' => 255]);
 				$table->addColumn('text', 'text');
-                $table->addColumn('questiongroup_id', 'integer', ['unsigned' => true, 'length' => 10]);
-                $table->addColumn('question_order', 'integer', ['unsigned' => true,'notnull' => false]);
+                $table->addColumn('module_id', 'integer', ['unsigned' => true, 'length' => 10]);
+                $table->addColumn('item_order', 'integer', ['unsigned' => true,'notnull' => false]);
 				//$table->addColumn('slug', 'string', ['length' => 255]);
-				$table->addColumn('options', 'json_array', ['notnull' => false]);
+				// $table->addColumn('options', 'json_array', ['notnull' => false]);
 				$table->addColumn('data', 'json_array', ['notnull' => false]);
                 $table->addColumn('created_at', 'datetime');
                 $table->addColumn('modified_at', 'datetime', ['notnull' => false]);
@@ -44,23 +44,23 @@ return [
 				//$table->addIndex(['form_id'], 'FORMMAKER_FIELD_FORMID');
 			});
 		}
-        if ($util->tableExists('@osa_assessments_questiongroups_mapping') === false) {
-			$util->createTable('@osa_assessments_questiongroups_mapping', function ($table) {
+        if ($util->tableExists('@osa_assessments_modules_mapping') === false) {
+			$util->createTable('@osa_assessments_modules_mapping', function ($table) {
                 $table->addColumn('assessment_id', 'integer', ['unsigned' => true, 'length' => 10]);
-				$table->addColumn('questiongroup_id', 'integer', ['unsigned' => true, 'length' => 10]);
-                $table->addColumn('questiongroup_order', 'integer', ['unsigned' => true, 'length' => 3]);
-                $table->setPrimaryKey(['assessment_id', 'questiongroup_id']);
+				$table->addColumn('module_id', 'integer', ['unsigned' => true, 'length' => 10]);
+                $table->addColumn('module_order', 'integer', ['unsigned' => true, 'length' => 3]);
+                $table->setPrimaryKey(['assessment_id', 'module_id']);
                 // $table->addForeignKeyConstraint('@osa_assessments', array("assessment_id"), array("id"));
                 // $table->addForeignKeyConstraint('@osa_questiongroups', array("questiongroup_id"), array("id"));
 				//$table->addIndex(['form_id'], 'FORMMAKER_FIELD_FORMID');
 			});
 		}
         // check if user has already answered questiongroups
-        if ($util->tableExists('@osa_users_questiongroups_mapping') === false) {
-			$util->createTable('@osa_users_questiongroups_mapping', function ($table) {
+        if ($util->tableExists('@osa_users_modules_mapping') === false) {
+			$util->createTable('@osa_users_modules_mapping', function ($table) {
                 $table->addColumn('id', 'integer', ['unsigned' => true, 'length' => 10, 'autoincrement' => true]);
                 $table->addColumn('user_id', 'integer', ['unsigned' => true, 'length' => 10]);
-				$table->addColumn('questiongroup_id', 'integer', ['unsigned' => true, 'length' => 10]);
+				$table->addColumn('module_id', 'integer', ['unsigned' => true, 'length' => 10]);
                 $table->addColumn('created_at', 'datetime');
                 $table->setPrimaryKey(['id']);
                 // $table->addForeignKeyConstraint('@system_user', array("user_id"), array("id"));
@@ -73,11 +73,11 @@ return [
     'uninstall' => function ($app) {
         $util = $app['db']->getUtility();
         $tables = [
-            '@osa_assessments_questiongroups_mapping',
-            '@osa_users_questiongroups_mapping',
-            '@osa_questions',
+            '@osa_assessments_modules_mapping',
+            '@osa_users_modules_mapping',
+            '@osa_items',
             '@osa_assessments',
-            '@osa_questiongroups',
+            '@osa_modules',
         ];
 
         foreach ($tables as $table) {

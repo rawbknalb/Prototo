@@ -28,8 +28,8 @@ return [
             'name' => '@osamaker/api',
             'controller' => [
                 'Osa\\OsaMaker\\Controller\\AssessmentController',
-                'Osa\\OsaMaker\\Controller\\QuestiongroupController',
-                'Osa\\OsaMaker\\Controller\\QuestionController'
+                'Osa\\OsaMaker\\Controller\\ModuleController',
+                'Osa\\OsaMaker\\Controller\\ItemController'
             ]
         ],
 

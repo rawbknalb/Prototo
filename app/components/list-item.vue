@@ -5,17 +5,17 @@
     <mdl-switch :checked.sync="edit" class="mdl-js-ripple-effect" @click></mdl-switch>
 
     <ul class="mdl-list uk-sortable">
-        <li class="mdl-list__item" v-dragable-for="question in questiongroup.questions" v-bind:options="options" >
+        <li class="mdl-list__item" v-dragable-for="item in module.items" v-bind:options="options" >
 
             <span class="mdl-list__item-primary-content">
                 <div><i class="handle material-icons mdl-list__item-icon">reorder</i></div>
                 <span>
-                    Question Name: {{ question.text }} <br>
+                    Item Name: {{ item.text }} <br>
                     Index: {{$index}}
                 </span>
             </span>
             <span class="mdl-list__item-secondary-action">
-                <mdl-button class="mdl-button--icon" primary @click="this.$root.deleteQuestion(question, questiongroup.questions)"><i class="material-icons">delete</i></mdl-button>
+                <mdl-button class="mdl-button--icon" primary @click.prevent="deleteItem(item, module.items)"><i class="material-icons">delete</i></mdl-button>
             </span>
         </li>
     </ul>
@@ -27,17 +27,17 @@
     module.exports = {
         props: [
             {
-                name: 'questiongroup',
+                name: 'module',
                 type: Object
             },
         ],
         data: function() {
             return {
-                question: {
+                item: {
                     text: '',
-                    question_order: ''
+                    item_order: ''
                 },
-                questions: '',
+                items: '',
                 edit: false,
                 options: {
                     handle: '.handle',
@@ -48,6 +48,13 @@
                 },
             };
         },
+
+        methods: {
+            deleteItem: function(item, items) {
+                items.$remove(item);
+
+            },
+        }
     };
 
 

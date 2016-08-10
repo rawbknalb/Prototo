@@ -1,7 +1,9 @@
 <?php $view->script('mdl', 'osamaker:app/assets/js/material.js') ?>
-<?php $view->script('osamaker', 'osamaker:app/bundle/questiongroups.js', 'vue') ?>
+<?php $view->script('osamaker', 'osamaker:app/bundle/modules.js', 'vue') ?>
 <link rel="stylesheet" href="https://code.getmdl.io/1.1.3/material.purple-green.min.css" />
 <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/css/materialize.min.css">
+
 
 <style>
     .card-wide{
@@ -63,14 +65,14 @@
     }
 </style>
 
-<div id="questiongroups" v-cloak>
+<div id="modules" v-cloak>
     <div class="uk-form uk-form-horizontal">
         <form class="uk-form" @submit.prevent="save">
             <fieldset data-uk-margin>
-                <legend>Create a new Question Group</legend>
+                <legend>Create a new Module</legend>
                 <div class="form-group">
                     <label>Name:</label>
-                    <input class="uk-input-large uk-width-1-4" placeholder="" v-model="questiongroup.title">
+                    <input class="uk-input-large uk-width-1-4" placeholder="" v-model="module.title">
                 </div>
             </fieldset>
             <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--primary">
@@ -80,22 +82,30 @@
     </div>
 
 
-    <h2>Your Questiongroups</h2>
+    <h2>Your Modules</h2>
     <div class="mdl-grid" v-cloak>
-        <template v-for="questiongroup in questiongroups">
+        <template v-for="module in modules">
 
             <!-- This is the modal -->
-            <div id="{{ questiongroup.id }}" class="uk-modal">
+            <div id="{{ module.id }}" class="uk-modal">
                 <div class="uk-modal-dialog modal-tweak uk-modal-dialog-large">
                     <a class="uk-modal-close uk-close"></a>
                     <div class="mdl-cell mdl-cell--top mdl-cell--6-col mdl-cell--4-col-tablet mdl-cell--4-col-phone">
-                        <list-question :questiongroup.sync="questiongroup" >
-                        </list-question>
-                        <add-question :questiongroup.sync="questiongroup" >
-                        </add-question>
+                        <list-item :module.sync="module" >
+                        </list-item>
+                        <add-item :module.sync="module" >
+                        </add-item>
                     </div>
+                </div>
+            </div>
 
-
+            <!-- This is the off-canvas sidebar -->
+            <div id="{{ module.title }}" class="uk-offcanvas">
+                <div class="uk-offcanvas-bar uk-offcanvas-bar">
+                    <list-item :module.sync="module" >
+                    </list-item>
+                    <add-item :module.sync="module" >
+                    </add-item>
                 </div>
             </div>
 
@@ -107,7 +117,7 @@
 
                     <div class="mdl-card__title card-background">
                         <div class="mdl-card__title-text title-text">
-                            {{questiongroup.title}} <br>
+                            {{module.title}} <br>
                         </div>
                     </div>
                     <div class="mdl-card__supporting-text card-text-background">
@@ -117,29 +127,37 @@
                     </div>
 <!--
                     <div class="">
-                        <list-question :questiongroup.sync="questiongroup" >
-                        </list-question>
+                        <list-item :module.sync="module" >
+                        </list-item>
                     </div> -->
                     <!-- This is an anchor toggling the modal -->
                     <!-- <a href="#my-id" data-uk-modal>..f.</a> -->
 
-                    <!-- This is a button toggling the modal -->
+
                     <div class="mdl-card__actions">
-                        <mdl-button colored accent raised data-uk-modal="{target:'#{{ questiongroup.id }}'}">
+                        <!-- This is a button toggling the modal -->
+                        <mdl-button colored accent raised data-uk-modal="{target:'#{{ module.id }}'}">
                             <i class="material-icons">add</i>
-                            Show Items
+                            Show Items (Modal)
                         </mdl-button>
+
+                        <!-- This is the button toggling the off-canvas sidebar -->
+                        <mdl-button colored accent raised data-uk-offcanvas="{target:'#{{ module.title }}'}">
+                            <i class="material-icons">add</i>
+                            Show Items (Off-Canvas)
+                        </mdl-button>
+
                     </div>
-                    <!-- <pre>
-                        Questions Json <br>
-                        {{ questiongroup.questions | json }}
-                    </pre> -->
+
+                    <!-- This is the button toggling the off-canvas sidebar -->
+                    <button class="uk-button" data-uk-offcanvas="{target:'#my-id'}">...</button>
+
                     <div class="mdl-card__menu">
-                        <mdl-button v-mdl-ripple-effect fab accent @click="remove(questiongroup, questiongroups)">
+                        <mdl-button v-mdl-ripple-effect fab accent @click="remove(module, modules)">
                             <i class="material-icons">delete</i>
                         </mdl-button>
 
-                        <mdl-button v-mdl-ripple-effect fab accent @click="update(questiongroup)"><i class="material-icons">save</i></mdl-button>
+                        <mdl-button v-mdl-ripple-effect fab accent @click="update(module)"><i class="material-icons">save</i></mdl-button>
 
 
                     </div>

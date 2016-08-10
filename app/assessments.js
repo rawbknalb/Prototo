@@ -1,7 +1,7 @@
 $(function(){
 
-    // var AddQuestiongroup = Vue.extend({
-    //     template: '#addquestiongroup-template'
+    // var AddModule = Vue.extend({
+    //     template: '#addmodule-template'
     // });
     //
     // Vue.component('edit-switch', {
@@ -20,7 +20,7 @@ $(function(){
         data: {
             assessment: window.$data.assessment,
             assessments: '',
-            questiongroups: '',
+            modules: '',
             checked: false
             // data: window.$data,
         },
@@ -49,10 +49,10 @@ $(function(){
                 });
             },
 
-            getQuestiongroups: function(){
-                this.$http.get('admin/osamaker/api/group/get')
+            getModules: function(){
+                this.$http.get('admin/osamaker/api/module/get')
                 .then(function (data){
-                    this.$set('questiongroups', data.data);
+                    this.$set('modules', data.data);
                 })
                 .catch(function (err){
                     console.log(err);
@@ -96,11 +96,11 @@ $(function(){
 
             },
 
-            addQuestiongroup: function (assessment, questiongroup) {
-                //var questiongroup = this.assessment.questiongroup;
-                var data = {assessment: assessment, questiongroup: questiongroup};
+            addModule: function (assessment, module) {
+                //var module = this.assessment.module;
+                var data = {assessment: assessment, module: module};
 
-                this.$http.post('admin/osamaker/api/assessment/addquestiongroup', data)
+                this.$http.post('admin/osamaker/api/assessment/addmodule', data)
                     .then(function () {
                         UIkit.notify('Werkt');
                         this.getAssessments();
@@ -110,14 +110,14 @@ $(function(){
                     });
             },
 
-            removeQuestiongroup: function (assessment_id, questiongroup_id) {
-                //var questiongroup = this.assessment.questiongroup;
+            removeModule: function (assessment_id, module_id) {
+                //var module = this.assessment.module;
                 var data = {
                     assessment: assessment_id,
-                    questiongroup: questiongroup_id
+                    module: module_id
                 }
 
-                this.$http.post('admin/osamaker/api/assessment/removequestiongroup', data)
+                this.$http.post('admin/osamaker/api/assessment/removemodule', data)
                     .then(function () {
                         UIkit.notify('Wörkt');
                         this.getAssessments();
@@ -130,7 +130,7 @@ $(function(){
 
         ready: function() {
             this.getAssessments();
-            this.getQuestiongroups();
+            this.getModules();
         },
 
     });

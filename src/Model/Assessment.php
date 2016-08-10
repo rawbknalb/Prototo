@@ -25,7 +25,7 @@ class Assessment
     public $modified_at;
 
     /**
-     * @ManyToMany(targetEntity="Questiongroup", tableThrough="@osa_assessments_questiongroups_mapping", keyThroughFrom="assessment_id", keyThroughTo="questiongroup_id", orderBy="questiongroup_order")
+     * @ManyToMany(targetEntity="Module", tableThrough="@osa_assessments_modules_mapping", keyThroughFrom="assessment_id", keyThroughTo="module_id", orderBy="module_order")
      */
-    public $questiongroups;
+    public $modules;
 }

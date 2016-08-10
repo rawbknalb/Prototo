@@ -3,7 +3,7 @@ namespace Osa\OsaMaker\Controller;
 
 use Pagekit\Application as App;
 use Osa\OsaMaker\Model\Assessment;
-use Osa\OsaMaker\Model\Questiongroup;
+use Osa\OsaMaker\Model\Module;
 
 /**
  * @Route("assessment", name="assessment")
@@ -14,7 +14,7 @@ class AssessmentController
 
     public function getAction()
     {
-        $assessments = Assessment::query()->related('questiongroups')->get();
+        $assessments = Assessment::query()->related('modules')->get();
 
         return ($assessments);
     }
@@ -46,11 +46,11 @@ class AssessmentController
             // exit();
             $assessment->delete();
 
-            // delete assessment_questiongroup_mapping
+            // delete assessments_modules_mapping
             $query = App::db()->createQueryBuilder();
             $delete = $query
                 ->select('*')
-                ->from('@osa_assessments_questiongroups_mapping')
+                ->from('@osa_assessments_modules_mapping')
                 ->where('assessment_id = ?', [$data])
                 ->delete();
         }
@@ -73,26 +73,26 @@ class AssessmentController
     }
 
     /**
-     * @Request({"assessment": "int", "questiongroup": "int"}, csrf=true)
+     * @Request({"assessment": "int", "module": "int"}, csrf=true)
      */
-    public function addquestiongroupAction($assessment, $questiongroup)
+    public function addmoduleAction($assessment, $module)
     {
         $assessment = Assessment::find($assessment);
-        $questiongroup = Questiongroup::find($questiongroup);
+        $module = Module::find($module);
 
-        $questiongroupOrder = count(
+        $moduleOrder = count(
             Assessment::query()
             ->where(['id' => $assessment->id])
-            ->related('questiongroups')
+            ->related('modules')
             ->first()
-            ->questiongroups
+            ->modules
         );
 
-        if($assessment && $questiongroup){
-            App::db()->insert('@osa_assessments_questiongroups_mapping', [
+        if($assessment && $module){
+            App::db()->insert('@osa_assessments_modules_mapping', [
                 'assessment_id' => $assessment->id,
-                'questiongroup_id' => $questiongroup->id,
-                'questiongroup_order' => $questiongroupOrder
+                'module_id' => $module->id,
+                'module_order' => $moduleOrder
             ]);
         }
 
@@ -100,22 +100,22 @@ class AssessmentController
     }
 
     /**
-     * @Request({"assessment": "int", "questiongroup": "int"}, csrf=true)
+     * @Request({"assessment": "int", "module": "int"}, csrf=true)
      */
-    public function removequestiongroupAction($assessment_id, $questiongroup_id)
+    public function removemoduleAction($assessment_id, $module_id)
     {
 
         $assessment = Assessment::find($assessment_id);
-        $questiongroup = Questiongroup::find($questiongroup_id);
+        $module = Module::find($module_id);
 
-        if($assessment && $questiongroup){
-            // delete assessment_questiongroup_mapping
+        if($assessment && $module){
+            // delete assessments_modules_mapping
             $query = App::db()->createQueryBuilder();
             $delete = $query
                 ->select('*')
-                ->from('@osa_assessments_questiongroups_mapping')
+                ->from('@osa_assessments_modules_mapping')
                 ->where('assessment_id = ?', [$assessment_id])
-                ->where('questiongroup_id = ?', [$questiongroup_id])
+                ->where('module_id = ?', [$module_id])
                 ->delete();
         }
         return ['message' => 'success'];
