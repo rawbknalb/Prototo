@@ -25,6 +25,7 @@
 
     <h2>Your Modules</h2>
     <div class="mdl-grid" v-cloak>
+
         <template v-for="module in modules">
 
           <!-- This is the add-item modal -->
@@ -56,13 +57,13 @@
                         <!-- This is a button toggling the modal -->
                         <mdl-button colored accent raised data-uk-modal="{target:'#{{ module.id }}'}">
                             <i class="material-icons">add</i>
-                            Show Items (Modal)
+                            Add Item
                         </mdl-button>
 
                         <!-- This is the button toggling the off-canvas sidebar -->
                         <mdl-button colored accent raised data-uk-offcanvas="{target:'#Module{{ module.id }}'}">
                             <i class="material-icons">add</i>
-                            Show Items (Off-Canvas)
+                            Show Items
                         </mdl-button>
 
                     </div>

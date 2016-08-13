@@ -15,17 +15,19 @@
                     </pre> -->
 
                     <h3>Choose an Item Type</h3>
-                    <mdl-button id="menu-example" accent raised icon>
+                    <mdl-button id="{{module.title}}" accent raised icon>
                         Select Type
                         <i class="material-icons">favorite</i>
                     </mdl-button>
-                    <mdl-menu for="menu-example">
+                    <mdl-menu for="" :for="module.title">
+
                         <mdl-menu-item @click="setType(types.multiple)">Multiple Choise</mdl-menu-item>
                         <mdl-menu-item @click="setType(types.single)">Single Choise</mdl-menu-item>
                         <mdl-menu-item @click="setType(types.scale)">Scale</mdl-menu-item>
+
                     </mdl-menu>
                     <br>
-                    <!-- Selected: {{ item.data.type }} -->
+                    Selected: {{ item.data.type }}
 
                     <hr>
                     <form class="uk-form">
@@ -76,25 +78,34 @@
                 </div>
 
                 <!-- This is the right half -->
+                <div v-if="">
+
+                </div>
                 <div class="mdl-cell mdl-cell--6-col mdl-cell--6-col-tablet mdl-cell--12-col-phone">
                     <h1>Preview </h1>
 
                     <h3>{{ item.text }}</h3>
 
-                    <!-- <mdl-checkbox :checked.sync="checks" value="" :value="option.text">{{option.text}}</mdl-checkbox> -->
-
+                    <!-- This is list of options-->
                     <ul class="mdl-list" v-for="option in item.data.options">
+
                         <div class="mdl-list__item">
+
                             <mdl-checkbox :checked.sync="checks" value="" :value="option.text">{{option.text}}</mdl-checkbox>
+
                             <span class="mdl-list__item-secondary-action">
+
                                 <mdl-button
                                     class="mdl-button--icon"
                                     primary
                                     @click.prevent="removeOption(option)"
                                 >
                                     <i class="material-icons">delete</i>
+
                                 </mdl-button>
+
                             </span>
+
                         </div>
 
                     </ul>
