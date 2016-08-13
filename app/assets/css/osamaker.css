@@ -1,0 +1,70 @@
+.card-wide{
+    width: 100%;
+}
+
+.card-narrow {
+    width: 30%;
+}
+
+.card-high{
+    height: 100%;
+}
+
+.content-grid {
+    max-width: 930px;
+}
+
+.card-background.mdl-card__title {
+    /*background: url('http://i.imgur.com/XvV9xub.png') center / cover;*/
+    /*background: #68EFAD;*/
+    background: #691A99;
+    height: 100px;
+    color: #fff;
+    font-weight: 800;
+
+}
+
+.card-text-background.mdl-card__supporting-text {
+    /*background: url('http://i.imgur.com/XvV9xub.png') center / cover;*/
+    /*background: #68EFAD;*/
+    background: #7A1EA1;
+    color: #fff;
+    width: 100%;
+}
+.title-text.mdl-card__title-text {
+    font-weight: 800;
+    margin-top: 0;
+}
+.mdl-card__actions {
+    box-sizing:border-box;
+    align-items: center;
+}
+.mdl-card__actions > .mdl-button--icon {
+    margin-right: 3px;
+    margin-left: 3px;
+}
+
+.ghost {
+    color: #fff;
+    background-color: #7A1EA1;
+}
+.chosen {
+    color: #000000;
+    background-color: #68EFAD;
+}
+.uk-modal-dialog.modal-tweak {
+    background: #fff;
+}
+
+.uk-offcanvas-bar {
+    width: 50%;
+}
+
+.uk-form input[type="text"] {
+    border: 0px;
+    border-bottom: 1px solid rgba(0,0,0,.12);
+}
+
+.mdl-list {
+    height: 8px;
+}

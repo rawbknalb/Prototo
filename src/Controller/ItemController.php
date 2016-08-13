@@ -31,6 +31,7 @@ class ItemController
         $item = Item::create([
             'module_id' => $data['module_id'],
             'text' => $data['text'],
+            'data' => $data['data'],
             'item_order' => $itemOrder,
             'created_at' => new \DateTime()
         ]);

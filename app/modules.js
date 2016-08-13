@@ -2,7 +2,7 @@ Vue.use(require('vue-mdl').default);
 // Vue.use(require('vue-sortable'));
 Vue.use(require('VueDragableFor'));
 // Vue.use(require('vuikit'));
-Vue.use(require('vue-material-components'));
+// Vue.use(require('vue-material-components'));
 
 
 module.exports = {
@@ -10,9 +10,9 @@ module.exports = {
 
             el: '#modules',
             components: {
-                'list-item': require('./components/list-item.vue'),
-                'add-item': require('./components/add-item.vue')
-
+                'list-item': require('./components/item/list-item.vue'),
+                'add-item': require('./components/item/add-item.vue'),
+                'card-module': require('./components/module/card-module.vue')
             },
             data: {
                 module: window.$data.module,
@@ -74,28 +74,14 @@ module.exports = {
 
                 },
 
-                addItem: function (item, module_id, module) {
-                    var data = {item: _.merge(item, {module_id: module_id}) };
-
-                    this.$http.post('admin/osamaker/api/item/save', data)
-                        .then(function (response) {
-
-                            module.items.push(response.data.item);
-
-                            this.item = {
-                                text: ''
-                            };
-                            UIkit.notify('Item saved');
-                        })
-                        .catch(function() {
-                            UIkit.notify('Something went wrong');
-                        });
-                },
-
-
-                deleteItem: function(item, items) {
+                deleteItem: function(item, items, id) {
                     items.$remove(item);
-
+                    // console.log(items);
+                    // var index = items.indexOf(item)
+                    // console.log(index);
+                    //   if (index !== -1) {
+                    //     items.splice(index, 1)
+                    //   }
                 },
 
                 remove: function(module, modules) {
