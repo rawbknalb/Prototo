@@ -89,3 +89,7 @@
   position: absolute;
   right: 76px;
 }
+
+.mdl-radio{
+    width: 100%;
+}
