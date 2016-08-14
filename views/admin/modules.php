@@ -55,14 +55,13 @@
 
                     <div class="mdl-card__actions">
                         <!-- This is a button toggling the modal -->
-                        <mdl-button colored accent raised data-uk-modal="{target:'#{{ module.id }}'}">
+                        <mdl-button colored accent fab data-uk-modal="{target:'#{{ module.id }}'}">
                             <i class="material-icons">add</i>
-                            Add Item
                         </mdl-button>
 
                         <!-- This is the button toggling the off-canvas sidebar -->
                         <mdl-button colored accent raised data-uk-offcanvas="{target:'#Module{{ module.id }}'}">
-                            <i class="material-icons">add</i>
+                            <i class="material-icons">list</i>
                             Show Items
                         </mdl-button>
 

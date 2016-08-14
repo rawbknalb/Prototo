@@ -68,3 +68,7 @@
 .mdl-list {
     height: 8px;
 }
+
+.mdl-list__item {
+    height: 8px;
+}

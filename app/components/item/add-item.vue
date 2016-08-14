@@ -30,7 +30,7 @@
                     Selected: {{ item.data.type }}
 
                     <hr>
-                    <form class="uk-form">
+                    <form class="uk-form" @submit.prevent="addItem(item, module.id, module)">
                         <!-- <mdl-select
                         label="Item Type"
                         id="item-type-select"
@@ -38,7 +38,7 @@
                         :options="types"
                         >
                         </mdl-select> -->
-                        <template v-if="types.multiple.active" >
+                        <template v-if="types.multiple.active || types.single.active">
 
                             <div class="uk-form-row">
                                 <mdl-textfield
@@ -64,10 +64,51 @@
 
                         </template>
 
+                        <template v-if="types.scale.active">
+
+                            <div class="uk-form-row">
+                                <mdl-textfield
+                                required
+                                floating-label="Item Text"
+                                :value.sync="item.text"
+                                >
+                                </mdl-textfield>
+                            </div>
+
+                            <div class="uk-form-row">
+
+                                <mdl-textfield
+                                    floating-label="Step"
+                                    :value.sync="step"
+                                >
+                                </mdl-textfield>
+
+                            </div>
+
+                            <div class="uk-form-row">
+
+                                <mdl-textfield
+                                    floating-label="min value"
+                                    :value.sync="min"
+                                >
+                                </mdl-textfield>
+
+                            </div>
+
+                            <div class="uk-form-row">
+
+                                <mdl-textfield
+                                    floating-label="max value"
+                                    :value.sync="max"
+                                    required
+                                >
+                                </mdl-textfield>
+
+                            </div>
+                        </template>
 
                         <div class="uk-form-row">
                             <mdl-button raised accent
-                            @click.prevent="addItem(item, module.id, module)"
                             >
                                 Save Item
                                 <i class="material-icons">save</i>
@@ -85,13 +126,55 @@
                     <h1>Preview </h1>
 
                     <h3>{{ item.text }}</h3>
+                    <template v-if="types.scale.active">
 
+                        <div class="uk-form-row">
+
+                            <mdl-textfield
+                                floating-label="Value"
+                                :value.sync="amount"
+                                readonly
+                            >
+                            </mdl-textfield>
+
+                            <mdl-slider
+                                :value.sync="amount"
+                                :min.sync="min"
+                                :max.sync="max"
+                                :step.sync="step"
+                            >
+                            </mdl-slider>
+
+                        </div>
+                    </template>
                     <!-- This is list of options-->
                     <ul class="mdl-list" v-for="option in item.data.options">
 
                         <div class="mdl-list__item">
 
-                            <mdl-checkbox :checked.sync="checks" value="" :value="option.text">{{option.text}}</mdl-checkbox>
+                            <!--
+                            **To Do: Change
+                            **:value (do not use option.text)
+                            **better: unique option identifier (id)
+                            -->
+                            <mdl-checkbox
+                                :checked.sync="checks"
+                                value=""
+                                :value="option.text"
+                                v-if="types.multiple.active"
+                            >
+                                {{option.text}}
+                            </mdl-checkbox>
+
+                            <mdl-radio
+                                :checked.sync="check"
+                                class="mdl-js-ripple-effect"
+                                value=""
+                                :value="option.text"
+                                v-if="types.single.active"
+                            >
+                                {{option.text}}
+                            </mdl-radio>
 
                             <span class="mdl-list__item-secondary-action">
 
@@ -161,6 +244,11 @@ module.exports = {
                 value: 1,
                 id: 1,
             },
+
+            min: '0',
+            max: '100',
+            step: '1',
+            amount: '',
 
             checks: [],
             // types: ['Multiple','Single','Skala']
