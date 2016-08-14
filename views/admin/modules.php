@@ -1,6 +1,6 @@
 <?php $view->script('mdl', 'osamaker:app/assets/js/material.js') ?>
 <?php $view->script('osamaker', 'osamaker:app/bundle/modules.js', 'vue') ?>
-<?php $view->style('mdl_theme', 'osamaker:app/assets/css/material.purple-green.min.css') ?>
+<?php $view->style('mdl_theme', 'osamaker:app/assets/css/material.blue-red.min.css') ?>
 <!-- <link rel="stylesheet" href="https://code.getmdl.io/1.1.3/material.purple-green.min.css" /> -->
 <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/css/materialize.min.css"> -->
@@ -55,25 +55,25 @@
 
                     <div class="mdl-card__actions">
                         <!-- This is a button toggling the modal -->
-                        <mdl-button colored accent fab data-uk-modal="{target:'#{{ module.id }}'}">
+                        <mdl-button colored accent raised data-uk-modal="{target:'#{{ module.id }}'}">
                             <i class="material-icons">add</i>
                         </mdl-button>
 
                         <!-- This is the button toggling the off-canvas sidebar -->
                         <mdl-button colored accent raised data-uk-offcanvas="{target:'#Module{{ module.id }}'}">
                             <i class="material-icons">list</i>
-                            Show Items
                         </mdl-button>
+
+                        <mdl-button class="button-right_2" v-mdl-ripple-effect raised accent @click="remove(module, modules)">
+                            <i class="material-icons">delete</i>
+                        </mdl-button>
+
+                        <mdl-button class="button-right_1" v-mdl-ripple-effect raised accent @click="update(module)"><i class="material-icons">save</i></mdl-button>
+
 
                     </div>
 
                     <div class="mdl-card__menu">
-                        <mdl-button v-mdl-ripple-effect fab accent @click="remove(module, modules)">
-                            <i class="material-icons">delete</i>
-                        </mdl-button>
-
-                        <mdl-button v-mdl-ripple-effect fab accent @click="update(module)"><i class="material-icons">save</i></mdl-button>
-
 
                     </div>
                 </div>

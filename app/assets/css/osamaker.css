@@ -17,7 +17,8 @@
 .card-background.mdl-card__title {
     /*background: url('http://i.imgur.com/XvV9xub.png') center / cover;*/
     /*background: #68EFAD;*/
-    background: #691A99;
+    /*background: #691A99;*/ /*Purple 800*/
+    background: #1976D2;
     height: 100px;
     color: #fff;
     font-weight: 800;
@@ -27,7 +28,7 @@
 .card-text-background.mdl-card__supporting-text {
     /*background: url('http://i.imgur.com/XvV9xub.png') center / cover;*/
     /*background: #68EFAD;*/
-    background: #7A1EA1;
+    background: #2196F3;
     color: #fff;
     width: 100%;
 }
@@ -71,4 +72,20 @@
 
 .mdl-list__item {
     height: 8px;
+}
+
+.button-between {
+  position: absolute;
+  top: 54px;
+  right: 28px;
+}
+
+.button-right_2{
+  position: absolute;
+  right: 8px;
+}
+
+.button-right_1{
+  position: absolute;
+  right: 76px;
 }
