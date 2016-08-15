@@ -8,6 +8,7 @@
             <div class="mdl-grid">
                 <!-- This is the left half -->
                 <div class="mdl-cell mdl-cell--6-col mdl-cell--6-col-tablet mdl-cell--12-col-phone">
+
                     <h1>Create a new Item</h1>
         <!--
                     <pre>
@@ -24,6 +25,8 @@
                         <mdl-menu-item @click="setType(types.multiple)">Multiple Choise</mdl-menu-item>
                         <mdl-menu-item @click="setType(types.single)">Single Choise</mdl-menu-item>
                         <mdl-menu-item @click="setType(types.scale)">Scale</mdl-menu-item>
+                        <mdl-menu-item @click="setType(types.slider)">Slider</mdl-menu-item>
+
 
                     </mdl-menu>
                     <br>
@@ -64,7 +67,7 @@
 
                         </template>
 
-                        <template v-if="types.scale.active">
+                        <template v-if="types.slider.active">
 
                             <div class="uk-form-row">
                                 <mdl-textfield
@@ -75,21 +78,38 @@
                                 </mdl-textfield>
                             </div>
 
-                            <div class="uk-form-row">
-
+                            <div data-uk-margin>
                                 <mdl-textfield
                                     floating-label="Step"
-                                    :value.sync="step"
+                                    :value.sync="slider_params.step"
+                                    class="uk-form-width-small"
                                 >
                                 </mdl-textfield>
 
+                                <mdl-textfield
+                                    floating-label="min value"
+                                    :value.sync="slider_params.min"
+                                    class="uk-form-width-small"
+                                >
+                                </mdl-textfield>
+
+                                <mdl-textfield
+                                    floating-label="max value"
+                                    :value.sync="slider_params.max"
+                                    required
+                                    class="uk-form-width-small"
+                                >
+                                </mdl-textfield>
                             </div>
 
-                            <div class="uk-form-row">
+
+
+
+                            <!-- <div class="uk-form-row">
 
                                 <mdl-textfield
                                     floating-label="min value"
-                                    :value.sync="min"
+                                    :value.sync="slider_params.min"
                                 >
                                 </mdl-textfield>
 
@@ -99,12 +119,12 @@
 
                                 <mdl-textfield
                                     floating-label="max value"
-                                    :value.sync="max"
+                                    :value.sync="slider_params.max"
                                     required
                                 >
                                 </mdl-textfield>
 
-                            </div>
+                            </div> -->
                         </template>
 
                         <div class="uk-form-row">
@@ -119,79 +139,114 @@
                 </div>
 
                 <!-- This is the right half -->
-                <div v-if="">
-
-                </div>
                 <div class="mdl-cell mdl-cell--6-col mdl-cell--6-col-tablet mdl-cell--12-col-phone">
                     <h1>Preview </h1>
 
                     <h3>{{ item.text }}</h3>
-                    <template v-if="types.scale.active">
+
+                    <!-- This is the slider-preview -->
+                    <template v-if="types.slider.active">
 
                         <div class="uk-form-row">
 
                             <mdl-textfield
                                 floating-label="Value"
-                                :value.sync="amount"
+                                :value.sync="slider_params.amount"
                                 readonly
                             >
                             </mdl-textfield>
 
                             <mdl-slider
-                                :value.sync="amount"
-                                :min.sync="min"
-                                :max.sync="max"
-                                :step.sync="step"
+                                :value.sync="slider_params.amount"
+                                :min.sync="slider_params.min"
+                                :max.sync="slider_params.max"
+                                :step.sync="slider_params.step"
                             >
                             </mdl-slider>
 
                         </div>
                     </template>
-                    <!-- This is list of options-->
-                    <ul class="mdl-list" v-for="option in item.data.options">
 
-                        <div class="mdl-list__item">
+                    <!-- This is list of options -->
+                    <!-- To Do: Preview-Components -->
+                    <template v-if="types.multiple.active">
+                        <ul class="mdl-list" v-for="option in item.data.options">
 
-                            <!--
-                            **To Do: Change
-                            **:value (do not use option.text)
-                            **better: unique option identifier (id)
-                            -->
-                            <mdl-checkbox
-                                :checked.sync="checks"
-                                value=""
-                                :value="option.text"
-                                v-if="types.multiple.active"
-                            >
-                                {{option.text}}
-                            </mdl-checkbox>
+                            <li class="mdl-list__item">
 
-                            <mdl-radio
-                                :checked.sync="check"
-                                class="mdl-js-ripple-effect"
-                                value=""
-                                :value="option.text"
-                                v-if="types.single.active"
-                            >
-                                {{option.text}}
-                            </mdl-radio>
-
-                            <span class="mdl-list__item-secondary-action">
-
-                                <mdl-button
-                                    class="mdl-button--icon"
-                                    primary
-                                    @click.prevent="removeOption(option)"
+                                <!--
+                                **To Do: Change
+                                **:value (do not use option.text)
+                                **better: unique option identifier (id)
+                                -->
+                                <mdl-checkbox
+                                    :checked.sync="checks"
+                                    value=""
+                                    :value="option.text"
+                                    v-if="types.multiple.active"
                                 >
-                                    <i class="material-icons">delete</i>
+                                    {{option.text}}
+                                </mdl-checkbox>
 
-                                </mdl-button>
+                                <span class="mdl-list__item-secondary-action">
 
-                            </span>
+                                    <mdl-button
+                                        class="mdl-button--icon"
+                                        primary
+                                        @click.prevent="removeOption(option)"
+                                    >
+                                        <i class="material-icons">delete</i>
 
-                        </div>
+                                    </mdl-button>
 
-                    </ul>
+                                </span>
+
+                            </li>
+
+                        </ul>
+                    </template>
+
+                    <!-- This is list of options -->
+                    <!-- To Do: Preview-Components -->
+                    <template v-if="types.single.active">
+                        <ul class="mdl-list" v-for="option in item.data.options">
+
+                            <li class="mdl-list__item">
+
+                                <!--
+                                **To Do: Change
+                                **:value (do not use option.text)
+                                **better: unique option identifier (id)
+                                -->
+
+                                    <mdl-radio
+                                        :checked.sync="check"
+                                        class="mdl-js-ripple-effect"
+                                        value=""
+                                        :value="option.text"
+                                        v-if="types.single.active"
+                                    >
+                                        {{option.text}}
+                                    </mdl-radio>
+
+                                <span class="mdl-list__item-secondary-action">
+
+                                    <mdl-button
+                                        class="mdl-button--icon"
+                                        primary
+                                        @click.prevent="removeOption(option)"
+                                    >
+                                        <i class="material-icons">delete</i>
+
+                                    </mdl-button>
+
+                                </span>
+
+                            </li>
+
+                        </ul>
+                    </template>
+
                 </div>
 
             </div>
@@ -218,7 +273,8 @@ module.exports = {
                 text: '',
                 data: {
                     type: '',
-                    options: []
+                    options: [],
+                    slider: []
                 }
             },
 
@@ -234,6 +290,10 @@ module.exports = {
                 scale: {
                     name: 'Scale',
                     active: false,
+                },
+                slider: {
+                    name: 'Slider',
+                    active: false,
                 }
             },
 
@@ -245,10 +305,12 @@ module.exports = {
                 id: 1,
             },
 
-            min: '0',
-            max: '100',
-            step: '1',
-            amount: '',
+            slider_params: {
+                min: '0',
+                max: '100',
+                step: '1',
+                amount: '',
+            },
 
             checks: [],
             // types: ['Multiple','Single','Skala']
@@ -270,7 +332,8 @@ module.exports = {
                     text: '',
                     data: {
                         type: '',
-                        options: []
+                        options: [],
+                        slider: []
                     }
                 };
 
@@ -298,26 +361,44 @@ module.exports = {
 
         },
 
-        setType: function (type) {
-
+        setType: function (type, slider_params) {
             type.active = true;
 
             if (type.name == 'Multiple Choice') {
                 this.item.data.type = 'multiple';
                 this.types.single.active = false;
                 this.types.scale.active = false;
+                this.types.slider.active = false;
+
             };
 
             if (type.name == 'Single Choice') {
                 this.item.data.type = 'single';
                 this.types.multiple.active = false;
                 this.types.scale.active = false;
+                this.types.slider.active = false;
+
             };
 
             if (type.name == 'Scale') {
                 this.item.data.type = 'scale';
                 this.types.multiple.active = false;
                 this.types.single.active = false;
+                this.types.slider.active = false;
+
+            };
+
+            if (type.name == 'Slider') {
+                this.item.data.type = 'slider';
+                this.types.multiple.active = false;
+                this.types.single.active = false;
+                this.types.scale.active = false;
+
+                // push the slider_params to the item data
+                // gets triggered after selected Slider as Item Type
+                this.item.data.slider.push(this.slider_params);
+
+
             };
         }
 
