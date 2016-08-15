@@ -54,22 +54,30 @@
 
 
                     <div class="mdl-card__actions">
-                        <!-- This is a button toggling the modal -->
-                        <mdl-button colored accent raised data-uk-modal="{target:'#{{ module.id }}'}">
-                            <i class="material-icons">add</i>
-                        </mdl-button>
+                        <div class="mdl-grid">
 
-                        <!-- This is the button toggling the off-canvas sidebar -->
-                        <mdl-button colored accent raised data-uk-offcanvas="{target:'#Module{{ module.id }}'}">
-                            <i class="material-icons">list</i>
-                        </mdl-button>
+                            <div class="mdl-cell mdl-cell--top mdl-cell--8-col mdl-cell--4-col-tablet mdl-cell--4-col-phone">
+                                <!-- This is a button toggling the modal -->
+                                <mdl-button colored accent raised data-uk-modal="{target:'#{{ module.id }}'}">
+                                    <i class="material-icons">add</i>
+                                </mdl-button>
 
-                        <mdl-button class="button-right_2" v-mdl-ripple-effect raised accent @click="remove(module, modules)">
-                            <i class="material-icons">delete</i>
-                        </mdl-button>
+                                <!-- This is the button toggling the off-canvas sidebar -->
+                                <mdl-button colored accent raised data-uk-offcanvas="{target:'#Module{{ module.id }}'}">
+                                    <i class="material-icons">list</i>
+                                </mdl-button>
+                            </div>
 
-                        <mdl-button class="button-right_1" v-mdl-ripple-effect raised accent @click="update(module)"><i class="material-icons">save</i></mdl-button>
 
+                            <div class="mdl-cell mdl-cell--top mdl-cell--4-col mdl-cell--4-col-tablet mdl-cell--4-col-phone">
+                                <mdl-button  v-mdl-ripple-effect raised accent @click="remove(module, modules)">
+                                    <i class="material-icons">delete</i>
+                                </mdl-button>
+
+                                <mdl-button  v-mdl-ripple-effect raised accent @click="update(module)"><i class="material-icons">save</i></mdl-button>
+                            </div>
+
+                        </div>
 
                     </div>
 
