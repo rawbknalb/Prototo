@@ -21096,7 +21096,7 @@
 	  var hotAPI = require("vue-hot-reload-api")
 	  hotAPI.install(require("vue"), false)
 	  if (!hotAPI.compatible) return
-	  var id = "_v-a479c132/list-item.vue"
+	  var id = "_v-6e7090ac/list-item.vue"
 	  if (!module.hot.data) {
 	    hotAPI.createRecord(id, module.exports)
 	  } else {
@@ -21157,7 +21157,7 @@
 	  var hotAPI = require("vue-hot-reload-api")
 	  hotAPI.install(require("vue"), false)
 	  if (!hotAPI.compatible) return
-	  var id = "_v-62c17b4a/add-item.vue"
+	  var id = "_v-3fae4d65/add-item.vue"
 	  if (!module.hot.data) {
 	    hotAPI.createRecord(id, module.exports)
 	  } else {
@@ -21183,7 +21183,8 @@
 	                text: '',
 	                data: {
 	                    type: '',
-	                    options: []
+	                    options: [],
+	                    slider: []
 	                }
 	            },
 
@@ -21199,6 +21200,10 @@
 	                scale: {
 	                    name: 'Scale',
 	                    active: false
+	                },
+	                slider: {
+	                    name: 'Slider',
+	                    active: false
 	                }
 	            },
 
@@ -21210,10 +21215,12 @@
 	                id: 1
 	            },
 
-	            min: '0',
-	            max: '100',
-	            step: '1',
-	            amount: '',
+	            slider_params: {
+	                min: '0',
+	                max: '100',
+	                step: '1',
+	                amount: ''
+	            },
 
 	            checks: []
 	        };
@@ -21232,7 +21239,8 @@
 	                    text: '',
 	                    data: {
 	                        type: '',
-	                        options: []
+	                        options: [],
+	                        slider: []
 	                    }
 	                };
 
@@ -21258,26 +21266,37 @@
 	            this.item.data.options.$remove(option);
 	        },
 
-	        setType: function setType(type) {
-
+	        setType: function setType(type, slider_params) {
 	            type.active = true;
 
 	            if (type.name == 'Multiple Choice') {
 	                this.item.data.type = 'multiple';
 	                this.types.single.active = false;
 	                this.types.scale.active = false;
+	                this.types.slider.active = false;
 	            };
 
 	            if (type.name == 'Single Choice') {
 	                this.item.data.type = 'single';
 	                this.types.multiple.active = false;
 	                this.types.scale.active = false;
+	                this.types.slider.active = false;
 	            };
 
 	            if (type.name == 'Scale') {
 	                this.item.data.type = 'scale';
 	                this.types.multiple.active = false;
 	                this.types.single.active = false;
+	                this.types.slider.active = false;
+	            };
+
+	            if (type.name == 'Slider') {
+	                this.item.data.type = 'slider';
+	                this.types.multiple.active = false;
+	                this.types.single.active = false;
+	                this.types.scale.active = false;
+
+	                this.item.data.slider.push(this.slider_params);
 	            };
 	        }
 
@@ -21289,7 +21308,7 @@
 /* 11 */
 /***/ function(module, exports) {
 
-	module.exports = "\n\n<!-- This is the modal -->\n<div id=\"{{ module.id }}\" class=\"uk-modal\">\n    <div class=\"uk-modal-dialog modal-tweak uk-modal-dialog-large\">\n        <a class=\"uk-modal-close uk-close\"></a>\n\n        <div class=\"mdl-grid\">\n            <!-- This is the left half -->\n            <div class=\"mdl-cell mdl-cell--6-col mdl-cell--6-col-tablet mdl-cell--12-col-phone\">\n                <h1>Create a new Item</h1>\n    <!--\n                <pre>\n                    {{ item.data.type | json }}\n                </pre> -->\n\n                <h3>Choose an Item Type</h3>\n                <mdl-button id=\"{{module.title}}\" accent raised icon>\n                    Select Type\n                    <i class=\"material-icons\">favorite</i>\n                </mdl-button>\n                <mdl-menu for=\"\" :for=\"module.title\">\n\n                    <mdl-menu-item @click=\"setType(types.multiple)\">Multiple Choise</mdl-menu-item>\n                    <mdl-menu-item @click=\"setType(types.single)\">Single Choise</mdl-menu-item>\n                    <mdl-menu-item @click=\"setType(types.scale)\">Scale</mdl-menu-item>\n\n                </mdl-menu>\n                <br>\n                Selected: {{ item.data.type }}\n\n                <hr>\n                <form class=\"uk-form\" @submit.prevent=\"addItem(item, module.id, module)\">\n                    <!-- <mdl-select\n                    label=\"Item Type\"\n                    id=\"item-type-select\"\n                    :value.sync=\"item.data.type\"\n                    :options=\"types\"\n                    >\n                    </mdl-select> -->\n                    <template v-if=\"types.multiple.active || types.single.active\">\n\n                        <div class=\"uk-form-row\">\n                            <mdl-textfield\n                            required\n                            floating-label=\"Item Text\"\n                            :value.sync=\"item.text\"\n                            >\n                            </mdl-textfield>\n                        </div>\n\n                        <div class=\"uk-form-row\">\n                            <mdl-textfield\n                            floating-label=\"Add Option\"\n                            :value.sync=\"option.text\"\n                            id=\"{{ item.id }}\"\n                            >\n                            </mdl-textfield>\n\n                            <mdl-button icon mini-fab accent @click.prevent=\"addOption(option)\">\n                                <i class=\"material-icons\">add</i>\n                            </mdl-button>\n                        </div>\n\n                    </template>\n\n                    <template v-if=\"types.scale.active\">\n\n                        <div class=\"uk-form-row\">\n                            <mdl-textfield\n                            required\n                            floating-label=\"Item Text\"\n                            :value.sync=\"item.text\"\n                            >\n                            </mdl-textfield>\n                        </div>\n\n                        <div class=\"uk-form-row\">\n\n                            <mdl-textfield\n                                floating-label=\"Step\"\n                                :value.sync=\"step\"\n                            >\n                            </mdl-textfield>\n\n                        </div>\n\n                        <div class=\"uk-form-row\">\n\n                            <mdl-textfield\n                                floating-label=\"min value\"\n                                :value.sync=\"min\"\n                            >\n                            </mdl-textfield>\n\n                        </div>\n\n                        <div class=\"uk-form-row\">\n\n                            <mdl-textfield\n                                floating-label=\"max value\"\n                                :value.sync=\"max\"\n                                required\n                            >\n                            </mdl-textfield>\n\n                        </div>\n                    </template>\n\n                    <div class=\"uk-form-row\">\n                        <mdl-button raised accent\n                        >\n                            Save Item\n                            <i class=\"material-icons\">save</i>\n                        </mdl-button>\n                    </div>\n\n                </form>\n            </div>\n\n            <!-- This is the right half -->\n            <div v-if=\"\">\n\n            </div>\n            <div class=\"mdl-cell mdl-cell--6-col mdl-cell--6-col-tablet mdl-cell--12-col-phone\">\n                <h1>Preview </h1>\n\n                <h3>{{ item.text }}</h3>\n                <template v-if=\"types.scale.active\">\n\n                    <div class=\"uk-form-row\">\n\n                        <mdl-textfield\n                            floating-label=\"Value\"\n                            :value.sync=\"amount\"\n                            readonly\n                        >\n                        </mdl-textfield>\n\n                        <mdl-slider\n                            :value.sync=\"amount\"\n                            :min.sync=\"min\"\n                            :max.sync=\"max\"\n                            :step.sync=\"step\"\n                        >\n                        </mdl-slider>\n\n                    </div>\n                </template>\n                <!-- This is list of options-->\n                <ul class=\"mdl-list\" v-for=\"option in item.data.options\">\n\n                    <div class=\"mdl-list__item\">\n\n                        <!--\n                        **To Do: Change\n                        **:value (do not use option.text)\n                        **better: unique option identifier (id)\n                        -->\n                        <mdl-checkbox\n                            :checked.sync=\"checks\"\n                            value=\"\"\n                            :value=\"option.text\"\n                            v-if=\"types.multiple.active\"\n                        >\n                            {{option.text}}\n                        </mdl-checkbox>\n\n                        <mdl-radio\n                            :checked.sync=\"check\"\n                            class=\"mdl-js-ripple-effect\"\n                            value=\"\"\n                            :value=\"option.text\"\n                            v-if=\"types.single.active\"\n                        >\n                            {{option.text}}\n                        </mdl-radio>\n\n                        <span class=\"mdl-list__item-secondary-action\">\n\n                            <mdl-button\n                                class=\"mdl-button--icon\"\n                                primary\n                                @click.prevent=\"removeOption(option)\"\n                            >\n                                <i class=\"material-icons\">delete</i>\n\n                            </mdl-button>\n\n                        </span>\n\n                    </div>\n\n                </ul>\n            </div>\n\n        </div>\n\n    </div>\n\n</div>\n\n";
+	module.exports = "\n\n<!-- This is the modal -->\n<div id=\"{{ module.id }}\" class=\"uk-modal\">\n    <div class=\"uk-modal-dialog modal-tweak uk-modal-dialog-large\">\n        <a class=\"uk-modal-close uk-close\"></a>\n\n        <div class=\"mdl-grid\">\n            <!-- This is the left half -->\n            <div class=\"mdl-cell mdl-cell--6-col mdl-cell--6-col-tablet mdl-cell--12-col-phone\">\n\n                <h1>Create a new Item</h1>\n    <!--\n                <pre>\n                    {{ item.data.type | json }}\n                </pre> -->\n\n                <h3>Choose an Item Type</h3>\n                <mdl-button id=\"{{module.title}}\" accent raised icon>\n                    Select Type\n                    <i class=\"material-icons\">favorite</i>\n                </mdl-button>\n                <mdl-menu for=\"\" :for=\"module.title\">\n\n                    <mdl-menu-item @click=\"setType(types.multiple)\">Multiple Choise</mdl-menu-item>\n                    <mdl-menu-item @click=\"setType(types.single)\">Single Choise</mdl-menu-item>\n                    <mdl-menu-item @click=\"setType(types.scale)\">Scale</mdl-menu-item>\n                    <mdl-menu-item @click=\"setType(types.slider)\">Slider</mdl-menu-item>\n\n\n                </mdl-menu>\n                <br>\n                Selected: {{ item.data.type }}\n\n                <hr>\n                <form class=\"uk-form\" @submit.prevent=\"addItem(item, module.id, module)\">\n                    <!-- <mdl-select\n                    label=\"Item Type\"\n                    id=\"item-type-select\"\n                    :value.sync=\"item.data.type\"\n                    :options=\"types\"\n                    >\n                    </mdl-select> -->\n                    <template v-if=\"types.multiple.active || types.single.active\">\n\n                        <div class=\"uk-form-row\">\n                            <mdl-textfield\n                            required\n                            floating-label=\"Item Text\"\n                            :value.sync=\"item.text\"\n                            >\n                            </mdl-textfield>\n                        </div>\n\n                        <div class=\"uk-form-row\">\n                            <mdl-textfield\n                            floating-label=\"Add Option\"\n                            :value.sync=\"option.text\"\n                            id=\"{{ item.id }}\"\n                            >\n                            </mdl-textfield>\n\n                            <mdl-button icon mini-fab accent @click.prevent=\"addOption(option)\">\n                                <i class=\"material-icons\">add</i>\n                            </mdl-button>\n                        </div>\n\n                    </template>\n\n                    <template v-if=\"types.slider.active\">\n\n                        <div class=\"uk-form-row\">\n                            <mdl-textfield\n                            required\n                            floating-label=\"Item Text\"\n                            :value.sync=\"item.text\"\n                            >\n                            </mdl-textfield>\n                        </div>\n\n                        <div data-uk-margin>\n                            <mdl-textfield\n                                floating-label=\"Step\"\n                                :value.sync=\"slider_params.step\"\n                                class=\"uk-form-width-small\"\n                            >\n                            </mdl-textfield>\n\n                            <mdl-textfield\n                                floating-label=\"min value\"\n                                :value.sync=\"slider_params.min\"\n                                class=\"uk-form-width-small\"\n                            >\n                            </mdl-textfield>\n\n                            <mdl-textfield\n                                floating-label=\"max value\"\n                                :value.sync=\"slider_params.max\"\n                                required\n                                class=\"uk-form-width-small\"\n                            >\n                            </mdl-textfield>\n                        </div>\n\n\n\n\n                        <!-- <div class=\"uk-form-row\">\n\n                            <mdl-textfield\n                                floating-label=\"min value\"\n                                :value.sync=\"slider_params.min\"\n                            >\n                            </mdl-textfield>\n\n                        </div>\n\n                        <div class=\"uk-form-row\">\n\n                            <mdl-textfield\n                                floating-label=\"max value\"\n                                :value.sync=\"slider_params.max\"\n                                required\n                            >\n                            </mdl-textfield>\n\n                        </div> -->\n                    </template>\n\n                    <div class=\"uk-form-row\">\n                        <mdl-button raised accent\n                        >\n                            Save Item\n                            <i class=\"material-icons\">save</i>\n                        </mdl-button>\n                    </div>\n\n                </form>\n            </div>\n\n            <!-- This is the right half -->\n            <div class=\"mdl-cell mdl-cell--6-col mdl-cell--6-col-tablet mdl-cell--12-col-phone\">\n                <h1>Preview </h1>\n\n                <h3>{{ item.text }}</h3>\n\n                <!-- This is the slider-preview -->\n                <template v-if=\"types.slider.active\">\n\n                    <div class=\"uk-form-row\">\n\n                        <mdl-textfield\n                            floating-label=\"Value\"\n                            :value.sync=\"slider_params.amount\"\n                            readonly\n                        >\n                        </mdl-textfield>\n\n                        <mdl-slider\n                            :value.sync=\"slider_params.amount\"\n                            :min.sync=\"slider_params.min\"\n                            :max.sync=\"slider_params.max\"\n                            :step.sync=\"slider_params.step\"\n                        >\n                        </mdl-slider>\n\n                    </div>\n                </template>\n\n                <!-- This is list of options -->\n                <!-- To Do: Preview-Components -->\n                <template v-if=\"types.multiple.active\">\n                    <ul class=\"mdl-list\" v-for=\"option in item.data.options\">\n\n                        <li class=\"mdl-list__item\">\n\n                            <!--\n                            **To Do: Change\n                            **:value (do not use option.text)\n                            **better: unique option identifier (id)\n                            -->\n                            <mdl-checkbox\n                                :checked.sync=\"checks\"\n                                value=\"\"\n                                :value=\"option.text\"\n                                v-if=\"types.multiple.active\"\n                            >\n                                {{option.text}}\n                            </mdl-checkbox>\n\n                            <span class=\"mdl-list__item-secondary-action\">\n\n                                <mdl-button\n                                    class=\"mdl-button--icon\"\n                                    primary\n                                    @click.prevent=\"removeOption(option)\"\n                                >\n                                    <i class=\"material-icons\">delete</i>\n\n                                </mdl-button>\n\n                            </span>\n\n                        </li>\n\n                    </ul>\n                </template>\n\n                <!-- This is list of options -->\n                <!-- To Do: Preview-Components -->\n                <template v-if=\"types.single.active\">\n                    <ul class=\"mdl-list\" v-for=\"option in item.data.options\">\n\n                        <li class=\"mdl-list__item\">\n\n                            <!--\n                            **To Do: Change\n                            **:value (do not use option.text)\n                            **better: unique option identifier (id)\n                            -->\n\n                                <mdl-radio\n                                    :checked.sync=\"check\"\n                                    class=\"mdl-js-ripple-effect\"\n                                    value=\"\"\n                                    :value=\"option.text\"\n                                    v-if=\"types.single.active\"\n                                >\n                                    {{option.text}}\n                                </mdl-radio>\n\n                            <span class=\"mdl-list__item-secondary-action\">\n\n                                <mdl-button\n                                    class=\"mdl-button--icon\"\n                                    primary\n                                    @click.prevent=\"removeOption(option)\"\n                                >\n                                    <i class=\"material-icons\">delete</i>\n\n                                </mdl-button>\n\n                            </span>\n\n                        </li>\n\n                    </ul>\n                </template>\n\n            </div>\n\n        </div>\n\n    </div>\n\n</div>\n\n";
 
 /***/ },
 /* 12 */
@@ -21311,7 +21330,7 @@
 	  var hotAPI = require("vue-hot-reload-api")
 	  hotAPI.install(require("vue"), false)
 	  if (!hotAPI.compatible) return
-	  var id = "_v-c5e9f6b2/card-module.vue"
+	  var id = "_v-7b644b6c/card-module.vue"
 	  if (!module.hot.data) {
 	    hotAPI.createRecord(id, module.exports)
 	  } else {
