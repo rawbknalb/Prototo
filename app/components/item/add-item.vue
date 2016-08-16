@@ -29,11 +29,11 @@
 
 
                     </mdl-menu>
-                    <br>
-                    Selected: {{ item.data.type }}
+
+                    <h2>Selected: {{ item.data.type }}</h2>
 
                     <hr>
-                    <form class="uk-form" @submit.prevent="addItem(item, module.id, module)">
+                    <form class="uk-form" @submit.prevent="saveItem(item, module.id, module)">
                         <!-- <mdl-select
                         label="Item Type"
                         id="item-type-select"
@@ -53,16 +53,27 @@
                             </div>
 
                             <div class="uk-form-row">
+
                                 <mdl-textfield
-                                floating-label="Add Option"
-                                :value.sync="option.text"
-                                id="{{ item.id }}"
+                                    floating-label="Add Option"
+                                    :value.sync="option.text"
+                                    id="{{ item.id }}"
+                                    v-show="!option.input.textfield.active"
                                 >
                                 </mdl-textfield>
 
-                                <mdl-button icon mini-fab accent @click.prevent="addOption(option)">
-                                    <i class="material-icons">add</i>
+                                <mdl-button
+                                    v-show="option.text || option.input.textfield.active || option.input.textarea.active"
+                                    icon
+                                    mini-fab
+                                    accent
+                                    @click.prevent="addOption(option)">
+                                        <i class="material-icons">add</i>
                                 </mdl-button>
+
+                                <mdl-switch :checked.sync="option.input.textfield.active" value="true">Textfield</mdl-switch>
+                                <mdl-switch :checked.sync="option.input.textarea.active" value="true">Textarea</mdl-switch>
+
                             </div>
 
                         </template>
@@ -83,6 +94,8 @@
                                     floating-label="Step"
                                     :value.sync="slider_params.step"
                                     class="uk-form-width-small"
+                                    pattern="-?[0-9]*(\.[0-9]+)?"
+                                    error="Input is not a number!"
                                 >
                                 </mdl-textfield>
 
@@ -90,6 +103,8 @@
                                     floating-label="min value"
                                     :value.sync="slider_params.min"
                                     class="uk-form-width-small"
+                                    pattern="-?[0-9]*(\.[0-9]+)?"
+                                    error="Input is not a number!"
                                 >
                                 </mdl-textfield>
 
@@ -98,33 +113,12 @@
                                     :value.sync="slider_params.max"
                                     required
                                     class="uk-form-width-small"
+                                    pattern="-?[0-9]*(\.[0-9]+)?"
+                                    error="Input is not a number!"
                                 >
                                 </mdl-textfield>
                             </div>
 
-
-
-
-                            <!-- <div class="uk-form-row">
-
-                                <mdl-textfield
-                                    floating-label="min value"
-                                    :value.sync="slider_params.min"
-                                >
-                                </mdl-textfield>
-
-                            </div>
-
-                            <div class="uk-form-row">
-
-                                <mdl-textfield
-                                    floating-label="max value"
-                                    :value.sync="slider_params.max"
-                                    required
-                                >
-                                </mdl-textfield>
-
-                            </div> -->
                         </template>
 
                         <div class="uk-form-row">
@@ -219,15 +213,32 @@
                                 **better: unique option identifier (id)
                                 -->
 
-                                    <mdl-radio
-                                        :checked.sync="check"
-                                        class="mdl-js-ripple-effect"
-                                        value=""
-                                        :value="option.text"
-                                        v-if="types.single.active"
-                                    >
-                                        {{option.text}}
-                                    </mdl-radio>
+                                <mdl-radio
+                                    :checked.sync="check"
+                                    class="mdl-js-ripple-effect"
+                                    value=""
+                                    :value="option.text"
+                                    v-if="!(option.input.textarea.active) && !(option.input.textfield.active)"
+
+                                >
+                                    {{option.text}}
+                                </mdl-radio>
+
+                                <mdl-textfield
+                                    label="Other"
+                                    :value.sync="option.input.textfield.input_text"
+                                    v-if="option.input.textfield.active"
+                                >
+                                </mdl-textfield>
+
+                                <mdl-textfield
+                                    floating-label="Name"
+                                    textarea rows="1"
+                                    v-if="option.input.textarea.active"
+                                >
+                                </mdl-textfield>
+
+
 
                                 <span class="mdl-list__item-secondary-action">
 
@@ -241,6 +252,8 @@
                                     </mdl-button>
 
                                 </span>
+
+
 
                             </li>
 
@@ -303,6 +316,16 @@ module.exports = {
                 text: '',
                 value: 1,
                 id: 1,
+                input: {
+                    textfield: {
+                        active: false,
+                        input_text: ''
+                    },
+                    textarea: {
+                        active: false,
+                        input_text: ''
+                    },
+                }
             },
 
             slider_params: {
@@ -318,7 +341,12 @@ module.exports = {
     },
     methods: {
 
-        addItem: function (item, module_id, module) {
+        saveItem: function (item, module_id, module) {
+
+            // Check if item-type is slider
+            if (item.data.type === 'slider'){
+                this.addSlider();
+            };
 
             var data = {item: _.merge(item, {module_id: module_id}) };
 
@@ -351,8 +379,30 @@ module.exports = {
             this.option = {
                 text: '',
                 value: 1,
-                id: 1
+                id: 1,
+                input: {
+                    textfield: {
+                        active: false,
+                        input_text: ''
+                    },
+                    textarea: {
+                        active: false,
+                        input_text: ''
+                    },
+                }
             }
+        },
+
+        addSlider: function() {
+
+            this.item.data.slider.push(this.slider_params);
+
+            this.slider_params = {
+                min: '0',
+                max: '100',
+                step: '1',
+                amount: '',
+            };
         },
 
         removeOption: function (option) {
@@ -393,11 +443,6 @@ module.exports = {
                 this.types.multiple.active = false;
                 this.types.single.active = false;
                 this.types.scale.active = false;
-
-                // push the slider_params to the item data
-                // gets triggered after selected Slider as Item Type
-                this.item.data.slider.push(this.slider_params);
-
 
             };
         }
