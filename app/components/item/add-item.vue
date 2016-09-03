@@ -1,4 +1,4 @@
-<template>
+ <template>
 
     <!-- This is the modal -->
     <div id="{{ module.id }}" class="uk-modal">
@@ -226,14 +226,17 @@
 
                                 <mdl-textfield
                                     label="Other"
+                                    class="full_width"
                                     :value.sync="option.input.textfield.input_text"
                                     v-if="option.input.textfield.active"
                                 >
                                 </mdl-textfield>
 
+                                
                                 <mdl-textfield
-                                    floating-label="Name"
-                                    textarea rows="1"
+                                    class="full_width list_textarea_padding"
+                                    floating-label="Textarea"
+                                    textarea rows="4"
                                     v-if="option.input.textarea.active"
                                 >
                                 </mdl-textfield>

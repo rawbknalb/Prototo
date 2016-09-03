@@ -92,3 +92,11 @@
 .mdl-radio{
     width: 100%;
 }
+
+.full_width{
+    width: 100%;
+}
+
+.list_textarea_padding{
+    height: 15px;
+}
