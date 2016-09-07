@@ -100,3 +100,8 @@
 .list_textarea_padding{
     height: 15px;
 }
+
+.table_radio{
+  padding-top: 0px;
+  padding-bottom: 24px;
+}

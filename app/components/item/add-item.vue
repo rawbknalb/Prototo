@@ -232,7 +232,7 @@
                           <tr v-for="suboption in item.data.suboptions">
                             <td class="mdl-data-table__cell--non-numeric">{{suboption.text}}</td>
                             <td v-for="option in item.data.options">
-                              <mdl-radio :checked.sync="check" :value="option.value"></mdl-radio>
+                              <mdl-radio class="table_radio" :checked.sync="check" :value="option.value"></mdl-radio>
                             </td>
                           </tr>
                         </tbody>
