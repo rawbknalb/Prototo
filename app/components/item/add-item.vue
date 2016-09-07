@@ -79,11 +79,53 @@
                         </template>
 
                         <template v-if="types.scale.active">
+
                             <mdl-textfield
-                                floating-label="Scale"
+                              floating-label="Item Text"
+                              :value.sync="item.text"
+                              class="uk-form-width-small"
+                            >
+                            </mdl-textfield>
+
+                            <br>
+
+                            <mdl-textfield
+                                floating-label="Option Text"
                                 :value.sync="option.text"
                                 class="uk-form-width-small"
                             ></mdl-textfield>
+
+                            <mdl-textfield
+                                floating-label="Option Value"
+                                :value.sync="option.value"
+                                class="uk-form-width-small"
+                                pattern="-?[0-9]*(\.[0-9]+)?"
+                                error="Input is not a number!"
+                            ></mdl-textfield>
+
+                            <mdl-button
+                                icon
+                                mini-fab
+                                accent
+                                @click.prevent="addOption(option)">
+                                    <i class="material-icons">add</i>
+                            </mdl-button>
+
+
+                            <mdl-textfield
+                                floating-label="Suboption Text"
+                                :value.sync="suboption.text"
+                                class="uk-form-width-small"
+                            ></mdl-textfield>
+
+                            <mdl-button
+                                icon
+                                mini-fab
+                                accent
+                                @click.prevent="addSubOption(suboption)">
+                                    <i class="material-icons">add</i>
+                            </mdl-button>
+
                         </template>
 
                         <template v-if="types.slider.active">
@@ -169,6 +211,36 @@
                         </div>
                     </template>
 
+                    <!-- This is the slider-preview -->
+                    <template v-if="types.scale.active">
+
+                      <table class="mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp">
+
+                        <thead>
+                          <tr>
+                            <th></th>
+                            <th
+                              class="mdl-data-table__cell--non-numeric"
+                              v-for="option in item.data.options"
+                            >
+                              {{option.text}}
+                            </th>
+                          </tr>
+                        </thead>
+
+                        <tbody>
+                          <tr v-for="suboption in item.data.suboptions">
+                            <td class="mdl-data-table__cell--non-numeric">{{suboption.text}}</td>
+                            <td v-for="option in item.data.options">
+                              <mdl-radio :checked.sync="check" :value="option.value"></mdl-radio>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+
+
+                    </template>
+
                     <!-- This is list of options -->
                     <!-- To Do: Preview-Components -->
                     <template v-if="types.multiple.active">
@@ -240,7 +312,7 @@
                                 >
                                 </mdl-textfield>
 
-                                
+
                                 <mdl-textfield
                                     class="full_width list_textarea_padding"
                                     floating-label="Textarea"
@@ -298,6 +370,7 @@ module.exports = {
                 data: {
                     type: '',
                     options: [],
+                    suboptions: [],
                     slider: []
                 }
             },
@@ -325,9 +398,8 @@ module.exports = {
 
             option: {
                 text: '',
-                value: 1,
+                value: '',
                 id: 1,
-                suboptions: [],
                 input: {
                     textfield: {
                         active: false,
@@ -377,6 +449,7 @@ module.exports = {
                     data: {
                         type: '',
                         options: [],
+                        suboptions: [],
                         slider: []
                     }
                 };
@@ -394,9 +467,8 @@ module.exports = {
 
             this.option = {
                 text: '',
-                value: 1,
+                value: '',
                 id: 1,
-                suboptions : [],
                 input: {
                     textfield: {
                         active: false,
@@ -412,6 +484,15 @@ module.exports = {
             this.options = {
                 text: ''
             }
+        },
+
+        addSubOption: function (suboption) {
+
+          this.item.data.suboptions.push(suboption);
+
+          this.suboption = {
+            text: ''
+          }
         },
 
         addSlider: function() {
