@@ -78,6 +78,14 @@
 
                         </template>
 
+                        <template v-if="types.scale.active">
+                            <mdl-textfield
+                                floating-label="Scale"
+                                :value.sync="option.text"
+                                class="uk-form-width-small"
+                            ></mdl-textfield>
+                        </template>
+
                         <template v-if="types.slider.active">
 
                             <div class="uk-form-row">
@@ -297,19 +305,19 @@ module.exports = {
             types: {
                 multiple: {
                     name: 'Multiple Choice',
-                    active: false,
+                    active: false
                 },
                 single: {
                     name: 'Single Choice',
-                    active: false,
+                    active: false
                 },
                 scale: {
                     name: 'Scale',
-                    active: false,
+                    active: false
                 },
                 slider: {
                     name: 'Slider',
-                    active: false,
+                    active: false
                 }
             },
 
@@ -319,6 +327,7 @@ module.exports = {
                 text: '',
                 value: 1,
                 id: 1,
+                suboptions: [],
                 input: {
                     textfield: {
                         active: false,
@@ -329,6 +338,10 @@ module.exports = {
                         input_text: ''
                     },
                 }
+            },
+
+            suboption: {
+                text : ''
             },
 
             slider_params: {
@@ -349,7 +362,7 @@ module.exports = {
             // Check if item-type is slider
             if (item.data.type === 'slider'){
                 this.addSlider();
-            };
+            }
 
             var data = {item: _.merge(item, {module_id: module_id}) };
 
@@ -383,6 +396,7 @@ module.exports = {
                 text: '',
                 value: 1,
                 id: 1,
+                suboptions : [],
                 input: {
                     textfield: {
                         active: false,
@@ -393,6 +407,10 @@ module.exports = {
                         input_text: ''
                     },
                 }
+            }
+
+            this.options = {
+                text: ''
             }
         },
 
@@ -423,7 +441,7 @@ module.exports = {
                 this.types.scale.active = false;
                 this.types.slider.active = false;
 
-            };
+            }
 
             if (type.name == 'Single Choice') {
                 this.item.data.type = 'single';
@@ -431,7 +449,7 @@ module.exports = {
                 this.types.scale.active = false;
                 this.types.slider.active = false;
 
-            };
+            }
 
             if (type.name == 'Scale') {
                 this.item.data.type = 'scale';
@@ -439,7 +457,7 @@ module.exports = {
                 this.types.single.active = false;
                 this.types.slider.active = false;
 
-            };
+            }
 
             if (type.name == 'Slider') {
                 this.item.data.type = 'slider';
@@ -447,7 +465,7 @@ module.exports = {
                 this.types.single.active = false;
                 this.types.scale.active = false;
 
-            };
+            }
         }
 
     }
