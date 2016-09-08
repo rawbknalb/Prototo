@@ -29,7 +29,7 @@
         <template v-for="module in modules">
 
           <!-- This is the add-item modal -->
-          <add-item :module.sync="module" >
+          <add-item :module="module" >
           </add-item>
 
             <!-- This is the off-canvas sidebar -->

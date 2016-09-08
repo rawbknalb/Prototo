@@ -21167,16 +21167,17 @@
 
 /***/ },
 /* 10 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	module.exports = {
 
-	    props: [{
-	        name: 'module',
-	        type: Object
-	    }],
+	    components: {
+	        'create-frame': __webpack_require__(15)
+	    },
+
+	    props: ["module"],
 	    data: function data() {
 	        return {
 
@@ -21357,11 +21358,13 @@
 
 	};
 
+	Vue.ready(module.exports);
+
 /***/ },
 /* 11 */
 /***/ function(module, exports) {
 
-	module.exports = "\n\n<!-- This is the modal -->\n<div id=\"{{ module.id }}\" class=\"uk-modal\">\n    <div class=\"uk-modal-dialog modal-tweak uk-modal-dialog-large\">\n        <a class=\"uk-modal-close uk-close\"></a>\n\n        <div class=\"mdl-grid\">\n            <!-- This is the left half -->\n            <div class=\"mdl-cell mdl-cell--6-col mdl-cell--6-col-tablet mdl-cell--12-col-phone\">\n\n                <h1>Create a new Item</h1>\n    <!--\n                <pre>\n                    {{ item.data.type | json }}\n                </pre> -->\n\n                <h3>Choose an Item Type</h3>\n                <mdl-button id=\"{{module.title}}\" accent raised icon>\n                    Select Type\n                    <i class=\"material-icons\">favorite</i>\n                </mdl-button>\n                <mdl-menu for=\"\" :for=\"module.title\">\n\n                    <mdl-menu-item @click=\"setType(types.multiple)\">Multiple Choise</mdl-menu-item>\n                    <mdl-menu-item @click=\"setType(types.single)\">Single Choise</mdl-menu-item>\n                    <mdl-menu-item @click=\"setType(types.scale)\">Scale</mdl-menu-item>\n                    <mdl-menu-item @click=\"setType(types.slider)\">Slider</mdl-menu-item>\n\n\n                </mdl-menu>\n\n                <h2>Selected: {{ item.data.type }}</h2>\n\n                <hr>\n                <form class=\"uk-form\" @submit.prevent=\"saveItem(item, module.id, module)\">\n                    <!-- <mdl-select\n                    label=\"Item Type\"\n                    id=\"item-type-select\"\n                    :value.sync=\"item.data.type\"\n                    :options=\"types\"\n                    >\n                    </mdl-select> -->\n                    <template v-if=\"types.multiple.active || types.single.active\">\n\n                        <div class=\"uk-form-row\">\n                            <mdl-textfield\n                            required\n                            floating-label=\"Item Text\"\n                            :value.sync=\"item.text\"\n                            >\n                            </mdl-textfield>\n                        </div>\n\n                        <div class=\"uk-form-row\">\n\n                            <mdl-textfield\n                                floating-label=\"Add Option\"\n                                :value.sync=\"option.text\"\n                                id=\"{{ item.id }}\"\n                                v-show=\"!option.input.textfield.active\"\n                            >\n                            </mdl-textfield>\n\n                            <mdl-button\n                                v-show=\"option.text || option.input.textfield.active || option.input.textarea.active\"\n                                icon\n                                mini-fab\n                                accent\n                                @click.prevent=\"addOption(option)\">\n                                    <i class=\"material-icons\">add</i>\n                            </mdl-button>\n\n                            <mdl-switch :checked.sync=\"option.input.textfield.active\" value=\"true\">Textfield</mdl-switch>\n                            <mdl-switch :checked.sync=\"option.input.textarea.active\" value=\"true\">Textarea</mdl-switch>\n\n                        </div>\n\n                    </template>\n\n                    <template v-if=\"types.scale.active\">\n\n                        <mdl-textfield\n                          floating-label=\"Item Text\"\n                          :value.sync=\"item.text\"\n                          class=\"uk-form-width-small\"\n                        >\n                        </mdl-textfield>\n\n                        <br>\n\n                        <mdl-textfield\n                            floating-label=\"Option Text\"\n                            :value.sync=\"option.text\"\n                            class=\"uk-form-width-small\"\n                        ></mdl-textfield>\n\n                        <mdl-textfield\n                            floating-label=\"Option Value\"\n                            :value.sync=\"option.value\"\n                            class=\"uk-form-width-small\"\n                            pattern=\"-?[0-9]*(\\.[0-9]+)?\"\n                            error=\"Input is not a number!\"\n                        ></mdl-textfield>\n\n                        <mdl-button\n                            icon\n                            mini-fab\n                            accent\n                            @click.prevent=\"addOption(option)\">\n                                <i class=\"material-icons\">add</i>\n                        </mdl-button>\n\n\n                        <mdl-textfield\n                            floating-label=\"Suboption Text\"\n                            :value.sync=\"suboption.text\"\n                            class=\"uk-form-width-small\"\n                        ></mdl-textfield>\n\n                        <mdl-button\n                            icon\n                            mini-fab\n                            accent\n                            @click.prevent=\"addSubOption(suboption)\">\n                                <i class=\"material-icons\">add</i>\n                        </mdl-button>\n\n                    </template>\n\n                    <template v-if=\"types.slider.active\">\n\n                        <div class=\"uk-form-row\">\n                            <mdl-textfield\n                            required\n                            floating-label=\"Item Text\"\n                            :value.sync=\"item.text\"\n                            >\n                            </mdl-textfield>\n                        </div>\n\n                        <div data-uk-margin>\n                            <mdl-textfield\n                                floating-label=\"Step\"\n                                :value.sync=\"slider_params.step\"\n                                class=\"uk-form-width-small\"\n                                pattern=\"-?[0-9]*(\\.[0-9]+)?\"\n                                error=\"Input is not a number!\"\n                            >\n                            </mdl-textfield>\n\n                            <mdl-textfield\n                                floating-label=\"min value\"\n                                :value.sync=\"slider_params.min\"\n                                class=\"uk-form-width-small\"\n                                pattern=\"-?[0-9]*(\\.[0-9]+)?\"\n                                error=\"Input is not a number!\"\n                            >\n                            </mdl-textfield>\n\n                            <mdl-textfield\n                                floating-label=\"max value\"\n                                :value.sync=\"slider_params.max\"\n                                required\n                                class=\"uk-form-width-small\"\n                                pattern=\"-?[0-9]*(\\.[0-9]+)?\"\n                                error=\"Input is not a number!\"\n                            >\n                            </mdl-textfield>\n                        </div>\n\n                    </template>\n\n                    <div class=\"uk-form-row\">\n                        <mdl-button raised accent\n                        >\n                            Save Item\n                            <i class=\"material-icons\">save</i>\n                        </mdl-button>\n                    </div>\n\n                </form>\n            </div>\n\n            <!-- This is the right half -->\n            <div class=\"mdl-cell mdl-cell--6-col mdl-cell--6-col-tablet mdl-cell--12-col-phone\">\n                <h1>Preview </h1>\n\n                <h3>{{ item.text }}</h3>\n\n                <!-- This is the slider-preview -->\n                <template v-if=\"types.slider.active\">\n\n                    <div class=\"uk-form-row\">\n\n                        <mdl-textfield\n                            floating-label=\"Value\"\n                            :value.sync=\"slider_params.amount\"\n                            readonly\n                        >\n                        </mdl-textfield>\n\n                        <mdl-slider\n                            :value.sync=\"slider_params.amount\"\n                            :min.sync=\"slider_params.min\"\n                            :max.sync=\"slider_params.max\"\n                            :step.sync=\"slider_params.step\"\n                        >\n                        </mdl-slider>\n\n                    </div>\n                </template>\n\n                <!-- This is the slider-preview -->\n                <template v-if=\"types.scale.active\">\n\n                  <table class=\"mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp\">\n\n                    <thead>\n                      <tr>\n                        <th></th>\n                        <th\n                          class=\"mdl-data-table__cell--non-numeric\"\n                          v-for=\"option in item.data.options\"\n                        >\n                          {{option.text}}\n                        </th>\n                      </tr>\n                    </thead>\n\n                    <tbody>\n                      <tr v-for=\"suboption in item.data.suboptions\">\n                        <td class=\"mdl-data-table__cell--non-numeric\">{{suboption.text}}</td>\n                        <td v-for=\"option in item.data.options\">\n                          <mdl-radio class=\"table_radio\" :checked.sync=\"check\" value=\"\" :value=\"[suboption.text, option.text]\" ></mdl-radio>\n                        </td>\n                      </tr>\n                    </tbody>\n                  </table>\n\n\n                </template>\n\n                <!-- This is list of options -->\n                <!-- To Do: Preview-Components -->\n                <template v-if=\"types.multiple.active\">\n                    <ul class=\"mdl-list\" v-for=\"option in item.data.options\">\n\n                        <li class=\"mdl-list__item\">\n\n                            <!--\n                            **To Do: Change\n                            **:value (do not use option.text)\n                            **better: unique option identifier (id)\n                            -->\n                            <mdl-checkbox\n                                :checked.sync=\"checks\"\n                                value=\"\"\n                                :value=\"option.text\"\n                                v-if=\"types.multiple.active\"\n                            >\n                                {{option.text}}\n                            </mdl-checkbox>\n\n                            <span class=\"mdl-list__item-secondary-action\">\n\n                                <mdl-button\n                                    class=\"mdl-button--icon\"\n                                    primary\n                                    @click.prevent=\"removeOption(option)\"\n                                >\n                                    <i class=\"material-icons\">delete</i>\n\n                                </mdl-button>\n\n                            </span>\n\n                        </li>\n\n                    </ul>\n                </template>\n\n                <!-- This is list of options -->\n                <!-- To Do: Preview-Components -->\n                <template v-if=\"types.single.active\">\n                    <ul class=\"mdl-list\" v-for=\"option in item.data.options\">\n\n                        <li class=\"mdl-list__item\">\n\n                            <!--\n                            **To Do: Change\n                            **:value (do not use option.text)\n                            **better: unique option identifier (id)\n                            -->\n\n                            <mdl-radio\n                                :checked.sync=\"check\"\n                                class=\"mdl-js-ripple-effect\"\n                                value=\"\"\n                                :value=\"option.text\"\n                                v-if=\"!(option.input.textarea.active) && !(option.input.textfield.active)\"\n\n                            >\n                                {{option.text}}\n                            </mdl-radio>\n\n                            <mdl-textfield\n                                label=\"Other\"\n                                class=\"full_width\"\n                                :value.sync=\"option.input.textfield.input_text\"\n                                v-if=\"option.input.textfield.active\"\n                            >\n                            </mdl-textfield>\n\n\n                            <mdl-textfield\n                                class=\"full_width list_textarea_padding\"\n                                floating-label=\"Textarea\"\n                                textarea rows=\"4\"\n                                v-if=\"option.input.textarea.active\"\n                            >\n                            </mdl-textfield>\n\n\n\n                            <span class=\"mdl-list__item-secondary-action\">\n\n                                <mdl-button\n                                    class=\"mdl-button--icon\"\n                                    primary\n                                    @click.prevent=\"removeOption(option)\"\n                                >\n                                    <i class=\"material-icons\">delete</i>\n\n                                </mdl-button>\n\n                            </span>\n\n\n\n                        </li>\n\n                    </ul>\n                </template>\n\n            </div>\n\n        </div>\n\n    </div>\n\n</div>\n\n";
+	module.exports = "\n\n<!-- This is the modal -->\n<div id=\"{{ module.id }}\" class=\"uk-modal\">\n    <div class=\"uk-modal-dialog modal-tweak uk-modal-dialog-large\">\n        <a class=\"uk-modal-close uk-close\"></a>\n\n        <div class=\"mdl-grid\">\n            <!-- This is the left half -->\n            <div class=\"mdl-cell mdl-cell--6-col mdl-cell--6-col-tablet mdl-cell--12-col-phone\">\n\n              <create-frame :module=\"module\"><create-frame>\n\n                <hr>\n\n                    <template v-if=\"types.multiple.active || types.single.active\">\n\n                        <div class=\"uk-form-row\">\n                            <mdl-textfield\n                            required\n                            floating-label=\"Item Text\"\n                            :value.sync=\"item.text\"\n                            >\n                            </mdl-textfield>\n                        </div>\n\n                        <div class=\"uk-form-row\">\n\n                            <mdl-textfield\n                                floating-label=\"Add Option\"\n                                :value.sync=\"option.text\"\n                                id=\"{{ item.id }}\"\n                                v-show=\"!option.input.textfield.active\"\n                            >\n                            </mdl-textfield>\n\n                            <mdl-button\n                                v-show=\"option.text || option.input.textfield.active || option.input.textarea.active\"\n                                icon\n                                mini-fab\n                                accent\n                                @click.prevent=\"addOption(option)\">\n                                    <i class=\"material-icons\">add</i>\n                            </mdl-button>\n\n                            <mdl-switch :checked.sync=\"option.input.textfield.active\" value=\"true\">Textfield</mdl-switch>\n                            <mdl-switch :checked.sync=\"option.input.textarea.active\" value=\"true\">Textarea</mdl-switch>\n\n                        </div>\n\n                    </template>\n\n                    <template v-if=\"types.scale.active\">\n\n                        <mdl-textfield\n                          floating-label=\"Item Text\"\n                          :value.sync=\"item.text\"\n                          class=\"uk-form-width-small\"\n                        >\n                        </mdl-textfield>\n\n                        <br>\n\n                        <mdl-textfield\n                            floating-label=\"Option Text\"\n                            :value.sync=\"option.text\"\n                            class=\"uk-form-width-small\"\n                            @keyup.enter=\"addOption(option)\"\n                        ></mdl-textfield>\n\n                        <mdl-textfield\n                            floating-label=\"Option Value\"\n                            :value.sync=\"option.value\"\n                            class=\"uk-form-width-small\"\n                            pattern=\"-?[0-9]*(\\.[0-9]+)?\"\n                            error=\"Input is not a number!\"\n                            @keyup.enter=\"addOption(option)\"\n                        ></mdl-textfield>\n\n                        <mdl-button\n                            icon\n                            mini-fab\n                            accent\n                            @click.prevent=\"addOption(option)\">\n                                <i class=\"material-icons\">add</i>\n                        </mdl-button>\n\n\n                        <mdl-textfield\n                            floating-label=\"Suboption Text\"\n                            :value.sync=\"suboption.text\"\n                            class=\"uk-form-width-small\"\n                            @keyup.enter=\"addSubOption(suboption)\"\n                        ></mdl-textfield>\n\n                        <mdl-button\n                            icon\n                            mini-fab\n                            accent\n                            @click.prevent=\"addSubOption(suboption)\">\n                                <i class=\"material-icons\">add</i>\n                        </mdl-button>\n\n                    </template>\n\n                    <template v-if=\"types.slider.active\">\n\n                        <div class=\"uk-form-row\">\n                            <mdl-textfield\n                            required\n                            floating-label=\"Item Text\"\n                            :value.sync=\"item.text\"\n                            >\n                            </mdl-textfield>\n                        </div>\n\n                        <div data-uk-margin>\n                            <mdl-textfield\n                                floating-label=\"Step\"\n                                :value.sync=\"slider_params.step\"\n                                class=\"uk-form-width-small\"\n                                pattern=\"-?[0-9]*(\\.[0-9]+)?\"\n                                error=\"Input is not a number!\"\n                            >\n                            </mdl-textfield>\n\n                            <mdl-textfield\n                                floating-label=\"min value\"\n                                :value.sync=\"slider_params.min\"\n                                class=\"uk-form-width-small\"\n                                pattern=\"-?[0-9]*(\\.[0-9]+)?\"\n                                error=\"Input is not a number!\"\n                            >\n                            </mdl-textfield>\n\n                            <mdl-textfield\n                                floating-label=\"max value\"\n                                :value.sync=\"slider_params.max\"\n                                required\n                                class=\"uk-form-width-small\"\n                                pattern=\"-?[0-9]*(\\.[0-9]+)?\"\n                                error=\"Input is not a number!\"\n                            >\n                            </mdl-textfield>\n                        </div>\n\n                    </template>\n\n            </div>\n\n            <!-- This is the right half -->\n            <div class=\"mdl-cell mdl-cell--6-col mdl-cell--6-col-tablet mdl-cell--12-col-phone\">\n                <h1>Preview </h1>\n\n                <h3>{{ item.text }}</h3>\n\n                <!-- This is the slider-preview -->\n                <template v-if=\"types.slider.active\">\n\n                    <div class=\"uk-form-row\">\n\n                        <mdl-textfield\n                            floating-label=\"Value\"\n                            :value.sync=\"slider_params.amount\"\n                            readonly\n                        >\n                        </mdl-textfield>\n\n                        <mdl-slider\n                            :value.sync=\"slider_params.amount\"\n                            :min.sync=\"slider_params.min\"\n                            :max.sync=\"slider_params.max\"\n                            :step.sync=\"slider_params.step\"\n                        >\n                        </mdl-slider>\n\n                    </div>\n                </template>\n\n                <!-- This is the slider-preview -->\n                <template v-if=\"types.scale.active\">\n\n                  <table class=\"mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp\">\n\n                    <thead>\n                      <tr>\n                        <th></th>\n                        <th\n                          class=\"mdl-data-table__cell--non-numeric\"\n                          v-for=\"option in item.data.options\"\n                        >\n                          {{option.text}}\n                        </th>\n                      </tr>\n                    </thead>\n\n                    <tbody>\n                      <tr v-for=\"suboption in item.data.suboptions\">\n                        <td class=\"mdl-data-table__cell--non-numeric\">{{suboption.text}}</td>\n                        <td v-for=\"option in item.data.options\">\n                          <mdl-radio\n                            class=\"table_radio\"\n                            :checked.sync=\"check[suboption.text]\"\n                            value=\"\"\n                            :value=\"option.text\">\n                          </mdl-radio>\n                        </td>\n                      </tr>\n                    </tbody>\n                  </table>\n\n\n                </template>\n\n                <!-- This is list of options -->\n                <!-- To Do: Preview-Components -->\n                <template v-if=\"types.multiple.active\">\n                    <ul class=\"mdl-list\" v-for=\"option in item.data.options\">\n\n                        <li class=\"mdl-list__item\">\n\n                            <!--\n                            **To Do: Change\n                            **:value (do not use option.text)\n                            **better: unique option identifier (id)\n                            -->\n                            <mdl-checkbox\n                                :checked.sync=\"checks\"\n                                value=\"\"\n                                :value=\"option.text\"\n                                v-if=\"types.multiple.active\"\n                            >\n                                {{option.text}}\n                            </mdl-checkbox>\n\n                            <span class=\"mdl-list__item-secondary-action\">\n\n                                <mdl-button\n                                    class=\"mdl-button--icon\"\n                                    primary\n                                    @click.prevent=\"removeOption(option)\"\n                                >\n                                    <i class=\"material-icons\">delete</i>\n\n                                </mdl-button>\n\n                            </span>\n\n                        </li>\n\n                    </ul>\n                </template>\n\n                <!-- This is list of options -->\n                <!-- To Do: Preview-Components -->\n                <template v-if=\"types.single.active\">\n                    <ul class=\"mdl-list\" v-for=\"option in item.data.options\">\n\n                        <li class=\"mdl-list__item\">\n\n                            <!--\n                            **To Do: Change\n                            **:value (do not use option.text)\n                            **better: unique option identifier (id)\n                            -->\n\n                            <mdl-radio\n                                :checked.sync=\"check\"\n                                class=\"mdl-js-ripple-effect\"\n                                value=\"\"\n                                :value=\"option.text\"\n                                v-if=\"!(option.input.textarea.active) && !(option.input.textfield.active)\"\n\n                            >\n                                {{option.text}}\n                            </mdl-radio>\n\n                            <mdl-textfield\n                                label=\"Other\"\n                                class=\"full_width\"\n                                :value.sync=\"option.input.textfield.input_text\"\n                                v-if=\"option.input.textfield.active\"\n                            >\n                            </mdl-textfield>\n\n\n                            <mdl-textfield\n                                class=\"full_width list_textarea_padding\"\n                                floating-label=\"Textarea\"\n                                textarea rows=\"4\"\n                                v-if=\"option.input.textarea.active\"\n                            >\n                            </mdl-textfield>\n\n\n\n                            <span class=\"mdl-list__item-secondary-action\">\n\n                                <mdl-button\n                                    class=\"mdl-button--icon\"\n                                    primary\n                                    @click.prevent=\"removeOption(option)\"\n                                >\n                                    <i class=\"material-icons\">delete</i>\n\n                                </mdl-button>\n\n                            </span>\n\n\n\n                        </li>\n\n                    </ul>\n                </template>\n\n            </div>\n\n        </div>\n\n    </div>\n\n</div>\n\n";
 
 /***/ },
 /* 12 */
@@ -21429,6 +21432,142 @@
 /***/ function(module, exports) {
 
 	module.exports = "\n\n\n\n<div class=\"mdl-card mdl-cell--top mdl-cell--stretch mdl-cell--12-col mdl-cell--8-col-tablet mdl-cell--4-col-phone mdl-shadow--8dp\">\n\n    <div class=\"mdl-card__title card-background\">\n        <div class=\"mdl-card__title-text title-text\">\n            {{module.title}} <br>\n        </div>\n    </div>\n    <div class=\"mdl-card__supporting-text card-text-background\">\n        <p>\n            Description: Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquam accusamus, consectetur.\n        </p>\n    </div>\n\n\n    <div class=\"mdl-card__actions\">\n        <!-- This is a button toggling the modal -->\n        <mdl-button colored accent raised data-uk-modal=\"{target:'#{{ module.id }}'}\">\n            <i class=\"material-icons\">add</i>\n            Show Items (Modal)\n        </mdl-button>\n\n        <!-- This is the button toggling the off-canvas sidebar -->\n        <mdl-button colored accent raised data-uk-offcanvas=\"{target:'#{{ module.title }}'}\">\n            <i class=\"material-icons\">add</i>\n            Show Items (Off-Canvas)\n        </mdl-button>\n\n    </div>\n\n    <div class=\"mdl-card__menu\">\n        <mdl-button v-mdl-ripple-effect fab accent @click=\"remove(module, modules)\">\n            <i class=\"material-icons\">delete</i>\n        </mdl-button>\n\n        <mdl-button v-mdl-ripple-effect fab accent @click=\"update(module)\"><i class=\"material-icons\">save</i></mdl-button>\n\n\n    </div>\n</div>\n</div>\n\n";
+
+/***/ },
+/* 15 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __vue_script__, __vue_template__
+	__vue_script__ = __webpack_require__(16)
+	if (__vue_script__ &&
+	    __vue_script__.__esModule &&
+	    Object.keys(__vue_script__).length > 1) {
+	  console.warn("[vue-loader] app/components/item/create/frame.vue: named exports in *.vue files are ignored.")}
+	__vue_template__ = __webpack_require__(17)
+	module.exports = __vue_script__ || {}
+	if (module.exports.__esModule) module.exports = module.exports.default
+	if (__vue_template__) {
+	(typeof module.exports === "function" ? (module.exports.options || (module.exports.options = {})) : module.exports).template = __vue_template__
+	}
+	if (false) {(function () {  module.hot.accept()
+	  var hotAPI = require("vue-hot-reload-api")
+	  hotAPI.install(require("vue"), false)
+	  if (!hotAPI.compatible) return
+	  var id = "_v-1e792625/frame.vue"
+	  if (!module.hot.data) {
+	    hotAPI.createRecord(id, module.exports)
+	  } else {
+	    hotAPI.update(id, module.exports, __vue_template__)
+	  }
+	})()}
+
+/***/ },
+/* 16 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	module.exports = {
+
+	    props: ["module"],
+
+	    data: function data() {
+	        return {
+
+	            item: {
+	                text: '',
+	                data: {
+	                    type: '',
+	                    options: [],
+	                    suboptions: [],
+	                    slider: []
+	                }
+	            },
+
+	            types: {
+	                multiple: {
+	                    name: 'Multiple Choice',
+	                    active: false
+	                },
+	                single: {
+	                    name: 'Single Choice',
+	                    active: false
+	                },
+	                scale: {
+	                    name: 'Scale',
+	                    active: false
+	                },
+	                slider: {
+	                    name: 'Slider',
+	                    active: false
+	                }
+	            }
+	        };
+	    },
+
+	    methods: {
+
+	        setType: function setType(type, slider_params) {
+	            type.active = true;
+
+	            if (type.name == 'Multiple Choice') {
+	                this.item.data.type = 'multiple';
+	                this.types.single.active = false;
+	                this.types.scale.active = false;
+	                this.types.slider.active = false;
+	            }
+
+	            if (type.name == 'Single Choice') {
+	                this.item.data.type = 'single';
+	                this.types.multiple.active = false;
+	                this.types.scale.active = false;
+	                this.types.slider.active = false;
+	            }
+
+	            if (type.name == 'Scale') {
+	                this.item.data.type = 'scale';
+	                this.types.multiple.active = false;
+	                this.types.single.active = false;
+	                this.types.slider.active = false;
+	            }
+
+	            if (type.name == 'Slider') {
+	                this.item.data.type = 'slider';
+	                this.types.multiple.active = false;
+	                this.types.single.active = false;
+	                this.types.scale.active = false;
+	            }
+	        },
+	        saveItem: function saveItem(item, module_id, module) {
+	            if (item.data.type === 'slider') {
+	                this.addSlider();
+	            }
+	            var data = { item: _.merge(item, { module_id: module_id }) };
+	            this.$http.post('admin/osamaker/api/item/save', data).then(function (response) {
+	                module.items.push(response.data.item);
+	                this.item = {
+	                    text: '',
+	                    data: {
+	                        type: '',
+	                        options: [],
+	                        suboptions: [],
+	                        slider: []
+	                    }
+	                };
+	                UIkit.notify('Item saved');
+	            }).catch(function () {
+	                UIkit.notify('Something went wrong');
+	            });
+	        }
+	    }
+
+	};
+
+/***/ },
+/* 17 */
+/***/ function(module, exports) {
+
+	module.exports = "\n\n<div class=\"container\">\n  <h1>Create a new Item</h1>\n\n  <h3>Choose an Item Type</h3>\n\n  <mdl-button id=\"{{module.title}}\" accent raised icon>\n      Select Type\n      <i class=\"material-icons\">favorite</i>\n  </mdl-button>\n\n  <mdl-menu for=\"\" :for=\"module.title\">\n\n    <mdl-menu-item @click=\"setType(types.multiple)\">Multiple Choise</mdl-menu-item>\n    <mdl-menu-item @click=\"setType(types.single)\">Single Choise</mdl-menu-item>\n    <mdl-menu-item @click=\"setType(types.scale)\">Scale</mdl-menu-item>\n    <mdl-menu-item @click=\"setType(types.slider)\">Slider</mdl-menu-item>\n\n  </mdl-menu>\n\n  <h2>Selected: {{ item.data.type }}</h2>\n  <form class=\"uk-form\" @submit.prevent=\"saveItem(item, module.id, module)\">\n    \n      <create-scale v-if=\"types.scale.active\"></create-scale>\n\n      <div class=\"uk-form-row\">\n          <mdl-button raised accent\n          >\n              Save Item\n              <i class=\"material-icons\">save</i>\n          </mdl-button>\n      </div>\n\n  </form>\n</div>\n";
 
 /***/ }
 /******/ ]);

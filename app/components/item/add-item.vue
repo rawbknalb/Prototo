@@ -9,38 +9,10 @@
                 <!-- This is the left half -->
                 <div class="mdl-cell mdl-cell--6-col mdl-cell--6-col-tablet mdl-cell--12-col-phone">
 
-                    <h1>Create a new Item</h1>
-        <!--
-                    <pre>
-                        {{ item.data.type | json }}
-                    </pre> -->
-
-                    <h3>Choose an Item Type</h3>
-                    <mdl-button id="{{module.title}}" accent raised icon>
-                        Select Type
-                        <i class="material-icons">favorite</i>
-                    </mdl-button>
-                    <mdl-menu for="" :for="module.title">
-
-                        <mdl-menu-item @click="setType(types.multiple)">Multiple Choise</mdl-menu-item>
-                        <mdl-menu-item @click="setType(types.single)">Single Choise</mdl-menu-item>
-                        <mdl-menu-item @click="setType(types.scale)">Scale</mdl-menu-item>
-                        <mdl-menu-item @click="setType(types.slider)">Slider</mdl-menu-item>
-
-
-                    </mdl-menu>
-
-                    <h2>Selected: {{ item.data.type }}</h2>
+                  <create-frame :module="module"><create-frame>
 
                     <hr>
-                    <form class="uk-form" @submit.prevent="saveItem(item, module.id, module)">
-                        <!-- <mdl-select
-                        label="Item Type"
-                        id="item-type-select"
-                        :value.sync="item.data.type"
-                        :options="types"
-                        >
-                        </mdl-select> -->
+
                         <template v-if="types.multiple.active || types.single.active">
 
                             <div class="uk-form-row">
@@ -93,6 +65,7 @@
                                 floating-label="Option Text"
                                 :value.sync="option.text"
                                 class="uk-form-width-small"
+                                @keyup.enter="addOption(option)"
                             ></mdl-textfield>
 
                             <mdl-textfield
@@ -101,6 +74,7 @@
                                 class="uk-form-width-small"
                                 pattern="-?[0-9]*(\.[0-9]+)?"
                                 error="Input is not a number!"
+                                @keyup.enter="addOption(option)"
                             ></mdl-textfield>
 
                             <mdl-button
@@ -116,6 +90,7 @@
                                 floating-label="Suboption Text"
                                 :value.sync="suboption.text"
                                 class="uk-form-width-small"
+                                @keyup.enter="addSubOption(suboption)"
                             ></mdl-textfield>
 
                             <mdl-button
@@ -171,15 +146,6 @@
 
                         </template>
 
-                        <div class="uk-form-row">
-                            <mdl-button raised accent
-                            >
-                                Save Item
-                                <i class="material-icons">save</i>
-                            </mdl-button>
-                        </div>
-
-                    </form>
                 </div>
 
                 <!-- This is the right half -->
@@ -232,7 +198,12 @@
                           <tr v-for="suboption in item.data.suboptions">
                             <td class="mdl-data-table__cell--non-numeric">{{suboption.text}}</td>
                             <td v-for="option in item.data.options">
-                              <mdl-radio class="table_radio" :checked.sync="check" value="" :value="[suboption.text, option.text]" ></mdl-radio>
+                              <mdl-radio
+                                class="table_radio"
+                                :checked.sync="check[suboption.text]"
+                                value=""
+                                :value="option.text">
+                              </mdl-radio>
                             </td>
                           </tr>
                         </tbody>
@@ -356,13 +327,12 @@
 <script>
 
 module.exports = {
-  
-    props: [
-        {
-            name: 'module',
-            type: Object
-        },
-    ],
+
+  components: {
+      'create-frame': require('./create/frame.vue'),
+  },
+
+    props: ["module"],
     data: function() {
         return {
 
@@ -554,5 +524,6 @@ module.exports = {
 
 };
 
+Vue.ready(module.exports);
 
 </script>
