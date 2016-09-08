@@ -335,36 +335,6 @@ module.exports = {
     props: ["module"],
     data: function() {
         return {
-
-            item: {
-                text: '',
-                data: {
-                    type: '',
-                    options: [],
-                    suboptions: [],
-                    slider: []
-                }
-            },
-
-            types: {
-                multiple: {
-                    name: 'Multiple Choice',
-                    active: false
-                },
-                single: {
-                    name: 'Single Choice',
-                    active: false
-                },
-                scale: {
-                    name: 'Scale',
-                    active: false
-                },
-                slider: {
-                    name: 'Slider',
-                    active: false
-                }
-            },
-
             type: '',
 
             option: {
@@ -399,38 +369,6 @@ module.exports = {
         };
     },
     methods: {
-
-        saveItem: function (item, module_id, module) {
-
-            // Check if item-type is slider
-            if (item.data.type === 'slider'){
-                this.addSlider();
-            }
-
-            var data = {item: _.merge(item, {module_id: module_id}) };
-
-            this.$http.post('admin/osamaker/api/item/save', data)
-
-            .then(function (response) {
-
-                module.items.push(response.data.item);
-
-                this.item = {
-                    text: '',
-                    data: {
-                        type: '',
-                        options: [],
-                        suboptions: [],
-                        slider: []
-                    }
-                };
-
-                UIkit.notify('Item saved');
-            })
-            .catch(function() {
-                UIkit.notify('Something went wrong');
-            });
-        },
 
         addOption: function (option) {
 
@@ -482,42 +420,6 @@ module.exports = {
 
             this.item.data.options.$remove(option);
 
-        },
-
-        setType: function (type, slider_params) {
-            type.active = true;
-
-            if (type.name == 'Multiple Choice') {
-                this.item.data.type = 'multiple';
-                this.types.single.active = false;
-                this.types.scale.active = false;
-                this.types.slider.active = false;
-
-            }
-
-            if (type.name == 'Single Choice') {
-                this.item.data.type = 'single';
-                this.types.multiple.active = false;
-                this.types.scale.active = false;
-                this.types.slider.active = false;
-
-            }
-
-            if (type.name == 'Scale') {
-                this.item.data.type = 'scale';
-                this.types.multiple.active = false;
-                this.types.single.active = false;
-                this.types.slider.active = false;
-
-            }
-
-            if (type.name == 'Slider') {
-                this.item.data.type = 'slider';
-                this.types.multiple.active = false;
-                this.types.single.active = false;
-                this.types.scale.active = false;
-
-            }
         }
 
     }

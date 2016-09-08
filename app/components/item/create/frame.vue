@@ -6,11 +6,17 @@
   <h3>Choose an Item Type</h3>
 
   <!-- select item type component -->
-  <select-item-type :module="module" :item="item"></select-item-type>
+  <select-item-type
+    :module="module"
+    :item="item"
+    :types="types">
+  </select-item-type>
 
   <h2>Selected: {{ item.data.type }}</h2>
 
   <form class="uk-form" @submit.prevent="saveItem(item, module.id, module)">
+
+    <create-item :item="item"></create-item>
 
       <div class="uk-form-row">
           <mdl-button raised accent>
@@ -28,13 +34,32 @@
 module.exports = {
 
   components: {
-    'select-item-type': require('./select-item-type.vue')
+    'select-item-type': require('./select-item-type.vue'),
+    'create-item': require('./create-item.vue')
   },
 
   props: ["module"],
 
   data: function() {
     return {
+      types: {
+        multiple: {
+          name: 'Multiple Choice',
+          active: false
+        },
+        single: {
+          name: 'Single Choice',
+          active: false
+        },
+        scale: {
+          name: 'Scale',
+          active: false
+        },
+        slider: {
+          name: 'Slider',
+          active: false
+        }
+      },
 
       item: {
         text: '',

@@ -21180,36 +21180,6 @@
 	    props: ["module"],
 	    data: function data() {
 	        return {
-
-	            item: {
-	                text: '',
-	                data: {
-	                    type: '',
-	                    options: [],
-	                    suboptions: [],
-	                    slider: []
-	                }
-	            },
-
-	            types: {
-	                multiple: {
-	                    name: 'Multiple Choice',
-	                    active: false
-	                },
-	                single: {
-	                    name: 'Single Choice',
-	                    active: false
-	                },
-	                scale: {
-	                    name: 'Scale',
-	                    active: false
-	                },
-	                slider: {
-	                    name: 'Slider',
-	                    active: false
-	                }
-	            },
-
 	            type: '',
 
 	            option: {
@@ -21243,33 +21213,6 @@
 	        };
 	    },
 	    methods: {
-
-	        saveItem: function saveItem(item, module_id, module) {
-	            if (item.data.type === 'slider') {
-	                this.addSlider();
-	            }
-
-	            var data = { item: _.merge(item, { module_id: module_id }) };
-
-	            this.$http.post('admin/osamaker/api/item/save', data).then(function (response) {
-
-	                module.items.push(response.data.item);
-
-	                this.item = {
-	                    text: '',
-	                    data: {
-	                        type: '',
-	                        options: [],
-	                        suboptions: [],
-	                        slider: []
-	                    }
-	                };
-
-	                UIkit.notify('Item saved');
-	            }).catch(function () {
-	                UIkit.notify('Something went wrong');
-	            });
-	        },
 
 	        addOption: function addOption(option) {
 
@@ -21320,38 +21263,6 @@
 	        removeOption: function removeOption(option) {
 
 	            this.item.data.options.$remove(option);
-	        },
-
-	        setType: function setType(type, slider_params) {
-	            type.active = true;
-
-	            if (type.name == 'Multiple Choice') {
-	                this.item.data.type = 'multiple';
-	                this.types.single.active = false;
-	                this.types.scale.active = false;
-	                this.types.slider.active = false;
-	            }
-
-	            if (type.name == 'Single Choice') {
-	                this.item.data.type = 'single';
-	                this.types.multiple.active = false;
-	                this.types.scale.active = false;
-	                this.types.slider.active = false;
-	            }
-
-	            if (type.name == 'Scale') {
-	                this.item.data.type = 'scale';
-	                this.types.multiple.active = false;
-	                this.types.single.active = false;
-	                this.types.slider.active = false;
-	            }
-
-	            if (type.name == 'Slider') {
-	                this.item.data.type = 'slider';
-	                this.types.multiple.active = false;
-	                this.types.single.active = false;
-	                this.types.scale.active = false;
-	            }
 	        }
 
 	    }
@@ -21470,13 +21381,32 @@
 	module.exports = {
 
 	  components: {
-	    'select-item-type': __webpack_require__(21)
+	    'select-item-type': __webpack_require__(21),
+	    'create-item': __webpack_require__(18)
 	  },
 
 	  props: ["module"],
 
 	  data: function data() {
 	    return {
+	      types: {
+	        multiple: {
+	          name: 'Multiple Choice',
+	          active: false
+	        },
+	        single: {
+	          name: 'Single Choice',
+	          active: false
+	        },
+	        scale: {
+	          name: 'Scale',
+	          active: false
+	        },
+	        slider: {
+	          name: 'Slider',
+	          active: false
+	        }
+	      },
 
 	      item: {
 	        text: '',
@@ -21521,12 +21451,84 @@
 /* 17 */
 /***/ function(module, exports) {
 
-	module.exports = "\n\n<div class=\"container\">\n  <h1>Create a new Item</h1>\n\n  <h3>Choose an Item Type</h3>\n\n  <!-- select item type component -->\n  <select-item-type :module=\"module\" :item=\"item\"></select-item-type>\n\n  <h2>Selected: {{ item.data.type }}</h2>\n\n  <form class=\"uk-form\" @submit.prevent=\"saveItem(item, module.id, module)\">\n\n      <div class=\"uk-form-row\">\n          <mdl-button raised accent>\n              Save Item\n              <i class=\"material-icons\">save</i>\n          </mdl-button>\n      </div>\n\n  </form>\n</div>\n";
+	module.exports = "\n\n<div class=\"container\">\n  <h1>Create a new Item</h1>\n\n  <h3>Choose an Item Type</h3>\n\n  <!-- select item type component -->\n  <select-item-type\n    :module=\"module\"\n    :item=\"item\"\n    :types=\"types\">\n  </select-item-type>\n\n  <h2>Selected: {{ item.data.type }}</h2>\n\n  <form class=\"uk-form\" @submit.prevent=\"saveItem(item, module.id, module)\">\n\n    <create-item :item=\"item\"></create-item>\n\n      <div class=\"uk-form-row\">\n          <mdl-button raised accent>\n              Save Item\n              <i class=\"material-icons\">save</i>\n          </mdl-button>\n      </div>\n\n  </form>\n</div>\n";
 
 /***/ },
-/* 18 */,
-/* 19 */,
-/* 20 */,
+/* 18 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __vue_script__, __vue_template__
+	__vue_script__ = __webpack_require__(19)
+	if (__vue_script__ &&
+	    __vue_script__.__esModule &&
+	    Object.keys(__vue_script__).length > 1) {
+	  console.warn("[vue-loader] app/components/item/create/create-item.vue: named exports in *.vue files are ignored.")}
+	__vue_template__ = __webpack_require__(20)
+	module.exports = __vue_script__ || {}
+	if (module.exports.__esModule) module.exports = module.exports.default
+	if (__vue_template__) {
+	(typeof module.exports === "function" ? (module.exports.options || (module.exports.options = {})) : module.exports).template = __vue_template__
+	}
+	if (false) {(function () {  module.hot.accept()
+	  var hotAPI = require("vue-hot-reload-api")
+	  hotAPI.install(require("vue"), false)
+	  if (!hotAPI.compatible) return
+	  var id = "_v-c60a0b08/create-item.vue"
+	  if (!module.hot.data) {
+	    hotAPI.createRecord(id, module.exports)
+	  } else {
+	    hotAPI.update(id, module.exports, __vue_template__)
+	  }
+	})()}
+
+/***/ },
+/* 19 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	module.exports = {
+	  components: {
+	    'create-scale': __webpack_require__(24)
+	  },
+	  props: ["item"],
+
+	  data: function data() {
+	    return {
+
+	      option: {
+	        text: '',
+	        value: '',
+	        id: 1,
+	        input: {
+	          textfield: {
+	            active: false,
+	            input_text: ''
+	          },
+	          textarea: {
+	            active: false,
+	            input_text: ''
+	          }
+	        }
+	      },
+
+	      suboption: {
+	        text: ''
+	      }
+
+	    };
+	  },
+
+	  methods: {}
+	};
+
+/***/ },
+/* 20 */
+/***/ function(module, exports) {
+
+	module.exports = "\n<h1>{{item.text}}</h1>\n<create-scale\n  :option=\"option\"\n  :suboption=\"suboption\"\n  :item=\"item\">\n</create-scale>\n\n";
+
+/***/ },
 /* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -21562,30 +21564,10 @@
 
 	module.exports = {
 
-	  props: ["module", "item"],
+	  props: ["module", "item", "types"],
 
 	  data: function data() {
-	    return {
-
-	      types: {
-	        multiple: {
-	          name: 'Multiple Choice',
-	          active: false
-	        },
-	        single: {
-	          name: 'Single Choice',
-	          active: false
-	        },
-	        scale: {
-	          name: 'Scale',
-	          active: false
-	        },
-	        slider: {
-	          name: 'Slider',
-	          active: false
-	        }
-	      }
-	    };
+	    return {};
 	  },
 
 	  methods: {
@@ -21628,7 +21610,58 @@
 /* 23 */
 /***/ function(module, exports) {
 
-	module.exports = "\n<mdl-button id=\"{{module.title}}\" accent raised icon>\n    Select Type\n    <i class=\"material-icons\">favorite</i>\n</mdl-button>\n\n<mdl-menu for=\"\" :for=\"module.title\">\n\n  <mdl-menu-item @click=\"setType(types.multiple)\">Multiple Choise</mdl-menu-item>\n  <mdl-menu-item @click=\"setType(types.single)\">Single Choise</mdl-menu-item>\n  <mdl-menu-item @click=\"setType(types.scale)\">Scale</mdl-menu-item>\n  <mdl-menu-item @click=\"setType(types.slider)\">Slider</mdl-menu-item>\n\n</mdl-menu>";
+	module.exports = "\n<mdl-button id=\"{{module.title}}\" accent raised icon>\n    Select Type\n    <i class=\"material-icons\">favorite</i>\n</mdl-button>\n\n<mdl-menu for=\"\" :for=\"module.title\">\n\n  <mdl-menu-item @click=\"setType(types.multiple)\">Multiple Choise</mdl-menu-item>\n  <mdl-menu-item @click=\"setType(types.single)\">Single Choise</mdl-menu-item>\n  <mdl-menu-item @click=\"setType(types.scale)\">Scale</mdl-menu-item>\n  <mdl-menu-item @click=\"setType(types.slider)\">Slider</mdl-menu-item>\n\n</mdl-menu>\n";
+
+/***/ },
+/* 24 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __vue_script__, __vue_template__
+	__vue_script__ = __webpack_require__(25)
+	if (__vue_script__ &&
+	    __vue_script__.__esModule &&
+	    Object.keys(__vue_script__).length > 1) {
+	  console.warn("[vue-loader] app/components/item/create/create-scale.vue: named exports in *.vue files are ignored.")}
+	__vue_template__ = __webpack_require__(26)
+	module.exports = __vue_script__ || {}
+	if (module.exports.__esModule) module.exports = module.exports.default
+	if (__vue_template__) {
+	(typeof module.exports === "function" ? (module.exports.options || (module.exports.options = {})) : module.exports).template = __vue_template__
+	}
+	if (false) {(function () {  module.hot.accept()
+	  var hotAPI = require("vue-hot-reload-api")
+	  hotAPI.install(require("vue"), false)
+	  if (!hotAPI.compatible) return
+	  var id = "_v-14b542b1/create-scale.vue"
+	  if (!module.hot.data) {
+	    hotAPI.createRecord(id, module.exports)
+	  } else {
+	    hotAPI.update(id, module.exports, __vue_template__)
+	  }
+	})()}
+
+/***/ },
+/* 25 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	module.exports = {
+
+	  props: ["option", "suboption", "item"],
+
+	  data: function data() {
+	    return {};
+	  },
+
+	  methods: {}
+	};
+
+/***/ },
+/* 26 */
+/***/ function(module, exports) {
+
+	module.exports = "\n\n  <mdl-textfield\n    floating-label=\"Item Text\"\n    :value.sync=\"item.text\"\n    class=\"uk-form-width-small\">\n  </mdl-textfield>\n\n  <br>\n\n  <mdl-textfield\n    floating-label=\"Option Text\"\n    :value.sync=\"option.text\"\n    class=\"uk-form-width-small\"\n    @keyup.enter=\"addOption(option)\">\n  </mdl-textfield>\n\n  <mdl-textfield\n    floating-label=\"Option Value\"\n    :value.sync=\"option.value\"\n    class=\"uk-form-width-small\"\n    pattern=\"-?[0-9]*(\\.[0-9]+)?\"\n    error=\"Input is not a number!\"\n    @keyup.enter=\"addOption(option)\">\n  </mdl-textfield>\n\n  <mdl-button\n    icon\n    mini-fab\n    accent\n    @click.prevent=\"addOption(option)\">\n      <i class=\"material-icons\">add</i>\n  </mdl-button>\n\n\n  <mdl-textfield\n    floating-label=\"Suboption Text\"\n    :value.sync=\"suboption.text\"\n    class=\"uk-form-width-small\"\n    @keyup.enter=\"addSubOption(suboption)\">\n  </mdl-textfield>\n\n  <mdl-button\n    icon\n    mini-fab\n    accent\n    @click.prevent=\"addSubOption(suboption)\">\n      <i class=\"material-icons\">add</i>\n  </mdl-button>\n\n  <!-- Rendered Table -->\n  <table class=\"mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp\">\n    <thead>\n      <tr>\n        <th></th>\n        <th\n        class=\"mdl-data-table__cell--non-numeric\"\n        v-for=\"option in item.data.options\"\n        >\n        {{option.text}}\n      </th>\n    </tr>\n  </thead>\n\n  <tbody>\n    <tr v-for=\"suboption in item.data.suboptions\">\n      <td class=\"mdl-data-table__cell--non-numeric\">{{suboption.text}}</td>\n      <td v-for=\"option in item.data.options\">\n        <mdl-radio\n        class=\"table_radio\"\n        :checked.sync=\"check[suboption.text]\"\n        value=\"\"\n        :value=\"option.text\">\n      </mdl-radio>\n    </td>\n  </tr>\n</tbody>\n</table>\n\n\n";
 
 /***/ }
 /******/ ]);

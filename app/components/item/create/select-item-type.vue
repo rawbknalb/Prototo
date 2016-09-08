@@ -11,34 +11,17 @@
     <mdl-menu-item @click="setType(types.scale)">Scale</mdl-menu-item>
     <mdl-menu-item @click="setType(types.slider)">Slider</mdl-menu-item>
 
-  </mdl-menu></template>
+  </mdl-menu>
+</template>
 
 <script>
 module.exports = {
 
-  props: ["module", "item"],
+  props: ["module", "item", "types"],
 
   data: function() {
     return {
 
-      types: {
-        multiple: {
-          name: 'Multiple Choice',
-          active: false
-        },
-        single: {
-          name: 'Single Choice',
-          active: false
-        },
-        scale: {
-          name: 'Scale',
-          active: false
-        },
-        slider: {
-          name: 'Slider',
-          active: false
-        }
-      }
     };
   },
 
