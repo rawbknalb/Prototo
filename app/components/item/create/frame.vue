@@ -16,7 +16,7 @@
 
   <form class="uk-form" @submit.prevent="saveItem(item, module.id, module)">
 
-    <create-item :item="item"></create-item>
+    <create-item :item="item" :types="types"></create-item>
 
       <div class="uk-form-row">
           <mdl-button raised accent>
@@ -98,6 +98,18 @@ module.exports = {
       .catch(function() {
         UIkit.notify('Something went wrong');
       });
+    },
+
+    addSlider: function() {
+
+      this.item.data.slider.push(this.slider_params);
+
+      this.slider_params = {
+        min: '0',
+        max: '100',
+        step: '1',
+        amount: ''
+      };
     }
   }
 

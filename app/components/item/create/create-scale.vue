@@ -90,7 +90,39 @@ module.exports = {
   },
 
   methods: {
+    addSubOption: function (suboption) {
 
+      this.item.data.suboptions.push(suboption);
+
+      this.suboption = {
+        text: ''
+      }
+    },
+
+    addOption: function (option) {
+
+      this.item.data.options.push(option);
+
+      this.option = {
+        text: '',
+        value: '',
+        id: 1,
+        input: {
+          textfield: {
+            active: false,
+            input_text: ''
+          },
+          textarea: {
+            active: false,
+            input_text: ''
+          }
+        }
+      };
+
+      this.options = {
+        text: ''
+      }
+    }
   }
 };
 

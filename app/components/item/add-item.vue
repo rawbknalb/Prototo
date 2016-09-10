@@ -9,7 +9,7 @@
                 <!-- This is the left half -->
                 <div class="mdl-cell mdl-cell--6-col mdl-cell--6-col-tablet mdl-cell--12-col-phone">
 
-                  <create-frame :module="module"><create-frame>
+                  <create-frame :module="module"></create-frame>
 
                     <hr>
 
@@ -412,7 +412,7 @@ module.exports = {
                 min: '0',
                 max: '100',
                 step: '1',
-                amount: '',
+                amount: ''
             };
         },
 
