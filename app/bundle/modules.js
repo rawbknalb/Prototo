@@ -58,7 +58,7 @@
 	            components: {
 	                'list-item': __webpack_require__(6),
 	                'add-item': __webpack_require__(9),
-	                'card-module': __webpack_require__(33)
+	                'card-module': __webpack_require__(30)
 	            },
 	            data: {
 	                module: window.$data.module,
@@ -3134,41 +3134,6 @@
 	          };
 	      });
 	    }
-
-	    function getFragment(elt){
-	      return elt.__v_frag;
-	    }
-
-	    function getCollectionFragment(fr){
-	      if (!fr || !!fr.forId){
-	        return fr;
-	      }
-	      return getCollectionFragment(fr.parentFrag);
-	    }
-
-	    function getRootFragment(elt){
-	      return getCollectionFragment(getFragment(elt));
-	    }
-
-	    function getVmObject(elt){
-	      var fragment = getRootFragment(elt);
-	      return fragment.scope.element;
-	    }
-
-	    function removeNode(node){
-	      node.parentElement.removeChild(node);
-	    }
-
-	    function insertNodeAt(fatherNode, node, position){
-	      if (position<fatherNode.children.length)
-	        fatherNode.insertBefore(node, fatherNode.children[position]);
-	      else
-	        fatherNode.appendChild(node);
-	    }
-
-	    function computeIndexes(nodes){
-	      return nodes.map(getRootFragment).filter(function(elt){return !!elt;}).map(function (elt){return (elt).scope.$index;}).value();
-	    }
 	    
 	    var vueDragFor = {
 	      install : function(Vue) {
@@ -3180,68 +3145,36 @@
 	          bind : function () {    
 	            var ctx = this;    
 	            var options = this.params.options;
-	            var indexes;
-
-	            function updatePosition(collection, newIndex, oldIndex ){
-	              var realnew = indexes[newIndex], realOld = indexes[oldIndex];
-	              if (!!collection){
-	                collection.splice(realnew, 0, collection.splice(realOld, 1)[0] );
-	              }
-	            }
-
 	            options = _.isString(options)? JSON.parse(options) : options;
 	            options = _.merge(options,{
-	              onStart: function (evt) {
-	                indexes = computeIndexes(_.chain(evt.from.children));
-	                console.log(indexes);
-	              },
 	              onUpdate: function (evt) {
-	                if (ctx.params.trackBy==="$index"){
-	                  removeNode(evt.item);           
-	                  insertNodeAt(evt.from, evt.item, evt.oldIndex);
-	                }
-	                updatePosition(ctx.collection, evt.newIndex, evt.oldIndex);
-	                removeNode(evt.item);
-	                insertNodeAt(evt.from, evt.item, evt.oldIndex) 
+	                var collection = ctx.collection;
+	                if (!!collection)
+	                  collection.splice(evt.newIndex, 0, collection.splice(evt.oldIndex, 1)[0] );
 	              },
-	              onAdd: function (evt) {             
-	                if (!!ctx.collection){                  
-	                  var addElement= getVmObject(evt.item);
-	                  var localIndexes =  computeIndexes(_.chain(evt.to.children).filter(function(elt){return elt!==evt.item;}));
-	                  var length = localIndexes.length;
-	                  if (evt.newIndex>= length){
-	                    ctx.collection.push(addElement);
-	                  }
-	                  else{
-	                    var newIndex =  localIndexes[evt.newIndex];
-	                    ctx.collection.splice(newIndex, 0, addElement);
-	                  }
-	                  removeNode(evt.item);
-	                  insertNodeAt(evt.from, evt.item, evt.oldIndex)            
-	                }
+	               onAdd: function (evt) {
+	                var directive = evt.from.__directive;
+	                if ((!!directive) && (!!ctx.collection))
+	                  ctx.collection.splice(evt.newIndex, 0, directive.collection[evt.oldIndex]);
 	              },
 	              onRemove: function (evt) {
 	                var collection = ctx.collection;
-	                var isCloning = !!evt.clone;
-	                if (!!collection && !isCloning){
-	                  //If is cloning is set no need to remove element from collection
-	                  var realOld = indexes[evt.oldIndex];
-	                  collection.splice(realOld, 1);
-	                }
-	                if (isCloning){    
-	                  removeNode(evt.clone);           
-	                  insertNodeAt(evt.from, evt.item, evt.oldIndex);
-	                }
-	                else{
-	                  //Need to remove added node if Vue is not tracking it: Vue will add it for us
-	                  var elt = evt.item
-	                  if (!!getFragment(elt).parentFrag){
-	                    removeNode(elt);
+	                if (!!collection && !evt.clone)
+	                  collection.splice(evt.oldIndex, 1);
+	                if (!!evt.clone){
+	                  //if cloning mode: replace cloned element by orginal element (with original vue binding information)+
+	                  //re-order element as sortablejs may re-order without sending events 
+	                  var newIndex = Array.prototype.indexOf.call(evt.from.children, evt.clone), oldIndex = evt.oldIndex;
+	                  evt.from.replaceChild(evt.item, evt.clone);
+	                  if (!!collection && (newIndex != oldIndex)){
+	                    var item = collection.splice(oldIndex, 1);
+	                    collection.splice(newIndex, 0, item[0]);
 	                  }
-	                } 
+	                }
 	              }
 	            });
 	            var parent = (!!this.params.root) ? document.getElementById(this.params.root) : this.el.parentElement;
+	            parent.__directive = this;
 	            this._sortable = new Sortable(parent, options);
 	          },
 	          update : function (value){
@@ -3292,7 +3225,7 @@
 	  var undefined;
 
 	  /** Used as the semantic version number. */
-	  var VERSION = '4.14.2';
+	  var VERSION = '4.14.0';
 
 	  /** Used as the size to enable large array optimizations. */
 	  var LARGE_ARRAY_SIZE = 200;
@@ -3409,12 +3342,11 @@
 	  /** Used to match property names within property paths. */
 	  var reIsDeepProp = /\.|\[(?:[^[\]]*|(["'])(?:(?!\1)[^\\]|\\.)*?\1)\]/,
 	      reIsPlainProp = /^\w*$/,
-	      reLeadingDot = /^\./,
-	      rePropName = /[^.[\]]+|\[(?:(-?\d+(?:\.\d+)?)|(["'])((?:(?!\2)[^\\]|\\.)*?)\2)\]|(?=(?:\.|\[\])(?:\.|\[\]|$))/g;
+	      rePropName = /[^.[\]]+|\[(?:(-?\d+(?:\.\d+)?)|(["'])((?:(?!\2)[^\\]|\\.)*?)\2)\]|(?=(\.|\[\])(?:\4|$))/g;
 
 	  /**
 	   * Used to match `RegExp`
-	   * [syntax characters](http://ecma-international.org/ecma-262/7.0/#sec-patterns).
+	   * [syntax characters](http://ecma-international.org/ecma-262/6.0/#sec-patterns).
 	   */
 	  var reRegExpChar = /[\\^$.*+?()[\]{}|]/g,
 	      reHasRegExpChar = RegExp(reRegExpChar.source);
@@ -3437,7 +3369,7 @@
 
 	  /**
 	   * Used to match
-	   * [ES template delimiters](http://ecma-international.org/ecma-262/7.0/#sec-template-literal-lexical-components).
+	   * [ES template delimiters](http://ecma-international.org/ecma-262/6.0/#sec-template-literal-lexical-components).
 	   */
 	  var reEsTemplate = /\$\{([^\\}]*(?:\\.[^\\}]*)*)\}/g;
 
@@ -3546,9 +3478,9 @@
 	  var contextProps = [
 	    'Array', 'Buffer', 'DataView', 'Date', 'Error', 'Float32Array', 'Float64Array',
 	    'Function', 'Int8Array', 'Int16Array', 'Int32Array', 'Map', 'Math', 'Object',
-	    'Promise', 'RegExp', 'Set', 'String', 'Symbol', 'TypeError', 'Uint8Array',
-	    'Uint8ClampedArray', 'Uint16Array', 'Uint32Array', 'WeakMap', '_', 'clearTimeout',
-	    'isFinite', 'parseInt', 'setTimeout'
+	    'Promise', 'Reflect', 'RegExp', 'Set', 'String', 'Symbol', 'TypeError',
+	    'Uint8Array', 'Uint8ClampedArray', 'Uint16Array', 'Uint32Array', 'WeakMap',
+	    '_', 'clearTimeout', 'isFinite', 'parseInt', 'setTimeout'
 	  ];
 
 	  /** Used to make template sourceURLs easier to identify. */
@@ -3651,10 +3583,10 @@
 	  var root = freeGlobal || freeSelf || Function('return this')();
 
 	  /** Detect free variable `exports`. */
-	  var freeExports = typeof exports == 'object' && exports && !exports.nodeType && exports;
+	  var freeExports = freeGlobal && typeof exports == 'object' && exports;
 
 	  /** Detect free variable `module`. */
-	  var freeModule = freeExports && typeof module == 'object' && module && !module.nodeType && module;
+	  var freeModule = freeExports && typeof module == 'object' && module;
 
 	  /** Detect the popular CommonJS extension `module.exports`. */
 	  var moduleExports = freeModule && freeModule.exports === freeExports;
@@ -4409,7 +4341,7 @@
 	  }
 
 	  /**
-	   * Creates a unary function that invokes `func` with its argument transformed.
+	   * Creates a function that invokes `func` with its first argument transformed.
 	   *
 	   * @private
 	   * @param {Function} func The function to wrap.
@@ -4562,6 +4494,7 @@
 
 	    /** Built-in constructor references. */
 	    var Array = context.Array,
+	        Date = context.Date,
 	        Error = context.Error,
 	        Math = context.Math,
 	        RegExp = context.RegExp,
@@ -4595,7 +4528,7 @@
 
 	    /**
 	     * Used to resolve the
-	     * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
+	     * [`toStringTag`](http://ecma-international.org/ecma-262/6.0/#sec-object.prototype.tostring)
 	     * of values.
 	     */
 	    var objectToString = objectProto.toString;
@@ -4611,28 +4544,29 @@
 
 	    /** Built-in value references. */
 	    var Buffer = moduleExports ? context.Buffer : undefined,
+	        Reflect = context.Reflect,
 	        Symbol = context.Symbol,
 	        Uint8Array = context.Uint8Array,
-	        getPrototype = overArg(Object.getPrototypeOf, Object),
+	        enumerate = Reflect ? Reflect.enumerate : undefined,
 	        iteratorSymbol = Symbol ? Symbol.iterator : undefined,
 	        objectCreate = context.Object.create,
 	        propertyIsEnumerable = objectProto.propertyIsEnumerable,
 	        splice = arrayProto.splice,
 	        spreadableSymbol = Symbol ? Symbol.isConcatSpreadable : undefined;
 
-	    /** Mocked built-ins. */
-	    var ctxClearTimeout = context.clearTimeout !== root.clearTimeout && context.clearTimeout,
-	        ctxNow = context.Date && context.Date.now !== root.Date.now && context.Date.now,
-	        ctxSetTimeout = context.setTimeout !== root.setTimeout && context.setTimeout;
+	    /** Built-in method references that are mockable. */
+	    var clearTimeout = function(id) { return context.clearTimeout.call(root, id); },
+	        setTimeout = function(func, wait) { return context.setTimeout.call(root, func, wait); };
 
 	    /* Built-in method references for those with the same name as other `lodash` methods. */
 	    var nativeCeil = Math.ceil,
 	        nativeFloor = Math.floor,
+	        nativeGetPrototype = Object.getPrototypeOf,
 	        nativeGetSymbols = Object.getOwnPropertySymbols,
 	        nativeIsBuffer = Buffer ? Buffer.isBuffer : undefined,
 	        nativeIsFinite = context.isFinite,
 	        nativeJoin = arrayProto.join,
-	        nativeKeys = overArg(Object.keys, Object),
+	        nativeKeys = Object.keys,
 	        nativeMax = Math.max,
 	        nativeMin = Math.min,
 	        nativeParseInt = context.parseInt,
@@ -5480,31 +5414,6 @@
 	    /*------------------------------------------------------------------------*/
 
 	    /**
-	     * Creates an array of the enumerable property names of the array-like `value`.
-	     *
-	     * @private
-	     * @param {*} value The value to query.
-	     * @param {boolean} inherited Specify returning inherited property names.
-	     * @returns {Array} Returns the array of property names.
-	     */
-	    function arrayLikeKeys(value, inherited) {
-	      var result = (isArray(value) || isString(value) || isArguments(value))
-	        ? baseTimes(value.length, String)
-	        : [];
-
-	      var length = result.length,
-	          skipIndexes = !!length;
-
-	      for (var key in value) {
-	        if ((inherited || hasOwnProperty.call(value, key)) &&
-	            !(skipIndexes && (key == 'length' || isIndex(key, length)))) {
-	          result.push(key);
-	        }
-	      }
-	      return result;
-	    }
-
-	    /**
 	     * Used by `_.defaults` to customize its `_.assignIn` use.
 	     *
 	     * @private
@@ -5540,7 +5449,7 @@
 
 	    /**
 	     * Assigns `value` to `key` of `object` if the existing value is not equivalent
-	     * using [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
+	     * using [`SameValueZero`](http://ecma-international.org/ecma-262/6.0/#sec-samevaluezero)
 	     * for equality comparisons.
 	     *
 	     * @private
@@ -5718,6 +5627,9 @@
 	        // Recursively populate clone (susceptible to call stack limits).
 	        assignValue(result, key, baseClone(subValue, isDeep, isFull, customizer, key, value, stack));
 	      });
+	      if (!isFull) {
+	        stack['delete'](value);
+	      }
 	      return result;
 	    }
 
@@ -5748,13 +5660,14 @@
 	      if (object == null) {
 	        return !length;
 	      }
-	      object = Object(object);
-	      while (length--) {
-	        var key = props[length],
+	      var index = length;
+	      while (index--) {
+	        var key = props[index],
 	            predicate = source[key],
 	            value = object[key];
 
-	        if ((value === undefined && !(key in object)) || !predicate(value)) {
+	        if ((value === undefined &&
+	            !(key in Object(object))) || !predicate(value)) {
 	          return false;
 	        }
 	      }
@@ -5781,7 +5694,7 @@
 	     * @param {Function} func The function to delay.
 	     * @param {number} wait The number of milliseconds to delay invocation.
 	     * @param {Array} args The arguments to provide to `func`.
-	     * @returns {number|Object} Returns the timer id or timeout object.
+	     * @returns {number} Returns the timer id.
 	     */
 	    function baseDelay(func, wait, args) {
 	      if (typeof func != 'function') {
@@ -6126,7 +6039,12 @@
 	     * @returns {boolean} Returns `true` if `key` exists, else `false`.
 	     */
 	    function baseHas(object, key) {
-	      return object != null && hasOwnProperty.call(object, key);
+	      // Avoid a bug in IE 10-11 where objects with a [[Prototype]] of `null`,
+	      // that are composed entirely of index properties, return `false` for
+	      // `hasOwnProperty` checks of them.
+	      return object != null &&
+	        (hasOwnProperty.call(object, key) ||
+	          (typeof object == 'object' && key in object && getPrototype(object) === null));
 	    }
 
 	    /**
@@ -6500,45 +6418,38 @@
 	    }
 
 	    /**
-	     * The base implementation of `_.keys` which doesn't treat sparse arrays as dense.
+	     * The base implementation of `_.keys` which doesn't skip the constructor
+	     * property of prototypes or treat sparse arrays as dense.
 	     *
 	     * @private
 	     * @param {Object} object The object to query.
 	     * @returns {Array} Returns the array of property names.
 	     */
-	    function baseKeys(object) {
-	      if (!isPrototype(object)) {
-	        return nativeKeys(object);
-	      }
-	      var result = [];
-	      for (var key in Object(object)) {
-	        if (hasOwnProperty.call(object, key) && key != 'constructor') {
-	          result.push(key);
-	        }
-	      }
-	      return result;
-	    }
+	    var baseKeys = overArg(nativeKeys, Object);
 
 	    /**
-	     * The base implementation of `_.keysIn` which doesn't treat sparse arrays as dense.
+	     * The base implementation of `_.keysIn` which doesn't skip the constructor
+	     * property of prototypes or treat sparse arrays as dense.
 	     *
 	     * @private
 	     * @param {Object} object The object to query.
 	     * @returns {Array} Returns the array of property names.
 	     */
 	    function baseKeysIn(object) {
-	      if (!isObject(object)) {
-	        return nativeKeysIn(object);
-	      }
-	      var isProto = isPrototype(object),
-	          result = [];
+	      object = object == null ? object : Object(object);
 
+	      var result = [];
 	      for (var key in object) {
-	        if (!(key == 'constructor' && (isProto || !hasOwnProperty.call(object, key)))) {
-	          result.push(key);
-	        }
+	        result.push(key);
 	      }
 	      return result;
+	    }
+
+	    // Fallback for IE < 9 with es6-shim.
+	    if (enumerate && !propertyIsEnumerable.call({ 'valueOf': 1 }, 'valueOf')) {
+	      baseKeysIn = function(object) {
+	        return iteratorToArray(enumerate(object));
+	      };
 	    }
 
 	    /**
@@ -6625,7 +6536,7 @@
 	        return;
 	      }
 	      if (!(isArray(source) || isTypedArray(source))) {
-	        var props = baseKeysIn(source);
+	        var props = keysIn(source);
 	      }
 	      arrayEach(props || source, function(srcValue, key) {
 	        if (props) {
@@ -6992,9 +6903,6 @@
 	     * @returns {Object} Returns `object`.
 	     */
 	    function baseSet(object, path, value, customizer) {
-	      if (!isObject(object)) {
-	        return object;
-	      }
 	      path = isKey(path, object) ? [path] : castPath(path);
 
 	      var index = -1,
@@ -7003,19 +6911,20 @@
 	          nested = object;
 
 	      while (nested != null && ++index < length) {
-	        var key = toKey(path[index]),
-	            newValue = value;
-
-	        if (index != lastIndex) {
-	          var objValue = nested[key];
-	          newValue = customizer ? customizer(objValue, key, nested) : undefined;
-	          if (newValue === undefined) {
-	            newValue = isObject(objValue)
-	              ? objValue
-	              : (isIndex(path[index + 1]) ? [] : {});
+	        var key = toKey(path[index]);
+	        if (isObject(nested)) {
+	          var newValue = value;
+	          if (index != lastIndex) {
+	            var objValue = nested[key];
+	            newValue = customizer ? customizer(objValue, key, nested) : undefined;
+	            if (newValue === undefined) {
+	              newValue = objValue == null
+	                ? (isIndex(path[index + 1]) ? [] : {})
+	                : objValue;
+	            }
 	          }
+	          assignValue(nested, key, newValue);
 	        }
-	        assignValue(nested, key, newValue);
 	        nested = nested[key];
 	      }
 	      return object;
@@ -7308,7 +7217,7 @@
 	      object = parent(object, path);
 
 	      var key = toKey(last(path));
-	      return !(object != null && hasOwnProperty.call(object, key)) || delete object[key];
+	      return !(object != null && baseHas(object, key)) || delete object[key];
 	    }
 
 	    /**
@@ -7462,16 +7371,6 @@
 	      end = end === undefined ? length : end;
 	      return (!start && end >= length) ? array : baseSlice(array, start, end);
 	    }
-
-	    /**
-	     * A simple wrapper around the global [`clearTimeout`](https://mdn.io/clearTimeout).
-	     *
-	     * @private
-	     * @param {number|Object} id The timer id or timeout object of the timer to clear.
-	     */
-	    var clearTimeout = ctxClearTimeout || function(id) {
-	      return root.clearTimeout(id);
-	    };
 
 	    /**
 	     * Creates a clone of  `buffer`.
@@ -7966,7 +7865,7 @@
 	    function createCtor(Ctor) {
 	      return function() {
 	        // Use a `switch` statement to work with class constructors. See
-	        // http://ecma-international.org/ecma-262/7.0/#sec-ecmascript-function-objects-call-thisargument-argumentslist
+	        // http://ecma-international.org/ecma-262/6.0/#sec-ecmascript-function-objects-call-thisargument-argumentslist
 	        // for more details.
 	        var args = arguments;
 	        switch (args.length) {
@@ -8322,14 +8221,15 @@
 	          end = step = undefined;
 	        }
 	        // Ensure the sign of `-0` is preserved.
-	        start = toFinite(start);
+	        start = toNumber(start);
+	        start = start === start ? start : 0;
 	        if (end === undefined) {
 	          end = start;
 	          start = 0;
 	        } else {
-	          end = toFinite(end);
+	          end = toNumber(end) || 0;
 	        }
-	        step = step === undefined ? (start < end ? 1 : -1) : toFinite(step);
+	        step = step === undefined ? (start < end ? 1 : -1) : (toNumber(step) || 0);
 	        return baseRange(start, end, step, fromRight);
 	      };
 	    }
@@ -8602,7 +8502,6 @@
 	        }
 	      }
 	      stack['delete'](array);
-	      stack['delete'](other);
 	      return result;
 	    }
 
@@ -8654,7 +8553,7 @@
 	        case regexpTag:
 	        case stringTag:
 	          // Coerce regexes to strings and treat strings, primitives and objects,
-	          // as equal. See http://www.ecma-international.org/ecma-262/7.0/#sec-regexp.prototype.tostring
+	          // as equal. See http://www.ecma-international.org/ecma-262/6.0/#sec-regexp.prototype.tostring
 	          // for more details.
 	          return object == (other + '');
 
@@ -8716,7 +8615,7 @@
 	      var index = objLength;
 	      while (index--) {
 	        var key = objProps[index];
-	        if (!(isPartial ? key in other : hasOwnProperty.call(other, key))) {
+	        if (!(isPartial ? key in other : baseHas(other, key))) {
 	          return false;
 	        }
 	      }
@@ -8763,7 +8662,6 @@
 	        }
 	      }
 	      stack['delete'](object);
-	      stack['delete'](other);
 	      return result;
 	    }
 
@@ -8853,6 +8751,19 @@
 	    }
 
 	    /**
+	     * Gets the "length" property value of `object`.
+	     *
+	     * **Note:** This function is used to avoid a
+	     * [JIT bug](https://bugs.webkit.org/show_bug.cgi?id=142792) that affects
+	     * Safari on at least iOS 8.1-8.3 ARM64.
+	     *
+	     * @private
+	     * @param {Object} object The object to query.
+	     * @returns {*} Returns the "length" value.
+	     */
+	    var getLength = baseProperty('length');
+
+	    /**
 	     * Gets the data for `map`.
 	     *
 	     * @private
@@ -8901,6 +8812,15 @@
 	    }
 
 	    /**
+	     * Gets the `[[Prototype]]` of `value`.
+	     *
+	     * @private
+	     * @param {*} value The value to query.
+	     * @returns {null|Object} Returns the `[[Prototype]]`.
+	     */
+	    var getPrototype = overArg(nativeGetPrototype, Object);
+
+	    /**
 	     * Creates an array of the own enumerable symbol properties of `object`.
 	     *
 	     * @private
@@ -8917,7 +8837,7 @@
 	     * @param {Object} object The object to query.
 	     * @returns {Array} Returns the array of symbols.
 	     */
-	    var getSymbolsIn = !nativeGetSymbols ? stubArray : function(object) {
+	    var getSymbolsIn = !nativeGetSymbols ? getSymbols : function(object) {
 	      var result = [];
 	      while (object) {
 	        arrayPush(result, getSymbols(object));
@@ -9113,6 +9033,23 @@
 	    }
 
 	    /**
+	     * Creates an array of index keys for `object` values of arrays,
+	     * `arguments` objects, and strings, otherwise `null` is returned.
+	     *
+	     * @private
+	     * @param {Object} object The object to query.
+	     * @returns {Array|null} Returns index keys, else `null`.
+	     */
+	    function indexKeys(object) {
+	      var length = object ? object.length : undefined;
+	      if (isLength(length) &&
+	          (isArray(object) || isString(object) || isArguments(object))) {
+	        return baseTimes(length, String);
+	      }
+	      return null;
+	    }
+
+	    /**
 	     * Inserts wrapper `details` in a comment at the top of the `source` body.
 	     *
 	     * @private
@@ -9138,7 +9075,7 @@
 	     */
 	    function isFlattenable(value) {
 	      return isArray(value) || isArguments(value) ||
-	        !!(spreadableSymbol && value && value[spreadableSymbol]);
+	        !!(spreadableSymbol && value && value[spreadableSymbol])
 	    }
 
 	    /**
@@ -9397,25 +9334,6 @@
 	    }
 
 	    /**
-	     * This function is like
-	     * [`Object.keys`](http://ecma-international.org/ecma-262/7.0/#sec-object.keys)
-	     * except that it includes inherited enumerable properties.
-	     *
-	     * @private
-	     * @param {Object} object The object to query.
-	     * @returns {Array} Returns the array of property names.
-	     */
-	    function nativeKeysIn(object) {
-	      var result = [];
-	      if (object != null) {
-	        for (var key in Object(object)) {
-	          result.push(key);
-	        }
-	      }
-	      return result;
-	    }
-
-	    /**
 	     * Gets the parent value at `path` of `object`.
 	     *
 	     * @private
@@ -9484,18 +9402,6 @@
 	    }());
 
 	    /**
-	     * A simple wrapper around the global [`setTimeout`](https://mdn.io/setTimeout).
-	     *
-	     * @private
-	     * @param {Function} func The function to delay.
-	     * @param {number} wait The number of milliseconds to delay invocation.
-	     * @returns {number|Object} Returns the timer id or timeout object.
-	     */
-	    var setTimeout = ctxSetTimeout || function(func, wait) {
-	      return root.setTimeout(func, wait);
-	    };
-
-	    /**
 	     * Sets the `toString` method of `wrapper` to mimic the source of `reference`
 	     * with wrapper details in a comment at the top of the source body.
 	     *
@@ -9522,13 +9428,8 @@
 	     * @returns {Array} Returns the property path array.
 	     */
 	    var stringToPath = memoize(function(string) {
-	      string = toString(string);
-
 	      var result = [];
-	      if (reLeadingDot.test(string)) {
-	        result.push('');
-	      }
-	      string.replace(rePropName, function(match, number, quote, string) {
+	      toString(string).replace(rePropName, function(match, number, quote, string) {
 	        result.push(quote ? string.replace(reEscapeChar, '$1') : (number || match));
 	      });
 	      return result;
@@ -9715,7 +9616,7 @@
 
 	    /**
 	     * Creates an array of `array` values not included in the other given arrays
-	     * using [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
+	     * using [`SameValueZero`](http://ecma-international.org/ecma-262/6.0/#sec-samevaluezero)
 	     * for equality comparisons. The order of result values is determined by the
 	     * order they occur in the first array.
 	     *
@@ -10218,7 +10119,7 @@
 
 	    /**
 	     * Gets the index at which the first occurrence of `value` is found in `array`
-	     * using [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
+	     * using [`SameValueZero`](http://ecma-international.org/ecma-262/6.0/#sec-samevaluezero)
 	     * for equality comparisons. If `fromIndex` is negative, it's used as the
 	     * offset from the end of `array`.
 	     *
@@ -10266,13 +10167,12 @@
 	     * // => [1, 2]
 	     */
 	    function initial(array) {
-	      var length = array ? array.length : 0;
-	      return length ? baseSlice(array, 0, -1) : [];
+	      return dropRight(array, 1);
 	    }
 
 	    /**
 	     * Creates an array of unique values that are included in all given arrays
-	     * using [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
+	     * using [`SameValueZero`](http://ecma-international.org/ecma-262/6.0/#sec-samevaluezero)
 	     * for equality comparisons. The order of result values is determined by the
 	     * order they occur in the first array.
 	     *
@@ -10476,7 +10376,7 @@
 
 	    /**
 	     * Removes all given values from `array` using
-	     * [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
+	     * [`SameValueZero`](http://ecma-international.org/ecma-262/6.0/#sec-samevaluezero)
 	     * for equality comparisons.
 	     *
 	     * **Note:** Unlike `_.without`, this method mutates `array`. Use `_.remove`
@@ -10945,8 +10845,7 @@
 	     * // => [2, 3]
 	     */
 	    function tail(array) {
-	      var length = array ? array.length : 0;
-	      return length ? baseSlice(array, 1, length) : [];
+	      return drop(array, 1);
 	    }
 
 	    /**
@@ -11103,7 +11002,7 @@
 
 	    /**
 	     * Creates an array of unique values, in order, from all given arrays using
-	     * [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
+	     * [`SameValueZero`](http://ecma-international.org/ecma-262/6.0/#sec-samevaluezero)
 	     * for equality comparisons.
 	     *
 	     * @static
@@ -11184,7 +11083,7 @@
 
 	    /**
 	     * Creates a duplicate-free version of an array, using
-	     * [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
+	     * [`SameValueZero`](http://ecma-international.org/ecma-262/6.0/#sec-samevaluezero)
 	     * for equality comparisons, in which only the first occurrence of each
 	     * element is kept.
 	     *
@@ -11329,7 +11228,7 @@
 
 	    /**
 	     * Creates an array excluding all given values using
-	     * [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
+	     * [`SameValueZero`](http://ecma-international.org/ecma-262/6.0/#sec-samevaluezero)
 	     * for equality comparisons.
 	     *
 	     * **Note:** Unlike `_.pull`, this method returns a new array.
@@ -11900,11 +11799,6 @@
 	     * Iteration is stopped once `predicate` returns falsey. The predicate is
 	     * invoked with three arguments: (value, index|key, collection).
 	     *
-	     * **Note:** This method returns `true` for
-	     * [empty collections](https://en.wikipedia.org/wiki/Empty_set) because
-	     * [everything is true](https://en.wikipedia.org/wiki/Vacuous_truth) of
-	     * elements of empty collections.
-	     *
 	     * @static
 	     * @memberOf _
 	     * @since 0.1.0
@@ -12222,7 +12116,7 @@
 	    /**
 	     * Checks if `value` is in `collection`. If `collection` is a string, it's
 	     * checked for a substring of `value`, otherwise
-	     * [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
+	     * [`SameValueZero`](http://ecma-international.org/ecma-262/6.0/#sec-samevaluezero)
 	     * is used for equality comparisons. If `fromIndex` is negative, it's used as
 	     * the offset from the end of `collection`.
 	     *
@@ -12690,7 +12584,7 @@
 	          return collection.size;
 	        }
 	      }
-	      return baseKeys(collection).length;
+	      return keys(collection).length;
 	    }
 
 	    /**
@@ -12802,9 +12696,9 @@
 	     * }, _.now());
 	     * // => Logs the number of milliseconds it took for the deferred invocation.
 	     */
-	    var now = ctxNow || function() {
-	      return root.Date.now();
-	    };
+	    function now() {
+	      return Date.now();
+	    }
 
 	    /*------------------------------------------------------------------------*/
 
@@ -13097,18 +12991,14 @@
 	     * milliseconds have elapsed since the last time the debounced function was
 	     * invoked. The debounced function comes with a `cancel` method to cancel
 	     * delayed `func` invocations and a `flush` method to immediately invoke them.
-	     * Provide `options` to indicate whether `func` should be invoked on the
-	     * leading and/or trailing edge of the `wait` timeout. The `func` is invoked
-	     * with the last arguments provided to the debounced function. Subsequent
-	     * calls to the debounced function return the result of the last `func`
-	     * invocation.
+	     * Provide an options object to indicate whether `func` should be invoked on
+	     * the leading and/or trailing edge of the `wait` timeout. The `func` is invoked
+	     * with the last arguments provided to the debounced function. Subsequent calls
+	     * to the debounced function return the result of the last `func` invocation.
 	     *
-	     * **Note:** If `leading` and `trailing` options are `true`, `func` is
-	     * invoked on the trailing edge of the timeout only if the debounced function
-	     * is invoked more than once during the `wait` timeout.
-	     *
-	     * If `wait` is `0` and `leading` is `false`, `func` invocation is deferred
-	     * until to the next tick, similar to `setTimeout` with a timeout of `0`.
+	     * **Note:** If `leading` and `trailing` options are `true`, `func` is invoked
+	     * on the trailing edge of the timeout only if the debounced function is
+	     * invoked more than once during the `wait` timeout.
 	     *
 	     * See [David Corbacho's article](https://css-tricks.com/debouncing-throttling-explained-examples/)
 	     * for details over the differences between `_.debounce` and `_.throttle`.
@@ -13345,7 +13235,7 @@
 	     * **Note:** The cache is exposed as the `cache` property on the memoized
 	     * function. Its creation may be customized by replacing the `_.memoize.Cache`
 	     * constructor with one whose instances implement the
-	     * [`Map`](http://ecma-international.org/ecma-262/7.0/#sec-properties-of-the-map-prototype-object)
+	     * [`Map`](http://ecma-international.org/ecma-262/6.0/#sec-properties-of-the-map-prototype-object)
 	     * method interface of `delete`, `get`, `has`, and `set`.
 	     *
 	     * @static
@@ -13645,7 +13535,7 @@
 	    /**
 	     * Creates a function that invokes `func` with the `this` binding of the
 	     * create function and an array of arguments much like
-	     * [`Function#apply`](http://www.ecma-international.org/ecma-262/7.0/#sec-function.prototype.apply).
+	     * [`Function#apply`](http://www.ecma-international.org/ecma-262/6.0/#sec-function.prototype.apply).
 	     *
 	     * **Note:** This method is based on the
 	     * [spread operator](https://mdn.io/spread_operator).
@@ -13696,8 +13586,8 @@
 	     * Creates a throttled function that only invokes `func` at most once per
 	     * every `wait` milliseconds. The throttled function comes with a `cancel`
 	     * method to cancel delayed `func` invocations and a `flush` method to
-	     * immediately invoke them. Provide `options` to indicate whether `func`
-	     * should be invoked on the leading and/or trailing edge of the `wait`
+	     * immediately invoke them. Provide an options object to indicate whether
+	     * `func` should be invoked on the leading and/or trailing edge of the `wait`
 	     * timeout. The `func` is invoked with the last arguments provided to the
 	     * throttled function. Subsequent calls to the throttled function return the
 	     * result of the last `func` invocation.
@@ -13705,9 +13595,6 @@
 	     * **Note:** If `leading` and `trailing` options are `true`, `func` is
 	     * invoked on the trailing edge of the timeout only if the throttled function
 	     * is invoked more than once during the `wait` timeout.
-	     *
-	     * If `wait` is `0` and `leading` is `false`, `func` invocation is deferred
-	     * until to the next tick, similar to `setTimeout` with a timeout of `0`.
 	     *
 	     * See [David Corbacho's article](https://css-tricks.com/debouncing-throttling-explained-examples/)
 	     * for details over the differences between `_.throttle` and `_.debounce`.
@@ -13963,11 +13850,9 @@
 	    }
 
 	    /**
-	     * Checks if `object` conforms to `source` by invoking the predicate
-	     * properties of `source` with the corresponding property values of `object`.
-	     *
-	     * **Note:** This method is equivalent to `_.conforms` when `source` is
-	     * partially applied.
+	     * Checks if `object` conforms to `source` by invoking the predicate properties
+	     * of `source` with the corresponding property values of `object`. This method
+	     * is equivalent to a `_.conforms` function when `source` is partially applied.
 	     *
 	     * @static
 	     * @memberOf _
@@ -13992,7 +13877,7 @@
 
 	    /**
 	     * Performs a
-	     * [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
+	     * [`SameValueZero`](http://ecma-international.org/ecma-262/6.0/#sec-samevaluezero)
 	     * comparison between two values to determine if they are equivalent.
 	     *
 	     * @static
@@ -14172,7 +14057,7 @@
 	     * // => false
 	     */
 	    function isArrayLike(value) {
-	      return value != null && isLength(value.length) && !isFunction(value);
+	      return value != null && isLength(getLength(value)) && !isFunction(value);
 	    }
 
 	    /**
@@ -14272,7 +14157,8 @@
 	     * @since 0.1.0
 	     * @category Lang
 	     * @param {*} value The value to check.
-	     * @returns {boolean} Returns `true` if `value` is a DOM element, else `false`.
+	     * @returns {boolean} Returns `true` if `value` is a DOM element,
+	     *  else `false`.
 	     * @example
 	     *
 	     * _.isElement(document.body);
@@ -14330,14 +14216,12 @@
 	          return !value.size;
 	        }
 	      }
-	      var isProto = isPrototype(value);
 	      for (var key in value) {
-	        if (hasOwnProperty.call(value, key) &&
-	            !(isProto && key == 'constructor')) {
+	        if (hasOwnProperty.call(value, key)) {
 	          return false;
 	        }
 	      }
-	      return !(nonEnumShadows && nativeKeys(value).length);
+	      return !(nonEnumShadows && keys(value).length);
 	    }
 
 	    /**
@@ -14356,7 +14240,8 @@
 	     * @category Lang
 	     * @param {*} value The value to compare.
 	     * @param {*} other The other value to compare.
-	     * @returns {boolean} Returns `true` if the values are equivalent, else `false`.
+	     * @returns {boolean} Returns `true` if the values are equivalent,
+	     *  else `false`.
 	     * @example
 	     *
 	     * var object = { 'a': 1 };
@@ -14385,7 +14270,8 @@
 	     * @param {*} value The value to compare.
 	     * @param {*} other The other value to compare.
 	     * @param {Function} [customizer] The function to customize comparisons.
-	     * @returns {boolean} Returns `true` if the values are equivalent, else `false`.
+	     * @returns {boolean} Returns `true` if the values are equivalent,
+	     *  else `false`.
 	     * @example
 	     *
 	     * function isGreeting(value) {
@@ -14419,7 +14305,8 @@
 	     * @since 3.0.0
 	     * @category Lang
 	     * @param {*} value The value to check.
-	     * @returns {boolean} Returns `true` if `value` is an error object, else `false`.
+	     * @returns {boolean} Returns `true` if `value` is an error object,
+	     *  else `false`.
 	     * @example
 	     *
 	     * _.isError(new Error);
@@ -14447,7 +14334,8 @@
 	     * @since 0.1.0
 	     * @category Lang
 	     * @param {*} value The value to check.
-	     * @returns {boolean} Returns `true` if `value` is a finite number, else `false`.
+	     * @returns {boolean} Returns `true` if `value` is a finite number,
+	     *  else `false`.
 	     * @example
 	     *
 	     * _.isFinite(3);
@@ -14524,15 +14412,16 @@
 	    /**
 	     * Checks if `value` is a valid array-like length.
 	     *
-	     * **Note:** This method is loosely based on
-	     * [`ToLength`](http://ecma-international.org/ecma-262/7.0/#sec-tolength).
+	     * **Note:** This function is loosely based on
+	     * [`ToLength`](http://ecma-international.org/ecma-262/6.0/#sec-tolength).
 	     *
 	     * @static
 	     * @memberOf _
 	     * @since 4.0.0
 	     * @category Lang
 	     * @param {*} value The value to check.
-	     * @returns {boolean} Returns `true` if `value` is a valid length, else `false`.
+	     * @returns {boolean} Returns `true` if `value` is a valid length,
+	     *  else `false`.
 	     * @example
 	     *
 	     * _.isLength(3);
@@ -14554,7 +14443,7 @@
 
 	    /**
 	     * Checks if `value` is the
-	     * [language type](http://www.ecma-international.org/ecma-262/7.0/#sec-ecmascript-language-types)
+	     * [language type](http://www.ecma-international.org/ecma-262/6.0/#sec-ecmascript-language-types)
 	     * of `Object`. (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
 	     *
 	     * @static
@@ -14631,14 +14520,10 @@
 
 	    /**
 	     * Performs a partial deep comparison between `object` and `source` to
-	     * determine if `object` contains equivalent property values.
+	     * determine if `object` contains equivalent property values. This method is
+	     * equivalent to a `_.matches` function when `source` is partially applied.
 	     *
-	     * **Note:** This method is equivalent to `_.matches` when `source` is
-	     * partially applied.
-	     *
-	     * Partial comparisons will match empty array and empty object `source`
-	     * values against any array or object value, respectively. See `_.isEqual`
-	     * for a list of supported value comparisons.
+	     * **Note:** This method supports comparing the same values as `_.isEqual`.
 	     *
 	     * @static
 	     * @memberOf _
@@ -14851,7 +14736,8 @@
 	     * @since 0.8.0
 	     * @category Lang
 	     * @param {*} value The value to check.
-	     * @returns {boolean} Returns `true` if `value` is a plain object, else `false`.
+	     * @returns {boolean} Returns `true` if `value` is a plain object,
+	     *  else `false`.
 	     * @example
 	     *
 	     * function Foo() {
@@ -14915,7 +14801,8 @@
 	     * @since 4.0.0
 	     * @category Lang
 	     * @param {*} value The value to check.
-	     * @returns {boolean} Returns `true` if `value` is a safe integer, else `false`.
+	     * @returns {boolean} Returns `true` if `value` is a safe integer,
+	     *  else `false`.
 	     * @example
 	     *
 	     * _.isSafeInteger(3);
@@ -15209,7 +15096,7 @@
 	     * Converts `value` to an integer.
 	     *
 	     * **Note:** This method is loosely based on
-	     * [`ToInteger`](http://www.ecma-international.org/ecma-262/7.0/#sec-tointeger).
+	     * [`ToInteger`](http://www.ecma-international.org/ecma-262/6.0/#sec-tointeger).
 	     *
 	     * @static
 	     * @memberOf _
@@ -15243,7 +15130,7 @@
 	     * array-like object.
 	     *
 	     * **Note:** This method is based on
-	     * [`ToLength`](http://ecma-international.org/ecma-262/7.0/#sec-tolength).
+	     * [`ToLength`](http://ecma-international.org/ecma-262/6.0/#sec-tolength).
 	     *
 	     * @static
 	     * @memberOf _
@@ -15472,7 +15359,13 @@
 	     * // => { 'a': 1, 'b': 2, 'c': 3, 'd': 4 }
 	     */
 	    var assignIn = createAssigner(function(object, source) {
-	      copyObject(source, keysIn(source), object);
+	      if (nonEnumShadows || isPrototype(source) || isArrayLike(source)) {
+	        copyObject(source, keysIn(source), object);
+	        return;
+	      }
+	      for (var key in source) {
+	        assignValue(object, key, source[key]);
+	      }
 	    });
 
 	    /**
@@ -16081,7 +15974,7 @@
 	     * Creates an array of the own enumerable property names of `object`.
 	     *
 	     * **Note:** Non-object values are coerced to objects. See the
-	     * [ES spec](http://ecma-international.org/ecma-262/7.0/#sec-object.keys)
+	     * [ES spec](http://ecma-international.org/ecma-262/6.0/#sec-object.keys)
 	     * for more details.
 	     *
 	     * @static
@@ -16106,7 +15999,23 @@
 	     * // => ['0', '1']
 	     */
 	    function keys(object) {
-	      return isArrayLike(object) ? arrayLikeKeys(object) : baseKeys(object);
+	      var isProto = isPrototype(object);
+	      if (!(isProto || isArrayLike(object))) {
+	        return baseKeys(object);
+	      }
+	      var indexes = indexKeys(object),
+	          skipIndexes = !!indexes,
+	          result = indexes || [],
+	          length = result.length;
+
+	      for (var key in object) {
+	        if (baseHas(object, key) &&
+	            !(skipIndexes && (key == 'length' || isIndex(key, length))) &&
+	            !(isProto && key == 'constructor')) {
+	          result.push(key);
+	        }
+	      }
+	      return result;
 	    }
 
 	    /**
@@ -16133,7 +16042,23 @@
 	     * // => ['a', 'b', 'c'] (iteration order is not guaranteed)
 	     */
 	    function keysIn(object) {
-	      return isArrayLike(object) ? arrayLikeKeys(object, true) : baseKeysIn(object);
+	      var index = -1,
+	          isProto = isPrototype(object),
+	          props = baseKeysIn(object),
+	          propsLength = props.length,
+	          indexes = indexKeys(object),
+	          skipIndexes = !!indexes,
+	          result = indexes || [],
+	          length = result.length;
+
+	      while (++index < propsLength) {
+	        var key = props[index];
+	        if (!(skipIndexes && (key == 'length' || isIndex(key, length))) &&
+	            !(key == 'constructor' && (isProto || !hasOwnProperty.call(object, key)))) {
+	          result.push(key);
+	        }
+	      }
+	      return result;
 	    }
 
 	    /**
@@ -16810,12 +16735,12 @@
 	     * // => true
 	     */
 	    function inRange(number, start, end) {
-	      start = toFinite(start);
+	      start = toNumber(start) || 0;
 	      if (end === undefined) {
 	        end = start;
 	        start = 0;
 	      } else {
-	        end = toFinite(end);
+	        end = toNumber(end) || 0;
 	      }
 	      number = toNumber(number);
 	      return baseInRange(number, start, end);
@@ -16871,12 +16796,12 @@
 	        upper = 1;
 	      }
 	      else {
-	        lower = toFinite(lower);
+	        lower = toNumber(lower) || 0;
 	        if (upper === undefined) {
 	          upper = lower;
 	          lower = 0;
 	        } else {
-	          upper = toFinite(upper);
+	          upper = toNumber(upper) || 0;
 	        }
 	      }
 	      if (lower > upper) {
@@ -18123,9 +18048,6 @@
 	     * the corresponding property values of a given object, returning `true` if
 	     * all predicates return truthy, else `false`.
 	     *
-	     * **Note:** The created function is equivalent to `_.conformsTo` with
-	     * `source` partially applied.
-	     *
 	     * @static
 	     * @memberOf _
 	     * @since 4.0.0
@@ -18311,14 +18233,10 @@
 	    /**
 	     * Creates a function that performs a partial deep comparison between a given
 	     * object and `source`, returning `true` if the given object has equivalent
-	     * property values, else `false`.
+	     * property values, else `false`. The created function is equivalent to
+	     * `_.isMatch` with a `source` partially applied.
 	     *
-	     * **Note:** The created function is equivalent to `_.isMatch` with `source`
-	     * partially applied.
-	     *
-	     * Partial comparisons will match empty array and empty object `source`
-	     * values against any array or object value, respectively. See `_.isEqual`
-	     * for a list of supported value comparisons.
+	     * **Note:** This method supports comparing the same values as `_.isEqual`.
 	     *
 	     * @static
 	     * @memberOf _
@@ -18345,9 +18263,7 @@
 	     * value at `path` of a given object to `srcValue`, returning `true` if the
 	     * object value is equivalent, else `false`.
 	     *
-	     * **Note:** Partial comparisons will match empty array and empty object
-	     * `srcValue` values against any array or object value, respectively. See
-	     * `_.isEqual` for a list of supported value comparisons.
+	     * **Note:** This method supports comparing the same values as `_.isEqual`.
 	     *
 	     * @static
 	     * @memberOf _
@@ -21180,7 +21096,7 @@
 	  var hotAPI = require("vue-hot-reload-api")
 	  hotAPI.install(require("vue"), false)
 	  if (!hotAPI.compatible) return
-	  var id = "_v-8b063e80/list-item.vue"
+	  var id = "_v-6e7090ac/list-item.vue"
 	  if (!module.hot.data) {
 	    hotAPI.createRecord(id, module.exports)
 	  } else {
@@ -21231,7 +21147,7 @@
 	    __vue_script__.__esModule &&
 	    Object.keys(__vue_script__).length > 1) {
 	  console.warn("[vue-loader] app/components/item/add-item.vue: named exports in *.vue files are ignored.")}
-	__vue_template__ = __webpack_require__(32)
+	__vue_template__ = __webpack_require__(29)
 	module.exports = __vue_script__ || {}
 	if (module.exports.__esModule) module.exports = module.exports.default
 	if (__vue_template__) {
@@ -21241,7 +21157,7 @@
 	  var hotAPI = require("vue-hot-reload-api")
 	  hotAPI.install(require("vue"), false)
 	  if (!hotAPI.compatible) return
-	  var id = "_v-20e4aa5e/add-item.vue"
+	  var id = "_v-3fae4d65/add-item.vue"
 	  if (!module.hot.data) {
 	    hotAPI.createRecord(id, module.exports)
 	  } else {
@@ -21365,7 +21281,7 @@
 	    __vue_script__.__esModule &&
 	    Object.keys(__vue_script__).length > 1) {
 	  console.warn("[vue-loader] app/components/item/create/frame.vue: named exports in *.vue files are ignored.")}
-	__vue_template__ = __webpack_require__(31)
+	__vue_template__ = __webpack_require__(28)
 	module.exports = __vue_script__ || {}
 	if (module.exports.__esModule) module.exports = module.exports.default
 	if (__vue_template__) {
@@ -21375,7 +21291,7 @@
 	  var hotAPI = require("vue-hot-reload-api")
 	  hotAPI.install(require("vue"), false)
 	  if (!hotAPI.compatible) return
-	  var id = "_v-03043a2c/frame.vue"
+	  var id = "_v-362972c0/frame.vue"
 	  if (!module.hot.data) {
 	    hotAPI.createRecord(id, module.exports)
 	  } else {
@@ -21490,7 +21406,7 @@
 	  var hotAPI = require("vue-hot-reload-api")
 	  hotAPI.install(require("vue"), false)
 	  if (!hotAPI.compatible) return
-	  var id = "_v-4febb798/select-item-type.vue"
+	  var id = "_v-0ab4f1c0/select-item-type.vue"
 	  if (!module.hot.data) {
 	    hotAPI.createRecord(id, module.exports)
 	  } else {
@@ -21564,7 +21480,7 @@
 	    __vue_script__.__esModule &&
 	    Object.keys(__vue_script__).length > 1) {
 	  console.warn("[vue-loader] app/components/item/create/create-item.vue: named exports in *.vue files are ignored.")}
-	__vue_template__ = __webpack_require__(30)
+	__vue_template__ = __webpack_require__(24)
 	module.exports = __vue_script__ || {}
 	if (module.exports.__esModule) module.exports = module.exports.default
 	if (__vue_template__) {
@@ -21574,7 +21490,7 @@
 	  var hotAPI = require("vue-hot-reload-api")
 	  hotAPI.install(require("vue"), false)
 	  if (!hotAPI.compatible) return
-	  var id = "_v-1c32ad43/create-item.vue"
+	  var id = "_v-dcafb252/create-item.vue"
 	  if (!module.hot.data) {
 	    hotAPI.createRecord(id, module.exports)
 	  } else {
@@ -21591,9 +21507,9 @@
 	module.exports = {
 	  components: {
 	    'create-scale': __webpack_require__(18),
-	    'create-slider': __webpack_require__(21),
-	    'create-single': __webpack_require__(24),
-	    'create-multiple': __webpack_require__(27)
+	    'create-slider': __webpack_require__(36),
+	    'create-single': __webpack_require__(39),
+	    'create-multiple': __webpack_require__(42)
 	  },
 	  props: ["item", "types"],
 
@@ -21671,7 +21587,7 @@
 	  var hotAPI = require("vue-hot-reload-api")
 	  hotAPI.install(require("vue"), false)
 	  if (!hotAPI.compatible) return
-	  var id = "_v-7c73e8ca/create-scale.vue"
+	  var id = "_v-94a4bc94/create-scale.vue"
 	  if (!module.hot.data) {
 	    hotAPI.createRecord(id, module.exports)
 	  } else {
@@ -21737,16 +21653,40 @@
 	module.exports = "\n\n  <mdl-textfield\n    floating-label=\"Item Text\"\n    :value.sync=\"item.text\"\n    class=\"uk-form-width-small\">\n  </mdl-textfield>\n\n  <br>\n\n  <mdl-textfield\n    floating-label=\"Option Text\"\n    :value.sync=\"option.text\"\n    class=\"uk-form-width-small\"\n    @keyup.enter=\"addOption(option)\">\n  </mdl-textfield>\n\n  <mdl-textfield\n    floating-label=\"Option Value\"\n    :value.sync=\"option.value\"\n    class=\"uk-form-width-small\"\n    pattern=\"-?[0-9]*(\\.[0-9]+)?\"\n    error=\"Input is not a number!\"\n    @keyup.enter=\"addOption(option)\">\n  </mdl-textfield>\n\n  <mdl-button\n    icon\n    mini-fab\n    accent\n    @click.prevent=\"addOption(option)\">\n      <i class=\"material-icons\">add</i>\n  </mdl-button>\n\n\n  <mdl-textfield\n    floating-label=\"Suboption Text\"\n    :value.sync=\"suboption.text\"\n    class=\"uk-form-width-small\"\n    @keyup.enter=\"addSubOption(suboption)\">\n  </mdl-textfield>\n\n  <mdl-button\n    icon\n    mini-fab\n    accent\n    @click.prevent=\"addSubOption(suboption)\">\n      <i class=\"material-icons\">add</i>\n  </mdl-button>\n\n  <!-- Rendered Table -->\n  <table class=\"mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp\">\n    <thead>\n      <tr>\n        <th></th>\n        <th\n        class=\"mdl-data-table__cell--non-numeric\"\n        v-for=\"option in item.data.options\"\n        >\n        {{option.text}}\n      </th>\n    </tr>\n  </thead>\n\n  <tbody>\n    <tr v-for=\"suboption in item.data.suboptions\">\n      <td class=\"mdl-data-table__cell--non-numeric\">{{suboption.text}}</td>\n      <td v-for=\"option in item.data.options\">\n        <mdl-radio\n        class=\"table_radio\"\n        :checked.sync=\"check[suboption.text]\"\n        value=\"\"\n        :value=\"option.text\">\n      </mdl-radio>\n    </td>\n  </tr>\n</tbody>\n</table>\n\n\n";
 
 /***/ },
-/* 21 */
+/* 21 */,
+/* 22 */,
+/* 23 */,
+/* 24 */
+/***/ function(module, exports) {
+
+	module.exports = "\n<h1>{{item.text}}</h1>\n<create-scale v-if=\"types.scale.active\"\n  :option=\"option\"\n  :suboption=\"suboption\"\n  :item=\"item\">\n</create-scale>\n\n<create-slider v-if=\"types.slider.active\"\n              :option=\"option\"\n              :item=\"item\"\n              >\n</create-slider>\n\n  <create-single v-if=\"types.slider.active\"\n                 :option=\"option\"\n                 :item=\"item\"\n                 >\n  </create-single>\n\n  <create-multiple v-if=\"types.slider.active\"\n                 :option=\"option\"\n                 :item=\"item\"\n                 >\n  </create-multiple>\n\n";
+
+/***/ },
+/* 25 */,
+/* 26 */,
+/* 27 */,
+/* 28 */
+/***/ function(module, exports) {
+
+	module.exports = "\n\n<div class=\"container\">\n  <h1>Create a new Item</h1>\n\n  <h3>Choose an Item Type</h3>\n\n  <!-- select item type component -->\n  <select-item-type\n    :module=\"module\"\n    :item=\"item\"\n    :types=\"types\">\n  </select-item-type>\n\n  <h2>Selected: {{ item.data.type }}</h2>\n\n  <form class=\"uk-form\" @submit.prevent=\"saveItem(item, module.id, module)\">\n\n    <create-item :item=\"item\" :types=\"types\"></create-item>\n\n      <div class=\"uk-form-row\">\n          <mdl-button raised accent>\n              Save Item\n              <i class=\"material-icons\">save</i>\n          </mdl-button>\n      </div>\n\n  </form>\n</div>\n";
+
+/***/ },
+/* 29 */
+/***/ function(module, exports) {
+
+	module.exports = "\n\n<!-- This is the modal -->\n<div id=\"{{ module.id }}\" class=\"uk-modal\">\n    <div class=\"uk-modal-dialog modal-tweak uk-modal-dialog-large\">\n        <a class=\"uk-modal-close uk-close\"></a>\n\n        <div class=\"mdl-grid\">\n            <!-- This is the left half -->\n            <div class=\"mdl-cell mdl-cell--6-col mdl-cell--6-col-tablet mdl-cell--12-col-phone\">\n\n              <create-frame :module=\"module\"></create-frame>\n\n                <hr>\n\n                    <template v-if=\"types.multiple.active || types.single.active\">\n\n                        <div class=\"uk-form-row\">\n                            <mdl-textfield\n                            required\n                            floating-label=\"Item Text\"\n                            :value.sync=\"item.text\"\n                            >\n                            </mdl-textfield>\n                        </div>\n\n                        <div class=\"uk-form-row\">\n\n                            <mdl-textfield\n                                floating-label=\"Add Option\"\n                                :value.sync=\"option.text\"\n                                id=\"{{ item.id }}\"\n                                v-show=\"!option.input.textfield.active\"\n                            >\n                            </mdl-textfield>\n\n                            <mdl-button\n                                v-show=\"option.text || option.input.textfield.active || option.input.textarea.active\"\n                                icon\n                                mini-fab\n                                accent\n                                @click.prevent=\"addOption(option)\">\n                                    <i class=\"material-icons\">add</i>\n                            </mdl-button>\n\n                            <mdl-switch :checked.sync=\"option.input.textfield.active\" value=\"true\">Textfield</mdl-switch>\n                            <mdl-switch :checked.sync=\"option.input.textarea.active\" value=\"true\">Textarea</mdl-switch>\n\n                        </div>\n\n                    </template>\n\n                    <template v-if=\"types.scale.active\">\n\n                        <mdl-textfield\n                          floating-label=\"Item Text\"\n                          :value.sync=\"item.text\"\n                          class=\"uk-form-width-small\"\n                        >\n                        </mdl-textfield>\n\n                        <br>\n\n                        <mdl-textfield\n                            floating-label=\"Option Text\"\n                            :value.sync=\"option.text\"\n                            class=\"uk-form-width-small\"\n                            @keyup.enter=\"addOption(option)\"\n                        ></mdl-textfield>\n\n                        <mdl-textfield\n                            floating-label=\"Option Value\"\n                            :value.sync=\"option.value\"\n                            class=\"uk-form-width-small\"\n                            pattern=\"-?[0-9]*(\\.[0-9]+)?\"\n                            error=\"Input is not a number!\"\n                            @keyup.enter=\"addOption(option)\"\n                        ></mdl-textfield>\n\n                        <mdl-button\n                            icon\n                            mini-fab\n                            accent\n                            @click.prevent=\"addOption(option)\">\n                                <i class=\"material-icons\">add</i>\n                        </mdl-button>\n\n\n                        <mdl-textfield\n                            floating-label=\"Suboption Text\"\n                            :value.sync=\"suboption.text\"\n                            class=\"uk-form-width-small\"\n                            @keyup.enter=\"addSubOption(suboption)\"\n                        ></mdl-textfield>\n\n                        <mdl-button\n                            icon\n                            mini-fab\n                            accent\n                            @click.prevent=\"addSubOption(suboption)\">\n                                <i class=\"material-icons\">add</i>\n                        </mdl-button>\n\n                    </template>\n\n                    <template v-if=\"types.slider.active\">\n\n                        <div class=\"uk-form-row\">\n                            <mdl-textfield\n                            required\n                            floating-label=\"Item Text\"\n                            :value.sync=\"item.text\"\n                            >\n                            </mdl-textfield>\n                        </div>\n\n                        <div data-uk-margin>\n                            <mdl-textfield\n                                floating-label=\"Step\"\n                                :value.sync=\"slider_params.step\"\n                                class=\"uk-form-width-small\"\n                                pattern=\"-?[0-9]*(\\.[0-9]+)?\"\n                                error=\"Input is not a number!\"\n                            >\n                            </mdl-textfield>\n\n                            <mdl-textfield\n                                floating-label=\"min value\"\n                                :value.sync=\"slider_params.min\"\n                                class=\"uk-form-width-small\"\n                                pattern=\"-?[0-9]*(\\.[0-9]+)?\"\n                                error=\"Input is not a number!\"\n                            >\n                            </mdl-textfield>\n\n                            <mdl-textfield\n                                floating-label=\"max value\"\n                                :value.sync=\"slider_params.max\"\n                                required\n                                class=\"uk-form-width-small\"\n                                pattern=\"-?[0-9]*(\\.[0-9]+)?\"\n                                error=\"Input is not a number!\"\n                            >\n                            </mdl-textfield>\n                        </div>\n\n                    </template>\n\n            </div>\n\n            <!-- This is the right half -->\n            <div class=\"mdl-cell mdl-cell--6-col mdl-cell--6-col-tablet mdl-cell--12-col-phone\">\n                <h1>Preview </h1>\n\n                <h3>{{ item.text }}</h3>\n\n                <!-- This is the slider-preview -->\n                <template v-if=\"types.slider.active\">\n\n                    <div class=\"uk-form-row\">\n\n                        <mdl-textfield\n                            floating-label=\"Value\"\n                            :value.sync=\"slider_params.amount\"\n                            readonly\n                        >\n                        </mdl-textfield>\n\n                        <mdl-slider\n                            :value.sync=\"slider_params.amount\"\n                            :min.sync=\"slider_params.min\"\n                            :max.sync=\"slider_params.max\"\n                            :step.sync=\"slider_params.step\"\n                        >\n                        </mdl-slider>\n\n                    </div>\n                </template>\n\n                <!-- This is the slider-preview -->\n                <template v-if=\"types.scale.active\">\n\n                  <table class=\"mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp\">\n\n                    <thead>\n                      <tr>\n                        <th></th>\n                        <th\n                          class=\"mdl-data-table__cell--non-numeric\"\n                          v-for=\"option in item.data.options\"\n                        >\n                          {{option.text}}\n                        </th>\n                      </tr>\n                    </thead>\n\n                    <tbody>\n                      <tr v-for=\"suboption in item.data.suboptions\">\n                        <td class=\"mdl-data-table__cell--non-numeric\">{{suboption.text}}</td>\n                        <td v-for=\"option in item.data.options\">\n                          <mdl-radio\n                            class=\"table_radio\"\n                            :checked.sync=\"check[suboption.text]\"\n                            value=\"\"\n                            :value=\"option.text\">\n                          </mdl-radio>\n                        </td>\n                      </tr>\n                    </tbody>\n                  </table>\n\n\n                </template>\n\n                <!-- This is list of options -->\n                <!-- To Do: Preview-Components -->\n                <template v-if=\"types.multiple.active\">\n                    <ul class=\"mdl-list\" v-for=\"option in item.data.options\">\n\n                        <li class=\"mdl-list__item\">\n\n                            <!--\n                            **To Do: Change\n                            **:value (do not use option.text)\n                            **better: unique option identifier (id)\n                            -->\n                            <mdl-checkbox\n                                :checked.sync=\"checks\"\n                                value=\"\"\n                                :value=\"option.text\"\n                                v-if=\"types.multiple.active\"\n                            >\n                                {{option.text}}\n                            </mdl-checkbox>\n\n                            <span class=\"mdl-list__item-secondary-action\">\n\n                                <mdl-button\n                                    class=\"mdl-button--icon\"\n                                    primary\n                                    @click.prevent=\"removeOption(option)\"\n                                >\n                                    <i class=\"material-icons\">delete</i>\n\n                                </mdl-button>\n\n                            </span>\n\n                        </li>\n\n                    </ul>\n                </template>\n\n                <!-- This is list of options -->\n                <!-- To Do: Preview-Components -->\n                <template v-if=\"types.single.active\">\n                    <ul class=\"mdl-list\" v-for=\"option in item.data.options\">\n\n                        <li class=\"mdl-list__item\">\n\n                            <!--\n                            **To Do: Change\n                            **:value (do not use option.text)\n                            **better: unique option identifier (id)\n                            -->\n\n                            <mdl-radio\n                                :checked.sync=\"check\"\n                                class=\"mdl-js-ripple-effect\"\n                                value=\"\"\n                                :value=\"option.text\"\n                                v-if=\"!(option.input.textarea.active) && !(option.input.textfield.active)\"\n\n                            >\n                                {{option.text}}\n                            </mdl-radio>\n\n                            <mdl-textfield\n                                label=\"Other\"\n                                class=\"full_width\"\n                                :value.sync=\"option.input.textfield.input_text\"\n                                v-if=\"option.input.textfield.active\"\n                            >\n                            </mdl-textfield>\n\n\n                            <mdl-textfield\n                                class=\"full_width list_textarea_padding\"\n                                floating-label=\"Textarea\"\n                                textarea rows=\"4\"\n                                v-if=\"option.input.textarea.active\"\n                            >\n                            </mdl-textfield>\n\n\n\n                            <span class=\"mdl-list__item-secondary-action\">\n\n                                <mdl-button\n                                    class=\"mdl-button--icon\"\n                                    primary\n                                    @click.prevent=\"removeOption(option)\"\n                                >\n                                    <i class=\"material-icons\">delete</i>\n\n                                </mdl-button>\n\n                            </span>\n\n\n\n                        </li>\n\n                    </ul>\n                </template>\n\n            </div>\n\n        </div>\n\n    </div>\n\n</div>\n\n";
+
+/***/ },
+/* 30 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __vue_script__, __vue_template__
-	__vue_script__ = __webpack_require__(22)
+	__vue_script__ = __webpack_require__(31)
 	if (__vue_script__ &&
 	    __vue_script__.__esModule &&
 	    Object.keys(__vue_script__).length > 1) {
-	  console.warn("[vue-loader] app/components/item/create/create-slider.vue: named exports in *.vue files are ignored.")}
-	__vue_template__ = __webpack_require__(23)
+	  console.warn("[vue-loader] app/components/module/card-module.vue: named exports in *.vue files are ignored.")}
+	__vue_template__ = __webpack_require__(32)
 	module.exports = __vue_script__ || {}
 	if (module.exports.__esModule) module.exports = module.exports.default
 	if (__vue_template__) {
@@ -21756,7 +21696,7 @@
 	  var hotAPI = require("vue-hot-reload-api")
 	  hotAPI.install(require("vue"), false)
 	  if (!hotAPI.compatible) return
-	  var id = "_v-3833a3de/create-slider.vue"
+	  var id = "_v-7b644b6c/card-module.vue"
 	  if (!module.hot.data) {
 	    hotAPI.createRecord(id, module.exports)
 	  } else {
@@ -21765,7 +21705,77 @@
 	})()}
 
 /***/ },
-/* 22 */
+/* 31 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	module.exports = {
+	    props: [],
+	    data: function data() {
+	        return {
+	            item: {
+	                text: '',
+	                item_order: ''
+	            },
+	            items: '',
+	            edit: false,
+	            options: {
+	                handle: '.handle',
+	                chosenClass: "chosen",
+	                ghostClass: "ghost",
+	                edit: false,
+	                animation: 150
+	            }
+	        };
+	    },
+
+	    methods: {
+	        deleteItem: function deleteItem(item, items) {
+	            items.$remove(item);
+	        }
+	    }
+	};
+
+/***/ },
+/* 32 */
+/***/ function(module, exports) {
+
+	module.exports = "\n\n\n\n<div class=\"mdl-card mdl-cell--top mdl-cell--stretch mdl-cell--12-col mdl-cell--8-col-tablet mdl-cell--4-col-phone mdl-shadow--8dp\">\n\n    <div class=\"mdl-card__title card-background\">\n        <div class=\"mdl-card__title-text title-text\">\n            {{module.title}} <br>\n        </div>\n    </div>\n    <div class=\"mdl-card__supporting-text card-text-background\">\n        <p>\n            Description: Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquam accusamus, consectetur.\n        </p>\n    </div>\n\n\n    <div class=\"mdl-card__actions\">\n        <!-- This is a button toggling the modal -->\n        <mdl-button colored accent raised data-uk-modal=\"{target:'#{{ module.id }}'}\">\n            <i class=\"material-icons\">add</i>\n            Show Items (Modal)\n        </mdl-button>\n\n        <!-- This is the button toggling the off-canvas sidebar -->\n        <mdl-button colored accent raised data-uk-offcanvas=\"{target:'#{{ module.title }}'}\">\n            <i class=\"material-icons\">add</i>\n            Show Items (Off-Canvas)\n        </mdl-button>\n\n    </div>\n\n    <div class=\"mdl-card__menu\">\n        <mdl-button v-mdl-ripple-effect fab accent @click=\"remove(module, modules)\">\n            <i class=\"material-icons\">delete</i>\n        </mdl-button>\n\n        <mdl-button v-mdl-ripple-effect fab accent @click=\"update(module)\"><i class=\"material-icons\">save</i></mdl-button>\n\n\n    </div>\n</div>\n</div>\n\n";
+
+/***/ },
+/* 33 */,
+/* 34 */,
+/* 35 */,
+/* 36 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __vue_script__, __vue_template__
+	__vue_script__ = __webpack_require__(37)
+	if (__vue_script__ &&
+	    __vue_script__.__esModule &&
+	    Object.keys(__vue_script__).length > 1) {
+	  console.warn("[vue-loader] app/components/item/create/create-slider.vue: named exports in *.vue files are ignored.")}
+	__vue_template__ = __webpack_require__(38)
+	module.exports = __vue_script__ || {}
+	if (module.exports.__esModule) module.exports = module.exports.default
+	if (__vue_template__) {
+	(typeof module.exports === "function" ? (module.exports.options || (module.exports.options = {})) : module.exports).template = __vue_template__
+	}
+	if (false) {(function () {  module.hot.accept()
+	  var hotAPI = require("vue-hot-reload-api")
+	  hotAPI.install(require("vue"), false)
+	  if (!hotAPI.compatible) return
+	  var id = "_v-5c38dab6/create-slider.vue"
+	  if (!module.hot.data) {
+	    hotAPI.createRecord(id, module.exports)
+	  } else {
+	    hotAPI.update(id, module.exports, __vue_template__)
+	  }
+	})()}
+
+/***/ },
+/* 37 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -21814,22 +21824,22 @@
 	};
 
 /***/ },
-/* 23 */
+/* 38 */
 /***/ function(module, exports) {
 
 	module.exports = "\n\n<div class=\"uk-form-row\">\n    <mdl-textfield\n            required\n            floating-label=\"Item Text\"\n            :value.sync=\"item.text\"\n    >\n    </mdl-textfield>\n</div>\n\n<div data-uk-margin>\n    <mdl-textfield\n            floating-label=\"Step\"\n            :value.sync=\"slider_params.step\"\n            class=\"uk-form-width-small\"\n            pattern=\"-?[0-9]*(\\.[0-9]+)?\"\n            error=\"Input is not a number!\"\n    >\n    </mdl-textfield>\n\n    <mdl-textfield\n            floating-label=\"min value\"\n            :value.sync=\"slider_params.min\"\n            class=\"uk-form-width-small\"\n            pattern=\"-?[0-9]*(\\.[0-9]+)?\"\n            error=\"Input is not a number!\"\n    >\n    </mdl-textfield>\n\n    <mdl-textfield\n            floating-label=\"max value\"\n            :value.sync=\"slider_params.max\"\n            required\n            class=\"uk-form-width-small\"\n            pattern=\"-?[0-9]*(\\.[0-9]+)?\"\n            error=\"Input is not a number!\"\n    >\n    </mdl-textfield>\n</div>\n\n\n<div class=\"uk-form-row\">\n\n    <mdl-textfield\n            floating-label=\"Value\"\n            :value.sync=\"slider_params.amount\"\n            readonly\n    >\n    </mdl-textfield>\n\n    <mdl-slider\n            :value.sync=\"slider_params.amount\"\n            :min.sync=\"slider_params.min\"\n            :max.sync=\"slider_params.max\"\n            :step.sync=\"slider_params.step\"\n    >\n    </mdl-slider>\n\n</div>\n";
 
 /***/ },
-/* 24 */
+/* 39 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __vue_script__, __vue_template__
-	__vue_script__ = __webpack_require__(25)
+	__vue_script__ = __webpack_require__(40)
 	if (__vue_script__ &&
 	    __vue_script__.__esModule &&
 	    Object.keys(__vue_script__).length > 1) {
 	  console.warn("[vue-loader] app/components/item/create/create-single.vue: named exports in *.vue files are ignored.")}
-	__vue_template__ = __webpack_require__(26)
+	__vue_template__ = __webpack_require__(41)
 	module.exports = __vue_script__ || {}
 	if (module.exports.__esModule) module.exports = module.exports.default
 	if (__vue_template__) {
@@ -21839,7 +21849,7 @@
 	  var hotAPI = require("vue-hot-reload-api")
 	  hotAPI.install(require("vue"), false)
 	  if (!hotAPI.compatible) return
-	  var id = "_v-4f27a410/create-single.vue"
+	  var id = "_v-732cdae8/create-single.vue"
 	  if (!module.hot.data) {
 	    hotAPI.createRecord(id, module.exports)
 	  } else {
@@ -21848,7 +21858,7 @@
 	})()}
 
 /***/ },
-/* 25 */
+/* 40 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -21895,22 +21905,22 @@
 	};
 
 /***/ },
-/* 26 */
+/* 41 */
 /***/ function(module, exports) {
 
 	module.exports = "\n\n<div class=\"uk-form-row\">\n  <mdl-textfield\n          required\n          floating-label=\"Item Text\"\n          :value.sync=\"item.text\"\n  >\n  </mdl-textfield>\n</div>\n\n<div class=\"uk-form-row\">\n\n  <mdl-textfield\n          floating-label=\"Add Option\"\n          :value.sync=\"option.text\"\n          id=\"{{ item.id }}\"\n          v-show=\"!option.input.textfield.active\"\n  >\n  </mdl-textfield>\n\n  <mdl-button\n          v-show=\"option.text || option.input.textfield.active || option.input.textarea.active\"\n          icon\n          mini-fab\n          accent\n          @click.prevent=\"addOption(option)\">\n    <i class=\"material-icons\">add</i>\n  </mdl-button>\n\n  <mdl-switch :checked.sync=\"option.input.textfield.active\" value=\"true\">Textfield</mdl-switch>\n  <mdl-switch :checked.sync=\"option.input.textarea.active\" value=\"true\">Textarea</mdl-switch>\n\n</div>\n\n<ul class=\"mdl-list\" v-for=\"option in item.data.options\">\n\n  <li class=\"mdl-list__item\">\n\n    <!--\n    **To Do: Change\n    **:value (do not use option.text)\n    **better: unique option identifier (id)\n    -->\n\n    <mdl-radio\n            :checked.sync=\"check\"\n            class=\"mdl-js-ripple-effect\"\n            value=\"\"\n            :value=\"option.text\"\n            v-if=\"!(option.input.textarea.active) && !(option.input.textfield.active)\"\n\n    >\n      {{option.text}}\n    </mdl-radio>\n\n    <mdl-textfield\n            label=\"Other\"\n            class=\"full_width\"\n            :value.sync=\"option.input.textfield.input_text\"\n            v-if=\"option.input.textfield.active\"\n    >\n    </mdl-textfield>\n\n\n    <mdl-textfield\n            class=\"full_width list_textarea_padding\"\n            floating-label=\"Textarea\"\n            textarea rows=\"4\"\n            v-if=\"option.input.textarea.active\"\n    >\n    </mdl-textfield>\n\n\n\n                              <span class=\"mdl-list__item-secondary-action\">\n\n                                  <mdl-button\n                                          class=\"mdl-button--icon\"\n                                          primary\n                                          @click.prevent=\"removeOption(option)\"\n                                  >\n                                      <i class=\"material-icons\">delete</i>\n\n                                  </mdl-button>\n\n                              </span>\n\n\n\n  </li>\n\n</ul>\n\n\n";
 
 /***/ },
-/* 27 */
+/* 42 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __vue_script__, __vue_template__
-	__vue_script__ = __webpack_require__(28)
+	__vue_script__ = __webpack_require__(43)
 	if (__vue_script__ &&
 	    __vue_script__.__esModule &&
 	    Object.keys(__vue_script__).length > 1) {
 	  console.warn("[vue-loader] app/components/item/create/create-multiple.vue: named exports in *.vue files are ignored.")}
-	__vue_template__ = __webpack_require__(29)
+	__vue_template__ = __webpack_require__(44)
 	module.exports = __vue_script__ || {}
 	if (module.exports.__esModule) module.exports = module.exports.default
 	if (__vue_template__) {
@@ -21920,7 +21930,7 @@
 	  var hotAPI = require("vue-hot-reload-api")
 	  hotAPI.install(require("vue"), false)
 	  if (!hotAPI.compatible) return
-	  var id = "_v-508bc5c0/create-multiple.vue"
+	  var id = "_v-967b5558/create-multiple.vue"
 	  if (!module.hot.data) {
 	    hotAPI.createRecord(id, module.exports)
 	  } else {
@@ -21929,7 +21939,7 @@
 	})()}
 
 /***/ },
-/* 28 */
+/* 43 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -21971,95 +21981,10 @@
 	};
 
 /***/ },
-/* 29 */
+/* 44 */
 /***/ function(module, exports) {
 
 	module.exports = "\n\n<div class=\"uk-form-row\">\n  <mdl-textfield\n          required\n          floating-label=\"Item Text\"\n          :value.sync=\"item.text\"\n  >\n  </mdl-textfield>\n</div>\n\n<div class=\"uk-form-row\">\n\n  <mdl-textfield\n          floating-label=\"Add Option\"\n          :value.sync=\"option.text\"\n          id=\"{{ item.id }}\"\n          v-show=\"!option.input.textfield.active\"\n  >\n  </mdl-textfield>\n\n  <mdl-button\n          v-show=\"option.text || option.input.textfield.active || option.input.textarea.active\"\n          icon\n          mini-fab\n          accent\n          @click.prevent=\"addOption(option)\">\n    <i class=\"material-icons\">add</i>\n  </mdl-button>\n\n  <mdl-switch :checked.sync=\"option.input.textfield.active\" value=\"true\">Textfield</mdl-switch>\n  <mdl-switch :checked.sync=\"option.input.textarea.active\" value=\"true\">Textarea</mdl-switch>\n\n</div>\n\n<ul class=\"mdl-list\" v-for=\"option in item.data.options\">\n\n  <li class=\"mdl-list__item\">\n\n    <!--\n    **To Do: Change\n    **:value (do not use option.text)\n    **better: unique option identifier (id)\n    -->\n    <mdl-checkbox\n            :checked.sync=\"checks\"\n            value=\"\"\n            :value=\"option.text\"\n            v-if=\"types.multiple.active\"\n    >\n      {{option.text}}\n    </mdl-checkbox>\n\n                              <span class=\"mdl-list__item-secondary-action\">\n\n                                  <mdl-button\n                                          class=\"mdl-button--icon\"\n                                          primary\n                                          @click.prevent=\"removeOption(option)\"\n                                  >\n                                      <i class=\"material-icons\">delete</i>\n\n                                  </mdl-button>\n\n                              </span>\n\n  </li>\n\n</ul>\n\n\n";
-
-/***/ },
-/* 30 */
-/***/ function(module, exports) {
-
-	module.exports = "\n<h1>{{item.text}}</h1>\n<create-scale v-if=\"types.scale.active\"\n  :option=\"option\"\n  :suboption=\"suboption\"\n  :item=\"item\">\n</create-scale>\n\n<create-slider v-if=\"types.slider.active\"\n              :option=\"option\"\n              :item=\"item\"\n              >\n</create-slider>\n\n  <create-single v-if=\"types.slider.active\"\n                 :option=\"option\"\n                 :item=\"item\"\n                 >\n  </create-single>\n\n  <create-multiple v-if=\"types.slider.active\"\n                 :option=\"option\"\n                 :item=\"item\"\n                 >\n  </create-multiple>\n\n";
-
-/***/ },
-/* 31 */
-/***/ function(module, exports) {
-
-	module.exports = "\n\n<div class=\"container\">\n  <h1>Create a new Item</h1>\n\n  <h3>Choose an Item Type</h3>\n\n  <!-- select item type component -->\n  <select-item-type\n    :module=\"module\"\n    :item=\"item\"\n    :types=\"types\">\n  </select-item-type>\n\n  <h2>Selected: {{ item.data.type }}</h2>\n\n  <form class=\"uk-form\" @submit.prevent=\"saveItem(item, module.id, module)\">\n\n    <create-item :item=\"item\" :types=\"types\"></create-item>\n\n      <div class=\"uk-form-row\">\n          <mdl-button raised accent>\n              Save Item\n              <i class=\"material-icons\">save</i>\n          </mdl-button>\n      </div>\n\n  </form>\n</div>\n";
-
-/***/ },
-/* 32 */
-/***/ function(module, exports) {
-
-	module.exports = "\n\n<!-- This is the modal -->\n<div id=\"{{ module.id }}\" class=\"uk-modal\">\n    <div class=\"uk-modal-dialog modal-tweak uk-modal-dialog-large\">\n        <a class=\"uk-modal-close uk-close\"></a>\n\n        <div class=\"mdl-grid\">\n            <!-- This is the left half -->\n            <div class=\"mdl-cell mdl-cell--6-col mdl-cell--6-col-tablet mdl-cell--12-col-phone\">\n\n              <create-frame :module=\"module\"></create-frame>\n\n                <hr>\n\n                    <template v-if=\"types.multiple.active || types.single.active\">\n\n                        <div class=\"uk-form-row\">\n                            <mdl-textfield\n                            required\n                            floating-label=\"Item Text\"\n                            :value.sync=\"item.text\"\n                            >\n                            </mdl-textfield>\n                        </div>\n\n                        <div class=\"uk-form-row\">\n\n                            <mdl-textfield\n                                floating-label=\"Add Option\"\n                                :value.sync=\"option.text\"\n                                id=\"{{ item.id }}\"\n                                v-show=\"!option.input.textfield.active\"\n                            >\n                            </mdl-textfield>\n\n                            <mdl-button\n                                v-show=\"option.text || option.input.textfield.active || option.input.textarea.active\"\n                                icon\n                                mini-fab\n                                accent\n                                @click.prevent=\"addOption(option)\">\n                                    <i class=\"material-icons\">add</i>\n                            </mdl-button>\n\n                            <mdl-switch :checked.sync=\"option.input.textfield.active\" value=\"true\">Textfield</mdl-switch>\n                            <mdl-switch :checked.sync=\"option.input.textarea.active\" value=\"true\">Textarea</mdl-switch>\n\n                        </div>\n\n                    </template>\n\n                    <template v-if=\"types.scale.active\">\n\n                        <mdl-textfield\n                          floating-label=\"Item Text\"\n                          :value.sync=\"item.text\"\n                          class=\"uk-form-width-small\"\n                        >\n                        </mdl-textfield>\n\n                        <br>\n\n                        <mdl-textfield\n                            floating-label=\"Option Text\"\n                            :value.sync=\"option.text\"\n                            class=\"uk-form-width-small\"\n                            @keyup.enter=\"addOption(option)\"\n                        ></mdl-textfield>\n\n                        <mdl-textfield\n                            floating-label=\"Option Value\"\n                            :value.sync=\"option.value\"\n                            class=\"uk-form-width-small\"\n                            pattern=\"-?[0-9]*(\\.[0-9]+)?\"\n                            error=\"Input is not a number!\"\n                            @keyup.enter=\"addOption(option)\"\n                        ></mdl-textfield>\n\n                        <mdl-button\n                            icon\n                            mini-fab\n                            accent\n                            @click.prevent=\"addOption(option)\">\n                                <i class=\"material-icons\">add</i>\n                        </mdl-button>\n\n\n                        <mdl-textfield\n                            floating-label=\"Suboption Text\"\n                            :value.sync=\"suboption.text\"\n                            class=\"uk-form-width-small\"\n                            @keyup.enter=\"addSubOption(suboption)\"\n                        ></mdl-textfield>\n\n                        <mdl-button\n                            icon\n                            mini-fab\n                            accent\n                            @click.prevent=\"addSubOption(suboption)\">\n                                <i class=\"material-icons\">add</i>\n                        </mdl-button>\n\n                    </template>\n\n                    <template v-if=\"types.slider.active\">\n\n                        <div class=\"uk-form-row\">\n                            <mdl-textfield\n                            required\n                            floating-label=\"Item Text\"\n                            :value.sync=\"item.text\"\n                            >\n                            </mdl-textfield>\n                        </div>\n\n                        <div data-uk-margin>\n                            <mdl-textfield\n                                floating-label=\"Step\"\n                                :value.sync=\"slider_params.step\"\n                                class=\"uk-form-width-small\"\n                                pattern=\"-?[0-9]*(\\.[0-9]+)?\"\n                                error=\"Input is not a number!\"\n                            >\n                            </mdl-textfield>\n\n                            <mdl-textfield\n                                floating-label=\"min value\"\n                                :value.sync=\"slider_params.min\"\n                                class=\"uk-form-width-small\"\n                                pattern=\"-?[0-9]*(\\.[0-9]+)?\"\n                                error=\"Input is not a number!\"\n                            >\n                            </mdl-textfield>\n\n                            <mdl-textfield\n                                floating-label=\"max value\"\n                                :value.sync=\"slider_params.max\"\n                                required\n                                class=\"uk-form-width-small\"\n                                pattern=\"-?[0-9]*(\\.[0-9]+)?\"\n                                error=\"Input is not a number!\"\n                            >\n                            </mdl-textfield>\n                        </div>\n\n                    </template>\n\n            </div>\n\n            <!-- This is the right half -->\n            <div class=\"mdl-cell mdl-cell--6-col mdl-cell--6-col-tablet mdl-cell--12-col-phone\">\n                <h1>Preview </h1>\n\n                <h3>{{ item.text }}</h3>\n\n                <!-- This is the slider-preview -->\n                <template v-if=\"types.slider.active\">\n\n                    <div class=\"uk-form-row\">\n\n                        <mdl-textfield\n                            floating-label=\"Value\"\n                            :value.sync=\"slider_params.amount\"\n                            readonly\n                        >\n                        </mdl-textfield>\n\n                        <mdl-slider\n                            :value.sync=\"slider_params.amount\"\n                            :min.sync=\"slider_params.min\"\n                            :max.sync=\"slider_params.max\"\n                            :step.sync=\"slider_params.step\"\n                        >\n                        </mdl-slider>\n\n                    </div>\n                </template>\n\n                <!-- This is the slider-preview -->\n                <template v-if=\"types.scale.active\">\n\n                  <table class=\"mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp\">\n\n                    <thead>\n                      <tr>\n                        <th></th>\n                        <th\n                          class=\"mdl-data-table__cell--non-numeric\"\n                          v-for=\"option in item.data.options\"\n                        >\n                          {{option.text}}\n                        </th>\n                      </tr>\n                    </thead>\n\n                    <tbody>\n                      <tr v-for=\"suboption in item.data.suboptions\">\n                        <td class=\"mdl-data-table__cell--non-numeric\">{{suboption.text}}</td>\n                        <td v-for=\"option in item.data.options\">\n                          <mdl-radio\n                            class=\"table_radio\"\n                            :checked.sync=\"check[suboption.text]\"\n                            value=\"\"\n                            :value=\"option.text\">\n                          </mdl-radio>\n                        </td>\n                      </tr>\n                    </tbody>\n                  </table>\n\n\n                </template>\n\n                <!-- This is list of options -->\n                <!-- To Do: Preview-Components -->\n                <template v-if=\"types.multiple.active\">\n                    <ul class=\"mdl-list\" v-for=\"option in item.data.options\">\n\n                        <li class=\"mdl-list__item\">\n\n                            <!--\n                            **To Do: Change\n                            **:value (do not use option.text)\n                            **better: unique option identifier (id)\n                            -->\n                            <mdl-checkbox\n                                :checked.sync=\"checks\"\n                                value=\"\"\n                                :value=\"option.text\"\n                                v-if=\"types.multiple.active\"\n                            >\n                                {{option.text}}\n                            </mdl-checkbox>\n\n                            <span class=\"mdl-list__item-secondary-action\">\n\n                                <mdl-button\n                                    class=\"mdl-button--icon\"\n                                    primary\n                                    @click.prevent=\"removeOption(option)\"\n                                >\n                                    <i class=\"material-icons\">delete</i>\n\n                                </mdl-button>\n\n                            </span>\n\n                        </li>\n\n                    </ul>\n                </template>\n\n                <!-- This is list of options -->\n                <!-- To Do: Preview-Components -->\n                <template v-if=\"types.single.active\">\n                    <ul class=\"mdl-list\" v-for=\"option in item.data.options\">\n\n                        <li class=\"mdl-list__item\">\n\n                            <!--\n                            **To Do: Change\n                            **:value (do not use option.text)\n                            **better: unique option identifier (id)\n                            -->\n\n                            <mdl-radio\n                                :checked.sync=\"check\"\n                                class=\"mdl-js-ripple-effect\"\n                                value=\"\"\n                                :value=\"option.text\"\n                                v-if=\"!(option.input.textarea.active) && !(option.input.textfield.active)\"\n\n                            >\n                                {{option.text}}\n                            </mdl-radio>\n\n                            <mdl-textfield\n                                label=\"Other\"\n                                class=\"full_width\"\n                                :value.sync=\"option.input.textfield.input_text\"\n                                v-if=\"option.input.textfield.active\"\n                            >\n                            </mdl-textfield>\n\n\n                            <mdl-textfield\n                                class=\"full_width list_textarea_padding\"\n                                floating-label=\"Textarea\"\n                                textarea rows=\"4\"\n                                v-if=\"option.input.textarea.active\"\n                            >\n                            </mdl-textfield>\n\n\n\n                            <span class=\"mdl-list__item-secondary-action\">\n\n                                <mdl-button\n                                    class=\"mdl-button--icon\"\n                                    primary\n                                    @click.prevent=\"removeOption(option)\"\n                                >\n                                    <i class=\"material-icons\">delete</i>\n\n                                </mdl-button>\n\n                            </span>\n\n\n\n                        </li>\n\n                    </ul>\n                </template>\n\n            </div>\n\n        </div>\n\n    </div>\n\n</div>\n\n";
-
-/***/ },
-/* 33 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var __vue_script__, __vue_template__
-	__vue_script__ = __webpack_require__(34)
-	if (__vue_script__ &&
-	    __vue_script__.__esModule &&
-	    Object.keys(__vue_script__).length > 1) {
-	  console.warn("[vue-loader] app/components/module/card-module.vue: named exports in *.vue files are ignored.")}
-	__vue_template__ = __webpack_require__(35)
-	module.exports = __vue_script__ || {}
-	if (module.exports.__esModule) module.exports = module.exports.default
-	if (__vue_template__) {
-	(typeof module.exports === "function" ? (module.exports.options || (module.exports.options = {})) : module.exports).template = __vue_template__
-	}
-	if (false) {(function () {  module.hot.accept()
-	  var hotAPI = require("vue-hot-reload-api")
-	  hotAPI.install(require("vue"), false)
-	  if (!hotAPI.compatible) return
-	  var id = "_v-49e27180/card-module.vue"
-	  if (!module.hot.data) {
-	    hotAPI.createRecord(id, module.exports)
-	  } else {
-	    hotAPI.update(id, module.exports, __vue_template__)
-	  }
-	})()}
-
-/***/ },
-/* 34 */
-/***/ function(module, exports) {
-
-	'use strict';
-
-	module.exports = {
-	    props: [],
-	    data: function data() {
-	        return {
-	            item: {
-	                text: '',
-	                item_order: ''
-	            },
-	            items: '',
-	            edit: false,
-	            options: {
-	                handle: '.handle',
-	                chosenClass: "chosen",
-	                ghostClass: "ghost",
-	                edit: false,
-	                animation: 150
-	            }
-	        };
-	    },
-
-	    methods: {
-	        deleteItem: function deleteItem(item, items) {
-	            items.$remove(item);
-	        }
-	    }
-	};
-
-/***/ },
-/* 35 */
-/***/ function(module, exports) {
-
-	module.exports = "\n\n\n\n<div class=\"mdl-card mdl-cell--top mdl-cell--stretch mdl-cell--12-col mdl-cell--8-col-tablet mdl-cell--4-col-phone mdl-shadow--8dp\">\n\n    <div class=\"mdl-card__title card-background\">\n        <div class=\"mdl-card__title-text title-text\">\n            {{module.title}} <br>\n        </div>\n    </div>\n    <div class=\"mdl-card__supporting-text card-text-background\">\n        <p>\n            Description: Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquam accusamus, consectetur.\n        </p>\n    </div>\n\n\n    <div class=\"mdl-card__actions\">\n        <!-- This is a button toggling the modal -->\n        <mdl-button colored accent raised data-uk-modal=\"{target:'#{{ module.id }}'}\">\n            <i class=\"material-icons\">add</i>\n            Show Items (Modal)\n        </mdl-button>\n\n        <!-- This is the button toggling the off-canvas sidebar -->\n        <mdl-button colored accent raised data-uk-offcanvas=\"{target:'#{{ module.title }}'}\">\n            <i class=\"material-icons\">add</i>\n            Show Items (Off-Canvas)\n        </mdl-button>\n\n    </div>\n\n    <div class=\"mdl-card__menu\">\n        <mdl-button v-mdl-ripple-effect fab accent @click=\"remove(module, modules)\">\n            <i class=\"material-icons\">delete</i>\n        </mdl-button>\n\n        <mdl-button v-mdl-ripple-effect fab accent @click=\"update(module)\"><i class=\"material-icons\">save</i></mdl-button>\n\n\n    </div>\n</div>\n</div>\n\n";
 
 /***/ }
 /******/ ]);
