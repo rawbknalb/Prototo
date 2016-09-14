@@ -12,7 +12,9 @@ return [
         'Osa\\OsaMaker\\' => 'src'
     ],
     'resources' => [
-        'osamaker:' => ''
+        'osamaker:' => '',
+        'root:' => '',
+
     ],
     'config' => [],
 
@@ -21,19 +23,22 @@ return [
         '/osamaker' => [
             'name' => '@osamaker',
             'controller' => [
-                'Osa\\OsaMaker\\Controller\\OsaMakerController'
+                'Osa\\OsaMaker\\Controller\\Maker\\OsaMakerController'
             ]
         ],
         '/osamaker/api' => [
             'name' => '@osamaker/api',
             'controller' => [
-                'Osa\\OsaMaker\\Controller\\AssessmentController',
-                'Osa\\OsaMaker\\Controller\\ModuleController',
-                'Osa\\OsaMaker\\Controller\\ItemController'
+                'Osa\\OsaMaker\\Controller\\Maker\\AssessmentController',
+                'Osa\\OsaMaker\\Controller\\Maker\\ModuleController',
+                'Osa\\OsaMaker\\Controller\\Maker\\ItemController'
             ]
         ],
-
-
+        '/assessments' => [
+            'name' => '@assessments',
+            'controller' => [
+                'Osa\\OsaMaker\\Controller\\PublicController']
+        ]
 
     ],
     'menu' => [

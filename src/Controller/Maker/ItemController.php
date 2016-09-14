@@ -1,5 +1,5 @@
 <?php
-namespace Osa\OsaMaker\Controller;
+namespace Osa\OsaMaker\Controller\Maker;
 
 use Pagekit\Application as App;
 use Osa\OsaMaker\Model\Item;
