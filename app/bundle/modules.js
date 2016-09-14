@@ -21096,7 +21096,7 @@
 	  var hotAPI = require("vue-hot-reload-api")
 	  hotAPI.install(require("vue"), false)
 	  if (!hotAPI.compatible) return
-	  var id = "_v-8b063e80/list-item.vue"
+	  var id = "_v-6e7090ac/list-item.vue"
 	  if (!module.hot.data) {
 	    hotAPI.createRecord(id, module.exports)
 	  } else {
@@ -21157,7 +21157,7 @@
 	  var hotAPI = require("vue-hot-reload-api")
 	  hotAPI.install(require("vue"), false)
 	  if (!hotAPI.compatible) return
-	  var id = "_v-20e4aa5e/add-item.vue"
+	  var id = "_v-3fae4d65/add-item.vue"
 	  if (!module.hot.data) {
 	    hotAPI.createRecord(id, module.exports)
 	  } else {
@@ -21291,7 +21291,7 @@
 	  var hotAPI = require("vue-hot-reload-api")
 	  hotAPI.install(require("vue"), false)
 	  if (!hotAPI.compatible) return
-	  var id = "_v-03043a2c/frame.vue"
+	  var id = "_v-362972c0/frame.vue"
 	  if (!module.hot.data) {
 	    hotAPI.createRecord(id, module.exports)
 	  } else {
@@ -21406,7 +21406,7 @@
 	  var hotAPI = require("vue-hot-reload-api")
 	  hotAPI.install(require("vue"), false)
 	  if (!hotAPI.compatible) return
-	  var id = "_v-4febb798/select-item-type.vue"
+	  var id = "_v-0ab4f1c0/select-item-type.vue"
 	  if (!module.hot.data) {
 	    hotAPI.createRecord(id, module.exports)
 	  } else {
@@ -21490,7 +21490,7 @@
 	  var hotAPI = require("vue-hot-reload-api")
 	  hotAPI.install(require("vue"), false)
 	  if (!hotAPI.compatible) return
-	  var id = "_v-1c32ad43/create-item.vue"
+	  var id = "_v-dcafb252/create-item.vue"
 	  if (!module.hot.data) {
 	    hotAPI.createRecord(id, module.exports)
 	  } else {
@@ -21505,66 +21505,68 @@
 	'use strict';
 
 	module.exports = {
-	  components: {
-	    'create-scale': __webpack_require__(18),
-	    'create-slider': __webpack_require__(21),
-	    'create-single': __webpack_require__(24),
-	    'create-multiple': __webpack_require__(27)
-	  },
-	  props: ["item", "types"],
+	    components: {
+	        'create-scale': __webpack_require__(18),
+	        'create-slider': __webpack_require__(21),
+	        'create-single': __webpack_require__(24),
+	        'create-multiple': __webpack_require__(27)
+	    },
+	    props: ["item", "types"],
 
-	  data: function data() {
-	    return {
+	    data: function data() {
+	        return {
 
-	      option: {
-	        text: '',
-	        value: '',
-	        id: 1,
-	        input: {
-	          textfield: {
-	            active: false,
-	            input_text: ''
-	          },
-	          textarea: {
-	            active: false,
-	            input_text: ''
-	          }
+	            option: {
+	                text: '',
+	                value: '',
+	                id: 1,
+	                input: {
+	                    textfield: {
+	                        active: false,
+	                        input_text: ''
+	                    },
+	                    textarea: {
+	                        active: false,
+	                        input_text: ''
+	                    }
+	                }
+	            },
+
+	            suboption: {
+	                text: ''
+	            }
+
+	        };
+	    },
+
+	    methods: {
+
+	        addOption: function addOption(option) {
+	            this.item.data.options.push(option);
+	            this.option = {
+	                text: '',
+	                value: '',
+	                id: 1,
+	                input: {
+	                    textfield: {
+	                        active: false,
+	                        input_text: ''
+	                    },
+	                    textarea: {
+	                        active: false,
+	                        input_text: ''
+	                    }
+	                }
+	            };
+	            this.options = {
+	                text: ''
+	            };
+	        },
+
+	        removeOption: function removeOption(option) {
+	            this.item.data.options.$remove(option);
 	        }
-	      },
-
-	      suboption: {
-	        text: ''
-	      }
-
-	    };
-	  },
-
-	  methods: {
-	    addOption: function addOption(option) {
-
-	      this.item.data.options.push(option);
-
-	      this.option = {
-	        text: '',
-	        value: '',
-	        id: 1,
-	        input: {
-	          textfield: {
-	            active: false,
-	            input_text: ''
-	          },
-	          textarea: {
-	            active: false,
-	            input_text: ''
-	          }
-	        }
-	      };
-
-	      this.options = {
-	        text: ''
-	      };
 	    }
-	  }
 	};
 
 /***/ },
@@ -21587,7 +21589,7 @@
 	  var hotAPI = require("vue-hot-reload-api")
 	  hotAPI.install(require("vue"), false)
 	  if (!hotAPI.compatible) return
-	  var id = "_v-7c73e8ca/create-scale.vue"
+	  var id = "_v-94a4bc94/create-scale.vue"
 	  if (!module.hot.data) {
 	    hotAPI.createRecord(id, module.exports)
 	  } else {
@@ -21672,7 +21674,7 @@
 	  var hotAPI = require("vue-hot-reload-api")
 	  hotAPI.install(require("vue"), false)
 	  if (!hotAPI.compatible) return
-	  var id = "_v-3833a3de/create-slider.vue"
+	  var id = "_v-5c38dab6/create-slider.vue"
 	  if (!module.hot.data) {
 	    hotAPI.createRecord(id, module.exports)
 	  } else {
@@ -21755,7 +21757,7 @@
 	  var hotAPI = require("vue-hot-reload-api")
 	  hotAPI.install(require("vue"), false)
 	  if (!hotAPI.compatible) return
-	  var id = "_v-4f27a410/create-single.vue"
+	  var id = "_v-732cdae8/create-single.vue"
 	  if (!module.hot.data) {
 	    hotAPI.createRecord(id, module.exports)
 	  } else {
@@ -21836,7 +21838,7 @@
 	  var hotAPI = require("vue-hot-reload-api")
 	  hotAPI.install(require("vue"), false)
 	  if (!hotAPI.compatible) return
-	  var id = "_v-508bc5c0/create-multiple.vue"
+	  var id = "_v-967b5558/create-multiple.vue"
 	  if (!module.hot.data) {
 	    hotAPI.createRecord(id, module.exports)
 	  } else {
@@ -21896,13 +21898,13 @@
 /* 30 */
 /***/ function(module, exports) {
 
-	module.exports = "\n<h1>{{item.text}}</h1>\n<create-scale v-if=\"types.scale.active\"\n  :option=\"option\"\n  :suboption=\"suboption\"\n  :item=\"item\">\n</create-scale>\n\n<create-slider v-if=\"types.slider.active\"\n              :option=\"option\"\n              :item=\"item\"\n              >\n</create-slider>\n\n  <create-single v-if=\"types.slider.active\"\n                 :option=\"option\"\n                 :item=\"item\"\n                 >\n  </create-single>\n\n  <create-multiple v-if=\"types.slider.active\"\n                 :option=\"option\"\n                 :item=\"item\"\n                 >\n  </create-multiple>\n\n";
+	module.exports = "\n    <h1>{{item.text}}</h1>\n\n    <create-scale v-if=\"types.scale.active\"\n    :option=\"option\"\n    :suboption=\"suboption\"\n    :item=\"item\">\n    </create-scale>\n\n<create-slider v-if=\"types.slider.active\"\n:option=\"option\"\n:item=\"item\"\n>\n</create-slider>\n\n<create-single v-if=\"types.slider.active\"\n:option=\"option\"\n:item=\"item\"\n>\n</create-single>\n\n<create-multiple v-if=\"types.slider.active\"\n:option=\"option\"\n:item=\"item\"\n>\n</create-multiple>\n\n";
 
 /***/ },
 /* 31 */
 /***/ function(module, exports) {
 
-	module.exports = "\n\n<div class=\"container\">\n  <h1>Create a new Item</h1>\n\n  <h3>Choose an Item Type</h3>\n\n  <!-- select item type component -->\n  <select-item-type\n    :module=\"module\"\n    :item=\"item\"\n    :types=\"types\">\n  </select-item-type>\n\n  <h2>Selected: {{ item.data.type }}</h2>\n\n  <form class=\"uk-form\" @submit.prevent=\"saveItem(item, module.id, module)\">\n\n    <create-item :item=\"item\" :types=\"types\"></create-item>\n\n      <div class=\"uk-form-row\">\n          <mdl-button raised accent>\n              Save Item\n              <i class=\"material-icons\">save</i>\n          </mdl-button>\n      </div>\n\n  </form>\n</div>\n";
+	module.exports = "\n\n<div class=\"container\">\n  <h1>Create a new Item</h1>\n\n  <h3>Choose an Item Type</h3>\n\n  <!-- select item type component -->\n  <select-item-type\n    :module=\"module\"\n    :item=\"item\"\n    :types=\"types\">\n  </select-item-type>\n\n  <h2>Selected: {{ item.data.type }}</h2>\n\n  <form class=\"uk-form\" @submit.prevent=\"saveItem(item, module.id, module)\">\n\n      <div class=\"mdl-card mdl-shadow--4dp\">\n        <div class=\"mdl-card__title\">\n          <h2 class=\"mdl-card__title-text\">Update</h2>\n        </div>\n        <div class=\"mdl-card__supporting-text\">\n          Lorem ipsum dolor sit amet, consectetur adipiscing elit.\n          Aenan convallis.\n        </div>\n        <div class=\"mdl-card__actions mdl-card--border\">\n          <a class=\"mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect\">\n            View Updates\n          </a>\n        </div>\n      </div>\n\n    <create-item :item=\"item\" :types=\"types\"></create-item>\n\n      <div class=\"uk-form-row\">\n          <mdl-button raised accent>\n              Save Item\n              <i class=\"material-icons\">save</i>\n          </mdl-button>\n      </div>\n\n  </form>\n</div>\n";
 
 /***/ },
 /* 32 */
@@ -21930,7 +21932,7 @@
 	  var hotAPI = require("vue-hot-reload-api")
 	  hotAPI.install(require("vue"), false)
 	  if (!hotAPI.compatible) return
-	  var id = "_v-49e27180/card-module.vue"
+	  var id = "_v-7b644b6c/card-module.vue"
 	  if (!module.hot.data) {
 	    hotAPI.createRecord(id, module.exports)
 	  } else {
