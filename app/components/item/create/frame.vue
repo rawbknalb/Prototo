@@ -16,6 +16,21 @@
 
   <form class="uk-form" @submit.prevent="saveItem(item, module.id, module)">
 
+      <div class="mdl-card mdl-shadow--4dp">
+        <div class="mdl-card__title">
+          <h2 class="mdl-card__title-text">Update</h2>
+        </div>
+        <div class="mdl-card__supporting-text">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+          Aenan convallis.
+        </div>
+        <div class="mdl-card__actions mdl-card--border">
+          <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+            View Updates
+          </a>
+        </div>
+      </div>
+
     <create-item :item="item" :types="types"></create-item>
 
       <div class="uk-form-row">
