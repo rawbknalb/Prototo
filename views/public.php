@@ -1,8 +1,9 @@
 <?php $view->script('assessments', 'root:app/bundle/public.js', 'vue') ?>
+<?php $view->script('materialize-js', 'osamaker:app/assets/js/materialize.js') ?>
+
+<?php $view->style('materialize-css', 'osamaker:app/assets/css/materialize.css') ?>
 
 <div id="public" v-cloak>
-    <ul>
-        <li v-for="assessment in assessments"> {{ assessment.title }}</li>
-    </ul>
+    <assessments></assessments>
 </div>
 

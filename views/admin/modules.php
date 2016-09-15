@@ -9,6 +9,12 @@
 
 <div id="modules" v-cloak>
 
+    <!-- <ui-modal
+        :show.sync="show.modal9" type="large" header="Large Modal"
+        body="Hi there, World. What's happening?"
+    ></ui-modal> -->
+    <!-- <ui-button @click="show.modal9 = true">Large Modal</ui-button> -->
+
     <ui-tabs fullwidth background-color="clear">
         <ui-tab header="Assessments">
             Assessments
@@ -16,7 +22,9 @@
 
         <ui-tab header="Modules">
             <add-module :module="module" @getModules="getModules"></add-module>
-            <list-modules :modules="modules"></list-modules>        </ui-tab>
+            <list-modules :modules="modules"></list-modules>
+        </ui-tab>
+
         <ui-tab header="Settings">
             Settings
         </ui-tab>
