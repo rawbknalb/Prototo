@@ -1,4 +1,5 @@
 Vue.use(require('vue-mdl').default);
+Vue.use(require('keen-ui'));
 // Vue.use(require('vue-sortable'));
 Vue.use(require('VueDragableFor'));
 // Vue.use(require('vuikit'));

@@ -2,9 +2,9 @@
 
     <!-- This is the modal -->
     <div id="{{ module.id }}" class="uk-modal">
-        <div class="uk-modal-dialog uk-modal-dialog-blank uk-height-viewport">
+        <div class="uk-modal-dialog uk-modal-dialog-blank uk-height-viewport modal-backround">
             <a class="uk-modal-close uk-close"></a>
-
+        
             <div class="mdl-grid">
                 <!-- This is the left half -->
                 <div class="mdl-cell mdl-cell--12-col mdl-cell--12-col-tablet mdl-cell--12-col-phone">
