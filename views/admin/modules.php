@@ -13,26 +13,38 @@
 
     <ui-tabs fullwidth background-color="clear">
         <ui-tab header="Assessments">
-            Assessments    <ui-modal
-                :show.sync="show" type="large" header="Large Modal"
-                body="Hi there, World. What's happening?"
+            Assessments
+            <ui-modal
+            :show.sync="show" type="large">
+            <div class="mdl-layout mdl-js-layout mdl-layout--fixed-drawer">
+                <div class="mdl-layout__drawer">
+                    <span class="mdl-layout-title">Title</span>
+                    <nav class="mdl-navigation">
+                        <a class="mdl-navigation__link" href="">Link</a>
+                        <a class="mdl-navigation__link" href="">Link</a>
+                        <a class="mdl-navigation__link" href="">Link</a>
+                        <a class="mdl-navigation__link" href="">Link</a>
+                        <a class="mdl-navigation__link" href="">Link</a>
+                        <a class="mdl-navigation__link" href="">Link</a>
+                        <a class="mdl-navigation__link" href="">Link</a>
+                        <a class="mdl-navigation__link" href="">Link</a>
+                        <a class="mdl-navigation__link" href="">Link</a>
+                        <a class="mdl-navigation__link" href="">Link</a>
+                        <a class="mdl-navigation__link" href="">Link</a>
+                        <a class="mdl-navigation__link" href="">Link</a>
+                        <a class="mdl-navigation__link" href="">Link</a>
+                        <a class="mdl-navigation__link" href="">Link</a>
+                        <a class="mdl-navigation__link" href="">Link</a>
+                        <a class="mdl-navigation__link" href="">Link</a>
 
-                ><!-- No header, and the drawer stays open on larger screens (fixed drawer). -->
-<div class="mdl-layout mdl-js-layout mdl-layout--fixed-drawer">
-  <div class="mdl-layout__drawer">
-    <span class="mdl-layout-title">Title</span>
-    <nav class="mdl-navigation">
-      <a class="mdl-navigation__link" href="">Link</a>
-      <a class="mdl-navigation__link" href="">Link</a>
-      <a class="mdl-navigation__link" href="">Link</a>
-      <a class="mdl-navigation__link" href="">Link</a>
-    </nav>
-  </div>
-  <main class="mdl-layout__content">
-    <div class="page-content"><!-- Your content goes here --></div>
-  </main>
-</div></ui-modal>
-                <ui-button @click="show = true">Large Modal</ui-button>
+                    </nav>
+                </div>
+                <main class="mdl-layout__content">
+                    <div class="page-content"><!-- Your content goes here --></div>
+                </main>
+            </div>
+        </ui-modal>
+        <ui-button @click="show = true">Large Modal</ui-button>
         </ui-tab>
 
         <ui-tab header="Modules">
