@@ -2,12 +2,12 @@
 
     <!-- This is the modal -->
     <div id="{{ module.id }}" class="uk-modal">
-        <div class="uk-modal-dialog modal-tweak uk-modal-dialog-large">
+        <div class="uk-modal-dialog uk-modal-dialog-blank uk-height-viewport">
             <a class="uk-modal-close uk-close"></a>
 
             <div class="mdl-grid">
                 <!-- This is the left half -->
-                <div class="mdl-cell mdl-cell--6-col mdl-cell--6-col-tablet mdl-cell--12-col-phone">
+                <div class="mdl-cell mdl-cell--12-col mdl-cell--12-col-tablet mdl-cell--12-col-phone">
 
                   <create-frame :module="module"></create-frame>
 
@@ -15,14 +15,7 @@
 
                         <template v-if="types.multiple.active || types.single.active">
 
-                            <div class="uk-form-row">
-                                <mdl-textfield
-                                required
-                                floating-label="Item Text"
-                                :value.sync="item.text"
-                                >
-                                </mdl-textfield>
-                            </div>
+
 
                             <div class="uk-form-row">
 
@@ -148,174 +141,6 @@
 
                 </div>
 
-                <!-- This is the right half -->
-                <div class="mdl-cell mdl-cell--6-col mdl-cell--6-col-tablet mdl-cell--12-col-phone">
-                    <h1>Preview </h1>
-
-                    <h3>{{ item.text }}</h3>
-
-                    <!-- This is the slider-preview -->
-                    <template v-if="types.slider.active">
-
-                        <div class="uk-form-row">
-
-                            <mdl-textfield
-                                floating-label="Value"
-                                :value.sync="slider_params.amount"
-                                readonly
-                            >
-                            </mdl-textfield>
-
-                            <mdl-slider
-                                :value.sync="slider_params.amount"
-                                :min.sync="slider_params.min"
-                                :max.sync="slider_params.max"
-                                :step.sync="slider_params.step"
-                            >
-                            </mdl-slider>
-
-                        </div>
-                    </template>
-
-                    <!-- This is the slider-preview -->
-                    <template v-if="types.scale.active">
-
-                      <table class="mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp">
-
-                        <thead>
-                          <tr>
-                            <th></th>
-                            <th
-                              class="mdl-data-table__cell--non-numeric"
-                              v-for="option in item.data.options"
-                            >
-                              {{option.text}}
-                            </th>
-                          </tr>
-                        </thead>
-
-                        <tbody>
-                          <tr v-for="suboption in item.data.suboptions">
-                            <td class="mdl-data-table__cell--non-numeric">{{suboption.text}}</td>
-                            <td v-for="option in item.data.options">
-                              <mdl-radio
-                                class="table_radio"
-                                :checked.sync="check[suboption.text]"
-                                value=""
-                                :value="option.text">
-                              </mdl-radio>
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
-
-
-                    </template>
-
-                    <!-- This is list of options -->
-                    <!-- To Do: Preview-Components -->
-                    <template v-if="types.multiple.active">
-                        <ul class="mdl-list" v-for="option in item.data.options">
-
-                            <li class="mdl-list__item">
-
-                                <!--
-                                **To Do: Change
-                                **:value (do not use option.text)
-                                **better: unique option identifier (id)
-                                -->
-                                <mdl-checkbox
-                                    :checked.sync="checks"
-                                    value=""
-                                    :value="option.text"
-                                    v-if="types.multiple.active"
-                                >
-                                    {{option.text}}
-                                </mdl-checkbox>
-
-                                <span class="mdl-list__item-secondary-action">
-
-                                    <mdl-button
-                                        class="mdl-button--icon"
-                                        primary
-                                        @click.prevent="removeOption(option)"
-                                    >
-                                        <i class="material-icons">delete</i>
-
-                                    </mdl-button>
-
-                                </span>
-
-                            </li>
-
-                        </ul>
-                    </template>
-
-                    <!-- This is list of options -->
-                    <!-- To Do: Preview-Components -->
-                    <template v-if="types.single.active">
-                        <ul class="mdl-list" v-for="option in item.data.options">
-
-                            <li class="mdl-list__item">
-
-                                <!--
-                                **To Do: Change
-                                **:value (do not use option.text)
-                                **better: unique option identifier (id)
-                                -->
-
-                                <mdl-radio
-                                    :checked.sync="check"
-                                    class="mdl-js-ripple-effect"
-                                    value=""
-                                    :value="option.text"
-                                    v-if="!(option.input.textarea.active) && !(option.input.textfield.active)"
-
-                                >
-                                    {{option.text}}
-                                </mdl-radio>
-
-                                <mdl-textfield
-                                    label="Other"
-                                    class="full_width"
-                                    :value.sync="option.input.textfield.input_text"
-                                    v-if="option.input.textfield.active"
-                                >
-                                </mdl-textfield>
-
-
-                                <mdl-textfield
-                                    class="full_width list_textarea_padding"
-                                    floating-label="Textarea"
-                                    textarea rows="4"
-                                    v-if="option.input.textarea.active"
-                                >
-                                </mdl-textfield>
-
-
-
-                                <span class="mdl-list__item-secondary-action">
-
-                                    <mdl-button
-                                        class="mdl-button--icon"
-                                        primary
-                                        @click.prevent="removeOption(option)"
-                                    >
-                                        <i class="material-icons">delete</i>
-
-                                    </mdl-button>
-
-                                </span>
-
-
-
-                            </li>
-
-                        </ul>
-                    </template>
-
-                </div>
-
             </div>
 
         </div>
@@ -370,30 +195,6 @@ module.exports = {
     },
     methods: {
 
-        addOption: function (option) {
-
-            this.item.data.options.push(option);
-
-            this.option = {
-                text: '',
-                value: '',
-                id: 1,
-                input: {
-                    textfield: {
-                        active: false,
-                        input_text: ''
-                    },
-                    textarea: {
-                        active: false,
-                        input_text: ''
-                    },
-                }
-            }
-
-            this.options = {
-                text: ''
-            }
-        },
 
         addSubOption: function (suboption) {
 
@@ -416,11 +217,6 @@ module.exports = {
             };
         },
 
-        removeOption: function (option) {
-
-            this.item.data.options.$remove(option);
-
-        }
 
     }
 
