@@ -20,6 +20,7 @@ module.exports = {
                 modules: [],
                 items: '',
                 edit: false,
+                show: false,
                 // data: window.$data,
             },
 

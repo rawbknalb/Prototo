@@ -55,6 +55,22 @@
 .modal-backround {
     background: #fff;
 }
+.ui-modal {
+    font-family: $font-stack;
+    font-size: 14px;
+
+    &.ui-modal-large {
+        .ui-modal-container {
+            width: 100%;
+            height: 100%;
+        }
+    }
+}
+
+.ui-modal.ui-modal-large .ui-modal-container{
+    width:100%;
+    height: 100%
+}
 
 .uk-offcanvas-bar {
     width: 40%;
