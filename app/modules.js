@@ -10,9 +10,8 @@ module.exports = {
 
             el: '#modules',
             components: {
-                'list-item': require('./components/item/list-item.vue'),
-                'add-item': require('./components/item/add-item.vue'),
-                'card-module': require('./components/module/card-module.vue')
+                'add-module': require('./components/admin/modules/add-module.vue'),
+                'list-modules': require('./components/admin/modules/list-modules.vue')
             },
             data: {
                 module: window.$data.module,
@@ -47,31 +46,6 @@ module.exports = {
                     .catch(function (err){
                         console.log(err);
                     });
-                },
-
-
-                save: function() {
-
-                    var data = {module: this.module};
-
-                    this.$http.post('admin/osamaker/api/module/save', data)
-                        .then(function () {
-                            // use the getModules method for updating
-                            // the modules-array
-                            // the view gets an update without a refresh
-                            this.getModules();
-                            UIkit.notify('Saved')
-                        })
-                        .catch(function() {
-                            UIkit.notify('Something went wrong');
-                        });
-
-                    this.module = {
-                        id: '',
-                        title: '',
-                        roles: '',
-                    };
-
                 },
 
                 deleteItem: function(item, items, id) {

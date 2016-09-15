@@ -105,3 +105,9 @@
   padding-top: 0px;
   padding-bottom: 24px;
 }
+
+.card_save_button{
+    position: absolute;
+    bottom: 16px;
+    right: 16px;
+}
