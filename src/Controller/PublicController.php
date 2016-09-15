@@ -23,5 +23,35 @@ class PublicController
 
     }
 
+    /**
+     * @Route("getmodules/{assessmentId}", requirements={"id"="\d+"})
+     */
+    public function getModulesAction($assessmentId)
+    {
+        $query = App::db()->createQueryBuilder();
+
+//        return $query
+//            ->select('m.*')
+//            ->from('@osa_assessments_modules_mapping am')
+//            ->innerJoin('@osa_modules m', 'am.module_id = m.id')
+//            ->where('am.assessment_id = ?', [1])
+//            ->orderBy('am.module_order')
+//            ->get();
+
+        $modules = $query
+            ->select('module_id')
+            ->from('@osa_assessments_modules_mapping')
+            ->where('assessment_id = ?', [$assessmentId])
+            ->orderBy('module_order')
+            ->get();
+
+        $moduleIds = array_map(function ($element) {
+            return $element['module_id'];
+        }, $modules);
+
+
+        return Module::query()->whereIn('id', $moduleIds)->related('items')->get();
+
+    }
 
 }
