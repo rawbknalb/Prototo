@@ -13,16 +13,18 @@
 
     <!--</div>-->
 
-    <ul class="collapsible" data-collapsible="expandable">
+    <ul class="">
         <li @click="getModules(assessment.id)" v-for="assessment in assessments">
-            <div class="collapsible-header">{{ assessment.title }}</div>
-            <div class="collapsible-body">
+            <div class="">{{ assessment.title }}</div>
+            <div class="">
                 <ul>
-                    <li v-for="module in assessment.modules">{{ module.title }}</li>
+                    <li v-for="module in assessment.modules">
+                        {{ module.title }}
+                    </li>
                 </ul>
-                <div v-if="!assessment.modules">
+                <!-- <div v-if="!assessment.modules">
                     loading ...
-                </div>
+                </div> -->
             </div>
         </li>
     </ul>
@@ -37,7 +39,9 @@
 
     module.exports = {
 
-        components: {},
+        components: {
+            'single': require('../item/create/create-single.vue'),
+          },
 
         data: function () {
             return {
@@ -148,8 +152,8 @@
         },
 
         computed: {
-            isDisplayLoading: function (object) {
-                return !_.size(object);
+            isDisplayLoading: function () {
+                return !_.size(this.assessments);
             }
         },
 
