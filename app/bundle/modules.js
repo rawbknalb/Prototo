@@ -34584,16 +34584,16 @@
 
 	module.exports = {
 
-	    components: {
-	        'list-item': __webpack_require__(12),
-	        'add-item': __webpack_require__(15)
-	    },
-	    props: ["modules"],
+	  components: {
+	    'list-item': __webpack_require__(12),
+	    'add-item': __webpack_require__(15)
+	  },
+	  props: ["modules"],
 
-	    data: function data() {
-	        return {};
-	    },
-	    methods: {}
+	  data: function data() {
+	    return {};
+	  },
+	  methods: {}
 	};
 
 /***/ },
@@ -35387,7 +35387,7 @@
 /* 39 */
 /***/ function(module, exports) {
 
-	module.exports = "\n<h2>Your Modules</h2>\n<div class=\"mdl-grid\" v-cloak>\n\n    <template v-for=\"module in modules\">\n\n      <!-- This is the add-item modal -->\n      <add-item :module=\"module\" >\n      </add-item>\n\n        <!-- This is the off-canvas sidebar -->\n      <list-item :module.sync=\"module\" >\n      </list-item>\n\n\n        <div class=\"mdl-cell mdl-cell--top mdl-cell--6-col mdl-cell--8-col-tablet mdl-cell--4-col-phone\">\n\n            <div class=\"mdl-card mdl-cell--top mdl-cell--stretch mdl-cell--12-col mdl-cell--8-col-tablet mdl-cell--4-col-phone mdl-shadow--8dp\">\n\n                <div class=\"mdl-card__title card-background\">\n                    <div class=\"mdl-card__title-text title-text\">\n                        {{module.title}} <br>\n                    </div>\n                </div>\n                <div class=\"mdl-card__supporting-text card-text-background\">\n                    <p>\n                        Description: Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquam accusamus, consectetur.\n                    </p>\n                </div>\n\n\n                <div class=\"mdl-card__actions\">\n                    <div class=\"mdl-grid\">\n\n                        <div class=\"mdl-cell mdl-cell--top mdl-cell--8-col mdl-cell--4-col-tablet mdl-cell--4-col-phone\">\n                            <!-- This is a button toggling the modal -->\n                            <mdl-button colored accent raised data-uk-modal=\"{target:'#{{ module.id }}'}\">\n                                <i class=\"material-icons\">add</i>\n                            </mdl-button>\n\n                            <!-- This is the button toggling the off-canvas sidebar -->\n                            <mdl-button colored accent raised data-uk-offcanvas=\"{target:'#Module{{ module.id }}'}\">\n                                <i class=\"material-icons\">list</i>\n                            </mdl-button>\n                        </div>\n\n\n                        <div class=\"mdl-cell mdl-cell--top mdl-cell--4-col mdl-cell--4-col-tablet mdl-cell--4-col-phone\">\n                            <mdl-button  v-mdl-ripple-effect raised accent @click=\"remove(module, modules)\">\n                                <i class=\"material-icons\">delete</i>\n                            </mdl-button>\n\n                            <mdl-button  v-mdl-ripple-effect raised accent @click=\"update(module)\"><i class=\"material-icons\">save</i></mdl-button>\n                        </div>\n\n                    </div>\n\n                </div>\n\n                <div class=\"mdl-card__menu\">\n\n                </div>\n            </div>\n        </div>\n\n    </template>\n\n</div>\n";
+	module.exports = "\n<h2>Your Modules</h2>\n<div class=\"mdl-grid\" v-cloak>\n\n    <template v-for=\"module in modules\">\n\n      <!-- This is the add-item modal -->\n      <add-item :module=\"module\" >\n      </add-item>\n\n        <!-- This is the off-canvas sidebar -->\n      <list-item :module.sync=\"module\" >\n      </list-item>\n\n\n        <div class=\"mdl-cell mdl-cell--top mdl-cell--6-col mdl-cell--8-col-tablet mdl-cell--4-col-phone\">\n\n            <div class=\"mdl-card mdl-cell--top mdl-cell--stretch mdl-cell--12-col mdl-cell--8-col-tablet mdl-cell--4-col-phone mdl-shadow--8dp\">\n\n                <div class=\"mdl-card__title card-background\">\n                    <div class=\"mdl-card__title-text title-text\">\n                        {{module.title}} <br>\n                    </div>\n                </div>\n                <div class=\"mdl-card__supporting-text card-text-background\">\n                    <p>\n                        Description: Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquam accusamus, consectetur.\n                    </p>\n                </div>\n\n\n                <div class=\"mdl-card__actions\">\n                    <div class=\"mdl-grid\">\n\n                        <div class=\"mdl-cell mdl-cell--top mdl-cell--8-col mdl-cell--4-col-tablet mdl-cell--4-col-phone\">\n                            <!-- This is a button toggling the modal -->\n                            <mdl-button colored accent raised data-uk-modal=\"{target:'#{{ module.id }}'}\">\n                                <i class=\"material-icons\">add</i>\n                            </mdl-button>\n                            <ui-button @click=\"show = true\">Large Modal</ui-button>\n\n                            <!-- This is the button toggling the off-canvas sidebar -->\n                            <mdl-button colored accent raised data-uk-offcanvas=\"{target:'#Module{{ module.id }}'}\">\n                                <i class=\"material-icons\">list</i>\n                            </mdl-button>\n\n                        </div>\n\n\n                        <div class=\"mdl-cell mdl-cell--top mdl-cell--4-col mdl-cell--4-col-tablet mdl-cell--4-col-phone\">\n                            <mdl-button  v-mdl-ripple-effect raised accent @click=\"remove(module, modules)\">\n                                <i class=\"material-icons\">delete</i>\n                            </mdl-button>\n\n                            <mdl-button  v-mdl-ripple-effect raised accent @click=\"update(module)\"><i class=\"material-icons\">save</i></mdl-button>\n                        </div>\n\n                    </div>\n\n                </div>\n\n                <div class=\"mdl-card__menu\">\n\n                </div>\n            </div>\n        </div>\n\n    </template>\n\n</div>\n";
 
 /***/ }
 /******/ ]);

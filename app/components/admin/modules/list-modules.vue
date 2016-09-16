@@ -37,11 +37,13 @@
                                 <mdl-button colored accent raised data-uk-modal="{target:'#{{ module.id }}'}">
                                     <i class="material-icons">add</i>
                                 </mdl-button>
+                                <ui-button @click="show = true">Large Modal</ui-button>
 
                                 <!-- This is the button toggling the off-canvas sidebar -->
                                 <mdl-button colored accent raised data-uk-offcanvas="{target:'#Module{{ module.id }}'}">
                                     <i class="material-icons">list</i>
                                 </mdl-button>
+
                             </div>
 
 
@@ -78,7 +80,8 @@ module.exports = {
   props: ["modules"],
 
   data: function() {
-    return {};
+    return {
+    };
   },
   methods: {
 

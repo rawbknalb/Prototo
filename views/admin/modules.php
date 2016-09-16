@@ -9,39 +9,24 @@
 
 <div id="modules" v-cloak>
 
-
-
     <ui-tabs fullwidth background-color="clear">
         <ui-tab header="Assessments">
             Assessments
             <ui-modal
             :show.sync="show" type="large">
-            <div class="mdl-layout mdl-js-layout mdl-layout--fixed-drawer">
-                <div class="mdl-layout__drawer">
-                    <span class="mdl-layout-title">Title</span>
-                    <nav class="mdl-navigation">
-                        <a class="mdl-navigation__link" href="">Link</a>
-                        <a class="mdl-navigation__link" href="">Link</a>
-                        <a class="mdl-navigation__link" href="">Link</a>
-                        <a class="mdl-navigation__link" href="">Link</a>
-                        <a class="mdl-navigation__link" href="">Link</a>
-                        <a class="mdl-navigation__link" href="">Link</a>
-                        <a class="mdl-navigation__link" href="">Link</a>
-                        <a class="mdl-navigation__link" href="">Link</a>
-                        <a class="mdl-navigation__link" href="">Link</a>
-                        <a class="mdl-navigation__link" href="">Link</a>
-                        <a class="mdl-navigation__link" href="">Link</a>
-                        <a class="mdl-navigation__link" href="">Link</a>
-                        <a class="mdl-navigation__link" href="">Link</a>
-                        <a class="mdl-navigation__link" href="">Link</a>
-                        <a class="mdl-navigation__link" href="">Link</a>
-                        <a class="mdl-navigation__link" href="">Link</a>
 
-                    </nav>
-                </div>
-                <main class="mdl-layout__content">
-                    <div class="page-content"><!-- Your content goes here --></div>
-                </main>
+            <div class="mdl-components mdl-js-components mdl-cell">
+                <aside class="mdl-components__nav docs-text-styling mdl-shadow--4dp">
+                <template v-for="module in modules">
+                    <a v-for="item in module.items" href="#{{ category.name }}-section" class="mdl-components__link mdl-component badges">
+                      <!-- <div class="mdl-components__link-image">
+                          {{item.text}}
+                      </div> -->
+                      <span class="mdl-components__link-text">{{ item.text }}</span>
+                    </a>
+                </template>
+
+                </aside>
             </div>
         </ui-modal>
         <ui-button @click="show = true">Large Modal</ui-button>
