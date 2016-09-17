@@ -12,24 +12,32 @@
     <ui-tabs fullwidth background-color="clear">
         <ui-tab header="Assessments">
             Assessments
+
             <ui-modal
-            :show.sync="show" type="large">
+            :show.sync="show" type="large" hide-footer header="Scrolling Modal">
+            <p>
+                <div class="mdl-components mdl-js-components mdl-cell">
+                    <aside class="mdl-components__nav docs-text-styling mdl-shadow--4dp">
+                    <template v-for="module in modules">
+                        <a v-for="item in module.items" href="#{{ category.name }}-section" class="mdl-components__link mdl-component badges">
+                          <!-- <div class="mdl-components__link-image">
+                              {{item.text}}
+                          </div> -->
+                          <span class="mdl-components__link-text">{{ item.text }}</span>
+                        </a>
+                    </template>
 
-            <div class="mdl-components mdl-js-components mdl-cell">
-                <aside class="mdl-components__nav docs-text-styling mdl-shadow--4dp">
-                <template v-for="module in modules">
-                    <a v-for="item in module.items" href="#{{ category.name }}-section" class="mdl-components__link mdl-component badges">
-                      <!-- <div class="mdl-components__link-image">
-                          {{item.text}}
-                      </div> -->
-                      <span class="mdl-components__link-text">{{ item.text }}</span>
-                    </a>
-                </template>
+                    </aside>
 
-                </aside>
-            </div>
+                </div>
+            </p>
+            <p>
+                wegfjweoigj
+                <h1>skjgw</h1>
+            </p>
         </ui-modal>
         <ui-button @click="show = true">Large Modal</ui-button>
+
         </ui-tab>
 
         <ui-tab header="Modules">
