@@ -183,7 +183,7 @@ mdl-components-dd {
 .mdl-components .mdl-components__nav {
   display: inline-block;
   background: #fff;
-  width: 200px;
+  width: 100%;
   height: 100vh;
   box-sizing: border-box;
   overflow-y: auto;

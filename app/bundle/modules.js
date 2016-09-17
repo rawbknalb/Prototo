@@ -34501,7 +34501,7 @@
 	  var hotAPI = require("vue-hot-reload-api")
 	  hotAPI.install(require("vue"), false)
 	  if (!hotAPI.compatible) return
-	  var id = "_v-66f586a6/add-module.vue"
+	  var id = "_v-7405b0be/add-module.vue"
 	  if (!module.hot.data) {
 	    hotAPI.createRecord(id, module.exports)
 	  } else {
@@ -34568,7 +34568,7 @@
 	  var hotAPI = require("vue-hot-reload-api")
 	  hotAPI.install(require("vue"), false)
 	  if (!hotAPI.compatible) return
-	  var id = "_v-5bc1ed66/list-modules.vue"
+	  var id = "_v-17653ba1/list-modules.vue"
 	  if (!module.hot.data) {
 	    hotAPI.createRecord(id, module.exports)
 	  } else {
@@ -34586,14 +34586,23 @@
 
 	  components: {
 	    'list-item': __webpack_require__(12),
-	    'add-item': __webpack_require__(15)
+	    'add-item': __webpack_require__(15),
+	    'modal-frame': __webpack_require__(43)
 	  },
 	  props: ["modules"],
 
 	  data: function data() {
-	    return {};
+	    return {
+	      show: {
+	        module: false
+	      }
+	    };
 	  },
-	  methods: {}
+	  methods: {
+	    toggle_modal: function toggle_modal(module) {
+	      this.show = true;
+	    }
+	  }
 	};
 
 /***/ },
@@ -34616,7 +34625,7 @@
 	  var hotAPI = require("vue-hot-reload-api")
 	  hotAPI.install(require("vue"), false)
 	  if (!hotAPI.compatible) return
-	  var id = "_v-6e7090ac/list-item.vue"
+	  var id = "_v-a479c132/list-item.vue"
 	  if (!module.hot.data) {
 	    hotAPI.createRecord(id, module.exports)
 	  } else {
@@ -34677,7 +34686,7 @@
 	  var hotAPI = require("vue-hot-reload-api")
 	  hotAPI.install(require("vue"), false)
 	  if (!hotAPI.compatible) return
-	  var id = "_v-3fae4d65/add-item.vue"
+	  var id = "_v-62c17b4a/add-item.vue"
 	  if (!module.hot.data) {
 	    hotAPI.createRecord(id, module.exports)
 	  } else {
@@ -34781,7 +34790,7 @@
 	  var hotAPI = require("vue-hot-reload-api")
 	  hotAPI.install(require("vue"), false)
 	  if (!hotAPI.compatible) return
-	  var id = "_v-362972c0/frame.vue"
+	  var id = "_v-1e792625/frame.vue"
 	  if (!module.hot.data) {
 	    hotAPI.createRecord(id, module.exports)
 	  } else {
@@ -34874,7 +34883,7 @@
 	  var hotAPI = require("vue-hot-reload-api")
 	  hotAPI.install(require("vue"), false)
 	  if (!hotAPI.compatible) return
-	  var id = "_v-0ab4f1c0/select-item-type.vue"
+	  var id = "_v-5aae329b/select-item-type.vue"
 	  if (!module.hot.data) {
 	    hotAPI.createRecord(id, module.exports)
 	  } else {
@@ -34958,7 +34967,7 @@
 	  var hotAPI = require("vue-hot-reload-api")
 	  hotAPI.install(require("vue"), false)
 	  if (!hotAPI.compatible) return
-	  var id = "_v-dcafb252/create-item.vue"
+	  var id = "_v-c60a0b08/create-item.vue"
 	  if (!module.hot.data) {
 	    hotAPI.createRecord(id, module.exports)
 	  } else {
@@ -35090,7 +35099,7 @@
 	  var hotAPI = require("vue-hot-reload-api")
 	  hotAPI.install(require("vue"), false)
 	  if (!hotAPI.compatible) return
-	  var id = "_v-94a4bc94/create-scale.vue"
+	  var id = "_v-14b542b1/create-scale.vue"
 	  if (!module.hot.data) {
 	    hotAPI.createRecord(id, module.exports)
 	  } else {
@@ -35175,7 +35184,7 @@
 	  var hotAPI = require("vue-hot-reload-api")
 	  hotAPI.install(require("vue"), false)
 	  if (!hotAPI.compatible) return
-	  var id = "_v-5c38dab6/create-slider.vue"
+	  var id = "_v-53d0110a/create-slider.vue"
 	  if (!module.hot.data) {
 	    hotAPI.createRecord(id, module.exports)
 	  } else {
@@ -35258,7 +35267,7 @@
 	  var hotAPI = require("vue-hot-reload-api")
 	  hotAPI.install(require("vue"), false)
 	  if (!hotAPI.compatible) return
-	  var id = "_v-732cdae8/create-single.vue"
+	  var id = "_v-485610f1/create-single.vue"
 	  if (!module.hot.data) {
 	    hotAPI.createRecord(id, module.exports)
 	  } else {
@@ -35309,7 +35318,7 @@
 	  var hotAPI = require("vue-hot-reload-api")
 	  hotAPI.install(require("vue"), false)
 	  if (!hotAPI.compatible) return
-	  var id = "_v-967b5558/create-multiple.vue"
+	  var id = "_v-6d88ce79/create-multiple.vue"
 	  if (!module.hot.data) {
 	    hotAPI.createRecord(id, module.exports)
 	  } else {
@@ -35381,13 +35390,71 @@
 /* 38 */
 /***/ function(module, exports) {
 
-	module.exports = "\n\n<!-- This is the modal -->\n<div id=\"{{ module.id }}\" class=\"uk-modal\">\n    <div class=\"uk-modal-dialog uk-modal-dialog-blank uk-height-viewport modal-backround\">\n        <a class=\"uk-modal-close uk-close\"></a>\n    \n        <div class=\"mdl-grid\">\n            <!-- This is the left half -->\n            <div class=\"mdl-cell mdl-cell--12-col mdl-cell--12-col-tablet mdl-cell--12-col-phone\">\n\n              <create-frame :module=\"module\"></create-frame>\n\n                <hr>\n\n                    <template v-if=\"types.multiple.active || types.single.active\">\n\n\n\n                        <div class=\"uk-form-row\">\n\n                            <mdl-textfield\n                                floating-label=\"Add Option\"\n                                :value.sync=\"option.text\"\n                                id=\"{{ item.id }}\"\n                                v-show=\"!option.input.textfield.active\"\n                            >\n                            </mdl-textfield>\n\n                            <mdl-button\n                                v-show=\"option.text || option.input.textfield.active || option.input.textarea.active\"\n                                icon\n                                mini-fab\n                                accent\n                                @click.prevent=\"addOption(option)\">\n                                    <i class=\"material-icons\">add</i>\n                            </mdl-button>\n\n                            <mdl-switch :checked.sync=\"option.input.textfield.active\" value=\"true\">Textfield</mdl-switch>\n                            <mdl-switch :checked.sync=\"option.input.textarea.active\" value=\"true\">Textarea</mdl-switch>\n\n                        </div>\n\n                    </template>\n\n                    <template v-if=\"types.scale.active\">\n\n                        <mdl-textfield\n                          floating-label=\"Item Text\"\n                          :value.sync=\"item.text\"\n                          class=\"uk-form-width-small\"\n                        >\n                        </mdl-textfield>\n\n                        <br>\n\n                        <mdl-textfield\n                            floating-label=\"Option Text\"\n                            :value.sync=\"option.text\"\n                            class=\"uk-form-width-small\"\n                            @keyup.enter=\"addOption(option)\"\n                        ></mdl-textfield>\n\n                        <mdl-textfield\n                            floating-label=\"Option Value\"\n                            :value.sync=\"option.value\"\n                            class=\"uk-form-width-small\"\n                            pattern=\"-?[0-9]*(\\.[0-9]+)?\"\n                            error=\"Input is not a number!\"\n                            @keyup.enter=\"addOption(option)\"\n                        ></mdl-textfield>\n\n                        <mdl-button\n                            icon\n                            mini-fab\n                            accent\n                            @click.prevent=\"addOption(option)\">\n                                <i class=\"material-icons\">add</i>\n                        </mdl-button>\n\n\n                        <mdl-textfield\n                            floating-label=\"Suboption Text\"\n                            :value.sync=\"suboption.text\"\n                            class=\"uk-form-width-small\"\n                            @keyup.enter=\"addSubOption(suboption)\"\n                        ></mdl-textfield>\n\n                        <mdl-button\n                            icon\n                            mini-fab\n                            accent\n                            @click.prevent=\"addSubOption(suboption)\">\n                                <i class=\"material-icons\">add</i>\n                        </mdl-button>\n\n                    </template>\n\n                    <template v-if=\"types.slider.active\">\n\n                        <div class=\"uk-form-row\">\n                            <mdl-textfield\n                            required\n                            floating-label=\"Item Text\"\n                            :value.sync=\"item.text\"\n                            >\n                            </mdl-textfield>\n                        </div>\n\n                        <div data-uk-margin>\n                            <mdl-textfield\n                                floating-label=\"Step\"\n                                :value.sync=\"slider_params.step\"\n                                class=\"uk-form-width-small\"\n                                pattern=\"-?[0-9]*(\\.[0-9]+)?\"\n                                error=\"Input is not a number!\"\n                            >\n                            </mdl-textfield>\n\n                            <mdl-textfield\n                                floating-label=\"min value\"\n                                :value.sync=\"slider_params.min\"\n                                class=\"uk-form-width-small\"\n                                pattern=\"-?[0-9]*(\\.[0-9]+)?\"\n                                error=\"Input is not a number!\"\n                            >\n                            </mdl-textfield>\n\n                            <mdl-textfield\n                                floating-label=\"max value\"\n                                :value.sync=\"slider_params.max\"\n                                required\n                                class=\"uk-form-width-small\"\n                                pattern=\"-?[0-9]*(\\.[0-9]+)?\"\n                                error=\"Input is not a number!\"\n                            >\n                            </mdl-textfield>\n                        </div>\n\n                    </template>\n\n            </div>\n\n        </div>\n\n    </div>\n\n</div>\n\n";
+	module.exports = "\n\n    <!-- This is the modal -->\n    <div id=\"{{ module.id }}\" class=\"uk-modal\">\n        <div class=\"uk-modal-dialog uk-modal-dialog-blank uk-height-viewport modal-backround\">\n            <a class=\"uk-modal-close uk-close\"></a>\n            <h4>Icon only, fullwidth</h4>\n\n<ui-tabs type=\"icon\" fullwidth>\n    <ui-tab icon=\"book\">\n        My books\n    </ui-tab>\n\n    <ui-tab icon=\"person\">\n        Authors\n    </ui-tab>\n\n    <ui-tab icon=\"collections_bookmark\">\n        My collections\n    </ui-tab>\n\n    <ui-tab icon=\"favorite\">\n        <b>Favourite with longer content</b>\n\n        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Beatae dolorum laudantium nulla ex asperiores, deserunt quidem perspiciatis eligendi, dolores repudiandae.</p>\n\n        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Perferendis hic, aspernatur placeat eligendi delectus laudantium omnis nam consequatur aperiam numquam!</p>\n    </ui-tab>\n</ui-tabs>\n            <div class=\"mdl-grid\">\n\n              <div class=\"mdl-components mdl-js-components mdl-cell--top mdl-cell--stretch mdl-cell--2-col mdl-cell--8-col-tablet mdl-cell--4-col-phone\">\n                <aside class=\"mdl-components__nav docs-text-styling mdl-shadow--4dp\">\n                  <h2>Items</h2>\n\n                    <a v-for=\"item in module.items\" href=\"#{{ category.name }}-section\" class=\"mdl-components__link mdl-component badges\">\n                      <!-- <div class=\"mdl-components__link-image\">\n                      {{item.text}}\n                    </div> -->\n                    <span class=\"mdl-components__link-text\">{{ item.text }}</span>\n                  </a>\n\n              </aside>\n            </div>\n            <div class=\"mdl-cell--top mdl-cell--stretch mdl-cell--10-col mdl-cell--8-col-tablet mdl-cell--4-col-phone\">\n              <h1>TestTest</h1>\n            </div>\n            </div>\n\n        </div>\n\n    </div>\n\n";
 
 /***/ },
 /* 39 */
 /***/ function(module, exports) {
 
-	module.exports = "\n<h2>Your Modules</h2>\n<div class=\"mdl-grid\" v-cloak>\n\n    <template v-for=\"module in modules\">\n\n      <!-- This is the add-item modal -->\n      <add-item :module=\"module\" >\n      </add-item>\n\n        <!-- This is the off-canvas sidebar -->\n      <list-item :module.sync=\"module\" >\n      </list-item>\n\n\n        <div class=\"mdl-cell mdl-cell--top mdl-cell--6-col mdl-cell--8-col-tablet mdl-cell--4-col-phone\">\n\n            <div class=\"mdl-card mdl-cell--top mdl-cell--stretch mdl-cell--12-col mdl-cell--8-col-tablet mdl-cell--4-col-phone mdl-shadow--8dp\">\n\n                <div class=\"mdl-card__title card-background\">\n                    <div class=\"mdl-card__title-text title-text\">\n                        {{module.title}} <br>\n                    </div>\n                </div>\n                <div class=\"mdl-card__supporting-text card-text-background\">\n                    <p>\n                        Description: Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquam accusamus, consectetur.\n                    </p>\n                </div>\n\n\n                <div class=\"mdl-card__actions\">\n                    <div class=\"mdl-grid\">\n\n                        <div class=\"mdl-cell mdl-cell--top mdl-cell--8-col mdl-cell--4-col-tablet mdl-cell--4-col-phone\">\n                            <!-- This is a button toggling the modal -->\n                            <mdl-button colored accent raised data-uk-modal=\"{target:'#{{ module.id }}'}\">\n                                <i class=\"material-icons\">add</i>\n                            </mdl-button>\n                            <ui-button @click=\"show = true\">Large Modal</ui-button>\n\n                            <!-- This is the button toggling the off-canvas sidebar -->\n                            <mdl-button colored accent raised data-uk-offcanvas=\"{target:'#Module{{ module.id }}'}\">\n                                <i class=\"material-icons\">list</i>\n                            </mdl-button>\n\n                        </div>\n\n\n                        <div class=\"mdl-cell mdl-cell--top mdl-cell--4-col mdl-cell--4-col-tablet mdl-cell--4-col-phone\">\n                            <mdl-button  v-mdl-ripple-effect raised accent @click=\"remove(module, modules)\">\n                                <i class=\"material-icons\">delete</i>\n                            </mdl-button>\n\n                            <mdl-button  v-mdl-ripple-effect raised accent @click=\"update(module)\"><i class=\"material-icons\">save</i></mdl-button>\n                        </div>\n\n                    </div>\n\n                </div>\n\n                <div class=\"mdl-card__menu\">\n\n                </div>\n            </div>\n        </div>\n\n    </template>\n\n</div>\n";
+	module.exports = "\n<h2>Your Modules</h2>\n\n<div class=\"mdl-grid\" v-cloak>\n\n    <template v-for=\"module in modules\">\n\n      <modal-frame :module=\"module\"></modal-frame>\n      <!-- This is the add-item modal -->\n      <add-item :module=\"module\" >\n      </add-item>\n\n        <!-- This is the off-canvas sidebar -->\n      <list-item :module.sync=\"module\" >\n      </list-item>\n\n\n        <div class=\"mdl-cell mdl-cell--top mdl-cell--6-col mdl-cell--8-col-tablet mdl-cell--4-col-phone\">\n\n            <div class=\"mdl-card mdl-cell--top mdl-cell--stretch mdl-cell--12-col mdl-cell--8-col-tablet mdl-cell--4-col-phone mdl-shadow--8dp\">\n\n                <div class=\"mdl-card__title card-background\">\n                    <div class=\"mdl-card__title-text title-text\">\n                        {{module.title}} <br>\n                    </div>\n                </div>\n                <div class=\"mdl-card__supporting-text card-text-background\">\n                    <p>\n                        Description: Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquam accusamus, consectetur.\n                    </p>\n                </div>\n\n\n                <div class=\"mdl-card__actions\">\n                    <div class=\"mdl-grid\">\n\n                        <div class=\"mdl-cell mdl-cell--top mdl-cell--8-col mdl-cell--4-col-tablet mdl-cell--4-col-phone\">\n                            <!-- This is a button toggling the modal -->\n                            <mdl-button colored accent raised data-uk-modal=\"{target:'#{{ module.id }}'}\">\n                                <i class=\"material-icons\">add</i>\n                            </mdl-button>\n\n                        <ui-button @click=\"toggle_modal(module)\" data-uk-modal=\"{target:'#Modal{{ module.id }}'}\">Edit Module</ui-button>\n\n                            <!-- This is the button toggling the off-canvas sidebar -->\n                            <mdl-button colored accent raised data-uk-offcanvas=\"{target:'#Module{{ module.id }}'}\">\n                                <i class=\"material-icons\">list</i>\n                            </mdl-button>\n\n                        </div>\n\n\n                        <div class=\"mdl-cell mdl-cell--top mdl-cell--4-col mdl-cell--4-col-tablet mdl-cell--4-col-phone\">\n                            <mdl-button  v-mdl-ripple-effect raised accent @click=\"remove(module, modules)\">\n                                <i class=\"material-icons\">delete</i>\n                            </mdl-button>\n\n                            <mdl-button  v-mdl-ripple-effect raised accent @click=\"update(module)\"><i class=\"material-icons\">save</i></mdl-button>\n                        </div>\n\n                    </div>\n\n                </div>\n\n                <div class=\"mdl-card__menu\">\n\n                </div>\n            </div>\n        </div>\n\n    </template>\n\n</div>\n";
+
+/***/ },
+/* 40 */,
+/* 41 */,
+/* 42 */,
+/* 43 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __vue_script__, __vue_template__
+	__vue_script__ = __webpack_require__(44)
+	if (__vue_script__ &&
+	    __vue_script__.__esModule &&
+	    Object.keys(__vue_script__).length > 1) {
+	  console.warn("[vue-loader] app/components/admin/modules/modal-frame.vue: named exports in *.vue files are ignored.")}
+	__vue_template__ = __webpack_require__(45)
+	module.exports = __vue_script__ || {}
+	if (module.exports.__esModule) module.exports = module.exports.default
+	if (__vue_template__) {
+	(typeof module.exports === "function" ? (module.exports.options || (module.exports.options = {})) : module.exports).template = __vue_template__
+	}
+	if (false) {(function () {  module.hot.accept()
+	  var hotAPI = require("vue-hot-reload-api")
+	  hotAPI.install(require("vue"), false)
+	  if (!hotAPI.compatible) return
+	  var id = "_v-bf6fd6d8/modal-frame.vue"
+	  if (!module.hot.data) {
+	    hotAPI.createRecord(id, module.exports)
+	  } else {
+	    hotAPI.update(id, module.exports, __vue_template__)
+	  }
+	})()}
+
+/***/ },
+/* 44 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	module.exports = {
+
+	  props: ["module"],
+	  events: {
+	    Test: function Test(module) {
+	      console.log(module);
+	    }
+	  },
+	  data: function data() {
+	    return {};
+	  },
+
+	  methods: {}
+	};
+
+/***/ },
+/* 45 */
+/***/ function(module, exports) {
+
+	module.exports = "\n<ui-modal\n:show.sync=\"show.module\"\ntype=\"large\"\nhide-footer\nheader=\"Module Name\">\n<div class=\"mdl-grid\">\n\n  <div class=\"mdl-components mdl-js-components mdl-cell--top mdl-cell--stretch mdl-cell--2-col mdl-cell--8-col-tablet mdl-cell--4-col-phone\">\n    <aside class=\"mdl-components__nav docs-text-styling mdl-shadow--4dp\">\n      <h2>Items</h2>\n      <template v-for=\"module in modules\">\n        <a v-for=\"item in module.items\" href=\"#{{ category.name }}-section\" class=\"mdl-components__link mdl-component badges\">\n          <!-- <div class=\"mdl-components__link-image\">\n          {{item.text}}\n        </div> -->\n        <span class=\"mdl-components__link-text\">{{ item.text }}</span>\n      </a>\n    </template>\n  </aside>\n</div>\n<div class=\"mdl-cell--top mdl-cell--stretch mdl-cell--10-col mdl-cell--8-col-tablet mdl-cell--4-col-phone\">\n  <h1>TestTest</h1>\n</div>\n</div>\n\n</ui-modal>\n";
 
 /***/ }
 /******/ ]);
