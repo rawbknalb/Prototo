@@ -37,7 +37,7 @@
                             <div class="mdl-cell mdl-cell--top mdl-cell--8-col mdl-cell--4-col-tablet mdl-cell--4-col-phone">
                                 <!-- This is a button toggling the modal -->
                                 <mdl-button colored accent raised data-uk-modal="{target:'#{{ module.id }}'}">
-                                    <i class="material-icons">add</i>
+                                    <i class="material-icons">edit</i>
                                 </mdl-button>
 
                             <ui-button @click="toggle_modal(module)" data-uk-modal="{target:'#Modal{{ module.id }}'}">Edit Module</ui-button>

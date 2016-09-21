@@ -34558,7 +34558,7 @@
 	    __vue_script__.__esModule &&
 	    Object.keys(__vue_script__).length > 1) {
 	  console.warn("[vue-loader] app/components/admin/modules/list-modules.vue: named exports in *.vue files are ignored.")}
-	__vue_template__ = __webpack_require__(39)
+	__vue_template__ = __webpack_require__(42)
 	module.exports = __vue_script__ || {}
 	if (module.exports.__esModule) module.exports = module.exports.default
 	if (__vue_template__) {
@@ -34587,7 +34587,7 @@
 	  components: {
 	    'list-item': __webpack_require__(12),
 	    'add-item': __webpack_require__(15),
-	    'modal-frame': __webpack_require__(43)
+	    'modal-frame': __webpack_require__(39)
 	  },
 	  props: ["modules"],
 
@@ -35286,17 +35286,27 @@
 	  props: ["option", "item"],
 
 	  data: function data() {
-	    return {};
+	    return {
+	      toggle: {
+	        edit_mode: true
+	      }
+	    };
 	  },
 
-	  methods: {}
+	  methods: {
+	    toggleEditMode: function toggleEditMode() {
+	      if (this.toggle.edit_mode == false) {
+	        this.toggle.edit_mode = true;
+	      } else this.toggle.edit_mode = false;
+	    }
+	  }
 	};
 
 /***/ },
 /* 32 */
 /***/ function(module, exports) {
 
-	module.exports = "\n  <div class=\"mdl-card card-wide mdl-shadow--4dp\">\n    <div class=\"mdl-card__title\">\n      <h2 class=\"mdl-card__title-text\">\n          <mdl-textfield\n                  required\n                  floating-label=\"Item Text\"\n                  :value.sync=\"item.text\"\n          >\n          </mdl-textfield>\n          {{item.text}}\n      </h2>\n    </div>\n    <div class=\"mdl-card__supporting-text\">\n        <ul class=\"mdl-list\" v-for=\"option in item.data.options\">\n            <li class=\"mdl-list__item\">\n                <mdl-radio\n                    :checked.sync=\"check\"\n                    class=\"mdl-js-ripple-effect\"\n                    value=\"\"\n                    :value=\"option.text\"\n                    v-if=\"!(option.input.textarea.active) && !(option.input.textfield.active)\">\n                    {{option.text}}\n                </mdl-radio>\n\n                <mdl-textfield\n                    label=\"Other\"\n                    class=\"full_width\"\n                    :value.sync=\"option.input.textfield.input_text\"\n                    v-if=\"option.input.textfield.active\">\n                </mdl-textfield>\n\n                <mdl-textfield\n                    class=\"full_width list_textarea_padding\"\n                    floating-label=\"Textarea\"\n                    textarea rows=\"4\"\n                    v-if=\"option.input.textarea.active\">\n                </mdl-textfield>\n\n                <span class=\"mdl-list__item-secondary-action\">\n                    <mdl-button\n                    class=\"mdl-button--icon\"\n                    primary\n                    @click.prevent=\"this.$dispatch('removeOption',option)\">\n                        <i class=\"material-icons\">delete</i>\n                    </mdl-button>\n                </span>\n            </li>\n        </ul>\n    </div>\n    <div class=\"mdl-card__actions mdl-card--border\">\n        <mdl-textfield\n               floating-label=\"Add Option\"\n                :value.sync=\"option.text\"\n                v-show=\"!option.input.textfield.active\"\n                @keyup.enter.stop=\"this.$dispatch('addOption', option)\">\n        </mdl-textfield>\n\n        <mdl-textfield\n          class=\"uk-form-width-small\"\n          floating-label=\"Add Value\"\n          :value.sync=\"option.value\"\n          v-show=\"!option.input.textfield.active\"\n          @keyup.enter.stop=\"this.$dispatch('addOption', option)\">\n        </mdl-textfield>\n\n        <mdl-button\n            v-show=\"option.text || option.input.textfield.active || option.input.textarea.active\"\n            icon\n            mini-fab\n            accent\n            @click.prevent=\"this.$dispatch('addOption', option)\">\n                <i class=\"material-icons\">add</i>\n        </mdl-button>\n\n        <form class=\"uk-form\" @submit.prevent=\"this.$dispatch('saveItem', 'data')\">\n            <mdl-button class=\"card_save_button mdl-button--icon\" fab primary>\n                <i class=\"material-icons\">save</i>\n            </mdl-button>\n        </form>\n    </div>\n  </div>\n\n<div class=\"uk-form-row\">\n\n\n\n  <mdl-switch :checked.sync=\"option.input.textfield.active\" value=\"true\">Textfield</mdl-switch>\n  <mdl-switch :checked.sync=\"option.input.textarea.active\" value=\"true\">Textarea</mdl-switch>\n\n</div>\n\n\n\n";
+	module.exports = "\n  <div class=\"mdl-card card-wide mdl-shadow--4dp\">\n    <div class=\"mdl-card__title\">\n      <h2 class=\"mdl-card__title-text\">\n          <mdl-textfield\n                  required\n                  floating-label=\"Item Text\"\n                  :value.sync=\"item.text\"\n                  v-show=\"toggle.edit_mode\"\n          >\n          </mdl-textfield>\n\n          <template v-show=\"!toggle.edit_mode\">\n            {{item.text}}\n          </template>\n\n      </h2>\n    </div>\n    <div class=\"mdl-card__supporting-text\">\n        <ul class=\"mdl-list\" v-for=\"option in item.data.options\">\n            <li class=\"mdl-list__item\">\n                <mdl-radio\n                    :checked.sync=\"check\"\n                    class=\"mdl-js-ripple-effect\"\n                    value=\"\"\n                    :value=\"option.text\"\n                    v-if=\"!(option.input.textarea.active) && !(option.input.textfield.active)\">\n                    {{option.text}}\n                </mdl-radio>\n\n                <mdl-textfield\n                    label=\"Other\"\n                    class=\"full_width\"\n                    :value.sync=\"option.input.textfield.input_text\"\n                    v-if=\"option.input.textfield.active\">\n                </mdl-textfield>\n\n                <mdl-textfield\n                    class=\"full_width list_textarea_padding\"\n                    floating-label=\"Textarea\"\n                    textarea rows=\"4\"\n                    v-if=\"option.input.textarea.active\">\n                </mdl-textfield>\n\n                <span class=\"mdl-list__item-secondary-action\">\n                    <mdl-button\n                    class=\"mdl-button--icon\"\n                    primary\n                    @click.prevent=\"this.$dispatch('removeOption',option)\">\n                        <i class=\"material-icons\">delete</i>\n                    </mdl-button>\n                </span>\n            </li>\n        </ul>\n    </div>\n    <div class=\"mdl-card__actions mdl-card--border\">\n        <mdl-textfield\n               floating-label=\"Add Option\"\n                :value.sync=\"option.text\"\n                v-show=\"!option.input.textfield.active\"\n                @keyup.enter.stop=\"this.$dispatch('addOption', option)\">\n        </mdl-textfield>\n\n        <mdl-textfield\n          class=\"uk-form-width-small\"\n          floating-label=\"Add Value\"\n          :value.sync=\"option.value\"\n          v-show=\"!option.input.textfield.active\"\n          @keyup.enter.stop=\"this.$dispatch('addOption', option)\">\n        </mdl-textfield>\n\n        <mdl-button\n            v-show=\"option.text || option.input.textfield.active || option.input.textarea.active\"\n            icon\n            mini-fab\n            accent\n            @click.prevent=\"this.$dispatch('addOption', option)\">\n                <i class=\"material-icons\">add</i>\n        </mdl-button>\n\n        <form class=\"uk-form\" @submit.prevent=\"this.$dispatch('saveItem', 'data')\">\n            <mdl-button class=\"card_save_button mdl-button--icon\" fab primary>\n                <i class=\"material-icons\">save</i>\n            </mdl-button>\n        </form>\n    </div>\n  </div>\n\n<div class=\"uk-form-row\">\n\n\n\n  <mdl-switch :checked.sync=\"option.input.textfield.active\" value=\"true\">Textfield</mdl-switch>\n  <mdl-switch :checked.sync=\"option.input.textarea.active\" value=\"true\">Textarea</mdl-switch>\n\n</div>\n\n\n\n";
 
 /***/ },
 /* 33 */
@@ -35390,28 +35400,19 @@
 /* 38 */
 /***/ function(module, exports) {
 
-	module.exports = "\n\n    <!-- This is the modal -->\n    <div id=\"{{ module.id }}\" class=\"uk-modal\">\n        <div class=\"uk-modal-dialog uk-modal-dialog-blank uk-height-viewport modal-backround\">\n            <a class=\"uk-modal-close uk-close\"></a>\n            <h4>Icon only, fullwidth</h4>\n\n<ui-tabs type=\"icon\" fullwidth>\n    <ui-tab icon=\"book\">\n        My books\n    </ui-tab>\n\n    <ui-tab icon=\"person\">\n        Authors\n    </ui-tab>\n\n    <ui-tab icon=\"collections_bookmark\">\n        My collections\n    </ui-tab>\n\n    <ui-tab icon=\"favorite\">\n        <b>Favourite with longer content</b>\n\n        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Beatae dolorum laudantium nulla ex asperiores, deserunt quidem perspiciatis eligendi, dolores repudiandae.</p>\n\n        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Perferendis hic, aspernatur placeat eligendi delectus laudantium omnis nam consequatur aperiam numquam!</p>\n    </ui-tab>\n</ui-tabs>\n            <div class=\"mdl-grid\">\n\n              <div class=\"mdl-components mdl-js-components mdl-cell--top mdl-cell--stretch mdl-cell--2-col mdl-cell--8-col-tablet mdl-cell--4-col-phone\">\n                <aside class=\"mdl-components__nav docs-text-styling mdl-shadow--4dp\">\n                  <h2>Items</h2>\n\n                    <a v-for=\"item in module.items\" href=\"#{{ category.name }}-section\" class=\"mdl-components__link mdl-component badges\">\n                      <!-- <div class=\"mdl-components__link-image\">\n                      {{item.text}}\n                    </div> -->\n                    <span class=\"mdl-components__link-text\">{{ item.text }}</span>\n                  </a>\n\n              </aside>\n            </div>\n            <div class=\"mdl-cell--top mdl-cell--stretch mdl-cell--10-col mdl-cell--8-col-tablet mdl-cell--4-col-phone\">\n              <h1>TestTest</h1>\n            </div>\n            </div>\n\n        </div>\n\n    </div>\n\n";
+	module.exports = "\n\n<!-- This is the modal -->\n<div id=\"{{ module.id }}\" class=\"uk-modal\">\n    <div class=\"uk-modal-dialog uk-modal-dialog-blank uk-height-viewport modal-backround\">\n        <a class=\"uk-modal-close uk-close\"></a>\n\n        <div class=\"mdl-grid\">\n\n          <div class=\"mdl-components mdl-js-components mdl-cell--top mdl-cell--stretch mdl-cell--2-col mdl-cell--8-col-tablet mdl-cell--4-col-phone\">\n            <aside class=\"mdl-components__nav docs-text-styling mdl-shadow--4dp\">\n              <h2>Items</h2>\n\n                <a v-for=\"item in module.items\" href=\"#{{ category.name }}-section\" class=\"mdl-components__link mdl-component badges\">\n                  <!-- <div class=\"mdl-components__link-image\">\n                  {{item.text}}\n                </div> -->\n                <span class=\"mdl-components__link-text\">{{ item.text }}</span>\n              </a>\n\n          </aside>\n        </div>\n        <div class=\"mdl-cell--top mdl-cell--stretch mdl-cell--10-col mdl-cell--8-col-tablet mdl-cell--4-col-phone\">\n          <h1>TestTest</h1>\n          <create-frame :module=\"module\"></create-frame>\n        </div>\n        </div>\n\n    </div>\n\n</div>\n\n";
 
 /***/ },
 /* 39 */
-/***/ function(module, exports) {
-
-	module.exports = "\n<h2>Your Modules</h2>\n\n<div class=\"mdl-grid\" v-cloak>\n\n    <template v-for=\"module in modules\">\n\n      <modal-frame :module=\"module\"></modal-frame>\n      <!-- This is the add-item modal -->\n      <add-item :module=\"module\" >\n      </add-item>\n\n        <!-- This is the off-canvas sidebar -->\n      <list-item :module.sync=\"module\" >\n      </list-item>\n\n\n        <div class=\"mdl-cell mdl-cell--top mdl-cell--6-col mdl-cell--8-col-tablet mdl-cell--4-col-phone\">\n\n            <div class=\"mdl-card mdl-cell--top mdl-cell--stretch mdl-cell--12-col mdl-cell--8-col-tablet mdl-cell--4-col-phone mdl-shadow--8dp\">\n\n                <div class=\"mdl-card__title card-background\">\n                    <div class=\"mdl-card__title-text title-text\">\n                        {{module.title}} <br>\n                    </div>\n                </div>\n                <div class=\"mdl-card__supporting-text card-text-background\">\n                    <p>\n                        Description: Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquam accusamus, consectetur.\n                    </p>\n                </div>\n\n\n                <div class=\"mdl-card__actions\">\n                    <div class=\"mdl-grid\">\n\n                        <div class=\"mdl-cell mdl-cell--top mdl-cell--8-col mdl-cell--4-col-tablet mdl-cell--4-col-phone\">\n                            <!-- This is a button toggling the modal -->\n                            <mdl-button colored accent raised data-uk-modal=\"{target:'#{{ module.id }}'}\">\n                                <i class=\"material-icons\">add</i>\n                            </mdl-button>\n\n                        <ui-button @click=\"toggle_modal(module)\" data-uk-modal=\"{target:'#Modal{{ module.id }}'}\">Edit Module</ui-button>\n\n                            <!-- This is the button toggling the off-canvas sidebar -->\n                            <mdl-button colored accent raised data-uk-offcanvas=\"{target:'#Module{{ module.id }}'}\">\n                                <i class=\"material-icons\">list</i>\n                            </mdl-button>\n\n                        </div>\n\n\n                        <div class=\"mdl-cell mdl-cell--top mdl-cell--4-col mdl-cell--4-col-tablet mdl-cell--4-col-phone\">\n                            <mdl-button  v-mdl-ripple-effect raised accent @click=\"remove(module, modules)\">\n                                <i class=\"material-icons\">delete</i>\n                            </mdl-button>\n\n                            <mdl-button  v-mdl-ripple-effect raised accent @click=\"update(module)\"><i class=\"material-icons\">save</i></mdl-button>\n                        </div>\n\n                    </div>\n\n                </div>\n\n                <div class=\"mdl-card__menu\">\n\n                </div>\n            </div>\n        </div>\n\n    </template>\n\n</div>\n";
-
-/***/ },
-/* 40 */,
-/* 41 */,
-/* 42 */,
-/* 43 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __vue_script__, __vue_template__
-	__vue_script__ = __webpack_require__(44)
+	__vue_script__ = __webpack_require__(40)
 	if (__vue_script__ &&
 	    __vue_script__.__esModule &&
 	    Object.keys(__vue_script__).length > 1) {
 	  console.warn("[vue-loader] app/components/admin/modules/modal-frame.vue: named exports in *.vue files are ignored.")}
-	__vue_template__ = __webpack_require__(45)
+	__vue_template__ = __webpack_require__(41)
 	module.exports = __vue_script__ || {}
 	if (module.exports.__esModule) module.exports = module.exports.default
 	if (__vue_template__) {
@@ -35430,7 +35431,7 @@
 	})()}
 
 /***/ },
-/* 44 */
+/* 40 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -35451,10 +35452,16 @@
 	};
 
 /***/ },
-/* 45 */
+/* 41 */
 /***/ function(module, exports) {
 
 	module.exports = "\n<ui-modal\n:show.sync=\"show.module\"\ntype=\"large\"\nhide-footer\nheader=\"Module Name\">\n<div class=\"mdl-grid\">\n\n  <div class=\"mdl-components mdl-js-components mdl-cell--top mdl-cell--stretch mdl-cell--2-col mdl-cell--8-col-tablet mdl-cell--4-col-phone\">\n    <aside class=\"mdl-components__nav docs-text-styling mdl-shadow--4dp\">\n      <h2>Items</h2>\n      <template v-for=\"module in modules\">\n        <a v-for=\"item in module.items\" href=\"#{{ category.name }}-section\" class=\"mdl-components__link mdl-component badges\">\n          <!-- <div class=\"mdl-components__link-image\">\n          {{item.text}}\n        </div> -->\n        <span class=\"mdl-components__link-text\">{{ item.text }}</span>\n      </a>\n    </template>\n  </aside>\n</div>\n<div class=\"mdl-cell--top mdl-cell--stretch mdl-cell--10-col mdl-cell--8-col-tablet mdl-cell--4-col-phone\">\n  <h1>TestTest</h1>\n</div>\n</div>\n\n</ui-modal>\n";
+
+/***/ },
+/* 42 */
+/***/ function(module, exports) {
+
+	module.exports = "\n<h2>Your Modules</h2>\n\n<div class=\"mdl-grid\" v-cloak>\n\n    <template v-for=\"module in modules\">\n\n      <modal-frame :module=\"module\"></modal-frame>\n      <!-- This is the add-item modal -->\n      <add-item :module=\"module\" >\n      </add-item>\n\n        <!-- This is the off-canvas sidebar -->\n      <list-item :module.sync=\"module\" >\n      </list-item>\n\n\n        <div class=\"mdl-cell mdl-cell--top mdl-cell--6-col mdl-cell--8-col-tablet mdl-cell--4-col-phone\">\n\n            <div class=\"mdl-card mdl-cell--top mdl-cell--stretch mdl-cell--12-col mdl-cell--8-col-tablet mdl-cell--4-col-phone mdl-shadow--8dp\">\n\n                <div class=\"mdl-card__title card-background\">\n                    <div class=\"mdl-card__title-text title-text\">\n                        {{module.title}} <br>\n                    </div>\n                </div>\n                <div class=\"mdl-card__supporting-text card-text-background\">\n                    <p>\n                        Description: Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquam accusamus, consectetur.\n                    </p>\n                </div>\n\n\n                <div class=\"mdl-card__actions\">\n                    <div class=\"mdl-grid\">\n\n                        <div class=\"mdl-cell mdl-cell--top mdl-cell--8-col mdl-cell--4-col-tablet mdl-cell--4-col-phone\">\n                            <!-- This is a button toggling the modal -->\n                            <mdl-button colored accent raised data-uk-modal=\"{target:'#{{ module.id }}'}\">\n                                <i class=\"material-icons\">edit</i>\n                            </mdl-button>\n\n                        <ui-button @click=\"toggle_modal(module)\" data-uk-modal=\"{target:'#Modal{{ module.id }}'}\">Edit Module</ui-button>\n\n                            <!-- This is the button toggling the off-canvas sidebar -->\n                            <mdl-button colored accent raised data-uk-offcanvas=\"{target:'#Module{{ module.id }}'}\">\n                                <i class=\"material-icons\">list</i>\n                            </mdl-button>\n\n                        </div>\n\n\n                        <div class=\"mdl-cell mdl-cell--top mdl-cell--4-col mdl-cell--4-col-tablet mdl-cell--4-col-phone\">\n                            <mdl-button  v-mdl-ripple-effect raised accent @click=\"remove(module, modules)\">\n                                <i class=\"material-icons\">delete</i>\n                            </mdl-button>\n\n                            <mdl-button  v-mdl-ripple-effect raised accent @click=\"update(module)\"><i class=\"material-icons\">save</i></mdl-button>\n                        </div>\n\n                    </div>\n\n                </div>\n\n                <div class=\"mdl-card__menu\">\n\n                </div>\n            </div>\n        </div>\n\n    </template>\n\n</div>\n";
 
 /***/ }
 /******/ ]);

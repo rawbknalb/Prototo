@@ -4,29 +4,7 @@
     <div id="{{ module.id }}" class="uk-modal">
         <div class="uk-modal-dialog uk-modal-dialog-blank uk-height-viewport modal-backround">
             <a class="uk-modal-close uk-close"></a>
-            <h4>Icon only, fullwidth</h4>
 
-<ui-tabs type="icon" fullwidth>
-    <ui-tab icon="book">
-        My books
-    </ui-tab>
-
-    <ui-tab icon="person">
-        Authors
-    </ui-tab>
-
-    <ui-tab icon="collections_bookmark">
-        My collections
-    </ui-tab>
-
-    <ui-tab icon="favorite">
-        <b>Favourite with longer content</b>
-
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Beatae dolorum laudantium nulla ex asperiores, deserunt quidem perspiciatis eligendi, dolores repudiandae.</p>
-
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Perferendis hic, aspernatur placeat eligendi delectus laudantium omnis nam consequatur aperiam numquam!</p>
-    </ui-tab>
-</ui-tabs>
             <div class="mdl-grid">
 
               <div class="mdl-components mdl-js-components mdl-cell--top mdl-cell--stretch mdl-cell--2-col mdl-cell--8-col-tablet mdl-cell--4-col-phone">
@@ -44,6 +22,7 @@
             </div>
             <div class="mdl-cell--top mdl-cell--stretch mdl-cell--10-col mdl-cell--8-col-tablet mdl-cell--4-col-phone">
               <h1>TestTest</h1>
+              <create-frame :module="module"></create-frame>
             </div>
             </div>
 

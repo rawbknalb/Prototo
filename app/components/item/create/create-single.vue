@@ -6,9 +6,14 @@
                     required
                     floating-label="Item Text"
                     :value.sync="item.text"
+                    v-show="toggle.edit_mode"
             >
             </mdl-textfield>
-            {{item.text}}
+
+            <template v-show="!toggle.edit_mode">
+              {{item.text}}
+            </template>
+
         </h2>
       </div>
       <div class="mdl-card__supporting-text">
@@ -100,10 +105,20 @@ module.exports = {
   props: ["option", "item"],
 
   data: function() {
-    return {};
+    return {
+      toggle: {
+        edit_mode: true
+      }
+    };
   },
 
   methods: {
+    toggleEditMode: function() {
+      if (this.toggle.edit_mode == false) {
+        this.toggle.edit_mode = true;
+      }
+      else this.toggle.edit_mode = false;
+    }
   }
 };
 
