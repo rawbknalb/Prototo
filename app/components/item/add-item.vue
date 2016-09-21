@@ -11,12 +11,10 @@
                 <aside class="mdl-components__nav docs-text-styling mdl-shadow--4dp">
                   <h2>Items</h2>
 
-                    <a v-for="item in module.items" href="#{{ category.name }}-section" class="mdl-components__link mdl-component badges">
-                      <!-- <div class="mdl-components__link-image">
-                      {{item.text}}
-                    </div> -->
+                  <a v-dragable-for="item in module.items" v-bind:options="options" class="mdl-components__link mdl-component badges uk-sortable">
                     <span class="mdl-components__link-text">{{ item.text }}</span>
                   </a>
+
 
               </aside>
             </div>
