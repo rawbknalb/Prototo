@@ -5,7 +5,7 @@
         <div class="uk-modal-dialog uk-modal-dialog-blank uk-height-viewport modal-backround">
             <a class="uk-modal-close uk-close"></a>
 
-            <div class="mdl-grid">
+            <div class="mdl-grid create_modal_padding">
 
               <div class="mdl-components mdl-js-components mdl-cell--top mdl-cell--stretch mdl-cell--2-col mdl-cell--8-col-tablet mdl-cell--4-col-phone">
                 <aside class="mdl-components__nav docs-text-styling mdl-shadow--4dp">

@@ -122,9 +122,20 @@
   padding-bottom: 24px;
 }
 
-.card_save_button{
+.card_bottomright_button{
     position: absolute;
     bottom: 16px;
+    right: 16px;
+}
+
+.create_modal_padding{
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
+
+.card_topright_button{
+    position: absolute;
+    top: 16px;
     right: 16px;
 }
 

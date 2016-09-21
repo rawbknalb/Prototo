@@ -2,17 +2,24 @@
     <div class="mdl-card card-wide mdl-shadow--4dp">
       <div class="mdl-card__title">
         <h2 class="mdl-card__title-text">
-            <mdl-textfield
-                    required
-                    floating-label="Item Text"
-                    :value.sync="item.text"
-                    v-show="toggle.edit_mode"
-            >
-            </mdl-textfield>
 
-            <template v-show="!toggle.edit_mode">
-              {{item.text}}
+            <ui-textbox
+                label="Text"
+                name="itemText"
+                type="text"
+                placeholder="Enter your question"
+                :value.sync="item.text"
+                v-show="toggle.edit_mode"
+                autofocus
+            ></ui-textbox>
+
+            <template v-if="toggle.edit_mode == false">
+              <div class="">
+                {{item.text}}
+              </div>
             </template>
+
+            <ui-switch class="card_topright_button" name="do_it_now" :value.sync="toggle.edit_mode">Edit Mode</ui-switch>
 
         </h2>
       </div>
@@ -46,7 +53,8 @@
                       <mdl-button
                       class="mdl-button--icon"
                       primary
-                      @click.prevent="this.$dispatch('removeOption',option)">
+                      @click.prevent="this.$dispatch('removeOption',option)"
+                      v-show="toggle.edit_mode">
                           <i class="material-icons">delete</i>
                       </mdl-button>
                   </span>
@@ -78,11 +86,15 @@
                   <i class="material-icons">add</i>
           </mdl-button>
 
-          <form class="uk-form" @submit.prevent="this.$dispatch('saveItem', 'data')">
-              <mdl-button class="card_save_button mdl-button--icon" fab primary>
+            <ui-icon-button
+              class="card_bottomright_button"
+              icon="save"
+              color="primary"
+              @click.prevent="this.$dispatch('saveItem', 'data')">
+            </ui-icon-button>
+              <!-- <mdl-button class="card_bottomright_button mdl-button--icon" fab primary>
                   <i class="material-icons">save</i>
-              </mdl-button>
-          </form>
+              </mdl-button> -->
       </div>
     </div>
 
