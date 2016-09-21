@@ -30,7 +30,7 @@ return [
 		if ($util->tableExists('@osa_items') === false) {
 			$util->createTable('@osa_items', function ($table) {
 				$table->addColumn('id', 'integer', ['unsigned' => true, 'length' => 10, 'autoincrement' => true]);
-                $table->addColumn('title', 'string', ['length' => 255]);
+                $table->addColumn('title', 'string', ['length' => 255, 'notnull' => false]);
 				$table->addColumn('text', 'text');
                 $table->addColumn('module_id', 'integer', ['unsigned' => true, 'length' => 10]);
                 $table->addColumn('item_order', 'integer', ['unsigned' => true,'notnull' => false]);

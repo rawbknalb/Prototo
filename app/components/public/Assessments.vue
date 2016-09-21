@@ -3,6 +3,12 @@
     <!--{{ $data | json }}-->
     <!--</pre>-->
 
+<<<<<<< HEAD
+
+    <ul>
+        <li v-for="assessment in assessments">
+            <a v-link="{ path: '/' + assessment.id }">{{ assessment.title }}</a>
+=======
     <!--<div class="uk-accordion" data-uk-accordion>-->
 
     <!--<h3 class="uk-accordion-title">tita</h3>-->
@@ -26,6 +32,7 @@
                     loading ...
                 </div> -->
             </div>
+>>>>>>> bf8d28fea5e7986ff3fcbcff3f1ee6017eeb2701
         </li>
     </ul>
 
@@ -64,22 +71,7 @@
                         });
             },
 
-            getModules: function (assessmentId) {
-                if(_.isNull(this.assessments[assessmentId].modules)){
-                    this.assessments[assessmentId].modules = { };
 
-                    this.$http.get('assessments/getmodules/'+assessmentId)
-                            .then(function (modules) {
-                                console.log(modules.data);
-
-                                this.$set('assessments['+assessmentId+'].modules', modules.data);
-                            })
-                            .catch(function (err) {
-                                console.log(err);
-                            });
-                }
-
-            },
 
             getItems: function () {
                 this.$http.get('admin/osamaker/api/item/get')

@@ -4,6 +4,7 @@
 <?php $view->style('materialize-css', 'osamaker:app/assets/css/materialize.css') ?>
 
 <div id="public" v-cloak>
-    <assessments></assessments>
+<!--    <assessments></assessments>-->
+    <router-view></router-view>
 </div>
 
