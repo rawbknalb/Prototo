@@ -56,8 +56,8 @@
 
 	            el: '#modules',
 	            components: {
-	                'add-module': __webpack_require__(36),
-	                'list-modules': __webpack_require__(39)
+	                'add-module': __webpack_require__(6),
+	                'list-modules': __webpack_require__(9)
 	            },
 	            data: {
 	                module: window.$data.module,
@@ -21059,8 +21059,123 @@
 	if (__vue_script__ &&
 	    __vue_script__.__esModule &&
 	    Object.keys(__vue_script__).length > 1) {
-	  console.warn("[vue-loader] app/components/item/list-item.vue: named exports in *.vue files are ignored.")}
+	  console.warn("[vue-loader] app/components/admin/modules/add-module.vue: named exports in *.vue files are ignored.")}
 	__vue_template__ = __webpack_require__(8)
+	module.exports = __vue_script__ || {}
+	if (module.exports.__esModule) module.exports = module.exports.default
+	if (__vue_template__) {
+	(typeof module.exports === "function" ? (module.exports.options || (module.exports.options = {})) : module.exports).template = __vue_template__
+	}
+	if (false) {(function () {  module.hot.accept()
+	  var hotAPI = require("vue-hot-reload-api")
+	  hotAPI.install(require("vue"), false)
+	  if (!hotAPI.compatible) return
+	  var id = "_v-2dbbcdba/add-module.vue"
+	  if (!module.hot.data) {
+	    hotAPI.createRecord(id, module.exports)
+	  } else {
+	    hotAPI.update(id, module.exports, __vue_template__)
+	  }
+	})()}
+
+/***/ },
+/* 7 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	module.exports = {
+
+	    props: ["module"],
+
+	    data: function data() {
+	        return {};
+	    },
+
+	    methods: {
+	        save: function save() {
+	            var data = { module: this.module };
+	            this.$http.post('admin/osamaker/api/module/save', data).then(function () {
+	                this.$dispatch('getModules', 'data');
+	                UIkit.notify('Saved');
+	            }).catch(function () {
+	                UIkit.notify('Something went wrong');
+	            });
+
+	            this.module = {
+	                id: '',
+	                title: '',
+	                roles: ''
+	            };
+	        }
+	    }
+	};
+
+/***/ },
+/* 8 */
+/***/ function(module, exports) {
+
+	module.exports = "\n<div class=\"uk-form uk-form-horizontal\">\n    <form class=\"uk-form\" @submit.prevent=\"save\">\n        <fieldset data-uk-margin>\n            <legend>Create a new Module</legend>\n            <div class=\"form-group\">\n                <label>Name:</label>\n                <input class=\"uk-input-large uk-width-1-4\" placeholder=\"\" v-model=\"module.title\">\n            </div>\n        </fieldset>\n        <button class=\"mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--primary\">\n            <i class=\"material-icons\">add</i>\n        </button>\n    </form>\n</div>\n";
+
+/***/ },
+/* 9 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __vue_script__, __vue_template__
+	__vue_script__ = __webpack_require__(10)
+	if (__vue_script__ &&
+	    __vue_script__.__esModule &&
+	    Object.keys(__vue_script__).length > 1) {
+	  console.warn("[vue-loader] app/components/admin/modules/list-modules.vue: named exports in *.vue files are ignored.")}
+	__vue_template__ = __webpack_require__(38)
+	module.exports = __vue_script__ || {}
+	if (module.exports.__esModule) module.exports = module.exports.default
+	if (__vue_template__) {
+	(typeof module.exports === "function" ? (module.exports.options || (module.exports.options = {})) : module.exports).template = __vue_template__
+	}
+	if (false) {(function () {  module.hot.accept()
+	  var hotAPI = require("vue-hot-reload-api")
+	  hotAPI.install(require("vue"), false)
+	  if (!hotAPI.compatible) return
+	  var id = "_v-ebda810c/list-modules.vue"
+	  if (!module.hot.data) {
+	    hotAPI.createRecord(id, module.exports)
+	  } else {
+	    hotAPI.update(id, module.exports, __vue_template__)
+	  }
+	})()}
+
+/***/ },
+/* 10 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	module.exports = {
+
+	    components: {
+	        'list-item': __webpack_require__(11),
+	        'add-item': __webpack_require__(14)
+	    },
+	    props: ["modules"],
+
+	    data: function data() {
+	        return {};
+	    },
+	    methods: {}
+	};
+
+/***/ },
+/* 11 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __vue_script__, __vue_template__
+	__vue_script__ = __webpack_require__(12)
+	if (__vue_script__ &&
+	    __vue_script__.__esModule &&
+	    Object.keys(__vue_script__).length > 1) {
+	  console.warn("[vue-loader] app/components/item/list-item.vue: named exports in *.vue files are ignored.")}
+	__vue_template__ = __webpack_require__(13)
 	module.exports = __vue_script__ || {}
 	if (module.exports.__esModule) module.exports = module.exports.default
 	if (__vue_template__) {
@@ -21079,7 +21194,7 @@
 	})()}
 
 /***/ },
-/* 7 */
+/* 12 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -21106,22 +21221,22 @@
 	};
 
 /***/ },
-/* 8 */
+/* 13 */
 /***/ function(module, exports) {
 
 	module.exports = "\n\n\n<div id=\"Module{{ module.id }}\" class=\"uk-offcanvas\">\n    <div class=\"uk-offcanvas-bar uk-offcanvas-bar\">\n        <h1>Module {{ module.title }} > Item-List</h1>\n\n        <mdl-switch :checked.sync=\"edit\" class=\"mdl-js-ripple-effect\" @click></mdl-switch>\n\n        <ul class=\"mdl-list uk-sortable\">\n\n            <li class=\"mdl-list__item\" v-dragable-for=\"item in module.items\" v-bind:options=\"options\" >\n\n                <span class=\"mdl-list__item-primary-content\">\n                    <div><i class=\"handle material-icons mdl-list__item-icon\">reorder</i></div>\n                    <span>\n                        Item Name: {{ item.text }} <br>\n                    </span>\n                </span>\n                <span class=\"mdl-list__item-secondary-action\">\n                    <mdl-button class=\"mdl-button--icon\" primary @click.stop=\"this.$root.deleteItem(item, module.items, module.title)\"><i class=\"material-icons\">delete</i></mdl-button>\n                </span>\n            </li>\n        </ul>\n    </div>\n</div>\n\n\n";
 
 /***/ },
-/* 9 */
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __vue_script__, __vue_template__
-	__vue_script__ = __webpack_require__(10)
+	__vue_script__ = __webpack_require__(15)
 	if (__vue_script__ &&
 	    __vue_script__.__esModule &&
 	    Object.keys(__vue_script__).length > 1) {
 	  console.warn("[vue-loader] app/components/item/add-item.vue: named exports in *.vue files are ignored.")}
-	__vue_template__ = __webpack_require__(32)
+	__vue_template__ = __webpack_require__(37)
 	module.exports = __vue_script__ || {}
 	if (module.exports.__esModule) module.exports = module.exports.default
 	if (__vue_template__) {
@@ -21140,7 +21255,7 @@
 	})()}
 
 /***/ },
-/* 10 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -21148,7 +21263,7 @@
 	module.exports = {
 
 	    components: {
-	        'create-frame': __webpack_require__(11)
+	        'create-frame': __webpack_require__(16)
 	    },
 
 	    props: ["module"],
@@ -21216,16 +21331,16 @@
 	Vue.ready(module.exports);
 
 /***/ },
-/* 11 */
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __vue_script__, __vue_template__
-	__vue_script__ = __webpack_require__(12)
+	__vue_script__ = __webpack_require__(17)
 	if (__vue_script__ &&
 	    __vue_script__.__esModule &&
 	    Object.keys(__vue_script__).length > 1) {
 	  console.warn("[vue-loader] app/components/item/create/frame.vue: named exports in *.vue files are ignored.")}
-	__vue_template__ = __webpack_require__(31)
+	__vue_template__ = __webpack_require__(36)
 	module.exports = __vue_script__ || {}
 	if (module.exports.__esModule) module.exports = module.exports.default
 	if (__vue_template__) {
@@ -21244,7 +21359,7 @@
 	})()}
 
 /***/ },
-/* 12 */
+/* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -21252,8 +21367,8 @@
 	module.exports = {
 
 	  components: {
-	    'select-item-type': __webpack_require__(13),
-	    'create-item': __webpack_require__(16)
+	    'select-item-type': __webpack_require__(18),
+	    'create-item': __webpack_require__(21)
 	  },
 
 	  props: ["module"],
@@ -21309,16 +21424,16 @@
 	};
 
 /***/ },
-/* 13 */
+/* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __vue_script__, __vue_template__
-	__vue_script__ = __webpack_require__(14)
+	__vue_script__ = __webpack_require__(19)
 	if (__vue_script__ &&
 	    __vue_script__.__esModule &&
 	    Object.keys(__vue_script__).length > 1) {
 	  console.warn("[vue-loader] app/components/item/create/select-item-type.vue: named exports in *.vue files are ignored.")}
-	__vue_template__ = __webpack_require__(15)
+	__vue_template__ = __webpack_require__(20)
 	module.exports = __vue_script__ || {}
 	if (module.exports.__esModule) module.exports = module.exports.default
 	if (__vue_template__) {
@@ -21337,7 +21452,7 @@
 	})()}
 
 /***/ },
-/* 14 */
+/* 19 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -21387,22 +21502,22 @@
 	};
 
 /***/ },
-/* 15 */
+/* 20 */
 /***/ function(module, exports) {
 
 	module.exports = "\n<mdl-button id=\"{{module.title}}\" accent raised icon>\n    Select Type\n    <i class=\"material-icons\">favorite</i>\n</mdl-button>\n\n<mdl-menu for=\"\" :for=\"module.title\">\n\n  <mdl-menu-item @click=\"setType(types.multiple)\">Multiple Choise</mdl-menu-item>\n  <mdl-menu-item @click=\"setType(types.single)\">Single Choise</mdl-menu-item>\n  <mdl-menu-item @click=\"setType(types.scale)\">Scale</mdl-menu-item>\n  <mdl-menu-item @click=\"setType(types.slider)\">Slider</mdl-menu-item>\n\n</mdl-menu>\n";
 
 /***/ },
-/* 16 */
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __vue_script__, __vue_template__
-	__vue_script__ = __webpack_require__(17)
+	__vue_script__ = __webpack_require__(22)
 	if (__vue_script__ &&
 	    __vue_script__.__esModule &&
 	    Object.keys(__vue_script__).length > 1) {
 	  console.warn("[vue-loader] app/components/item/create/create-item.vue: named exports in *.vue files are ignored.")}
-	__vue_template__ = __webpack_require__(30)
+	__vue_template__ = __webpack_require__(35)
 	module.exports = __vue_script__ || {}
 	if (module.exports.__esModule) module.exports = module.exports.default
 	if (__vue_template__) {
@@ -21421,17 +21536,17 @@
 	})()}
 
 /***/ },
-/* 17 */
+/* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	module.exports = {
 	    components: {
-	        'create-scale': __webpack_require__(18),
-	        'create-slider': __webpack_require__(21),
-	        'create-single': __webpack_require__(24),
-	        'create-multiple': __webpack_require__(27)
+	        'create-scale': __webpack_require__(23),
+	        'create-slider': __webpack_require__(26),
+	        'create-single': __webpack_require__(29),
+	        'create-multiple': __webpack_require__(32)
 	    },
 	    props: ["item", "types", "module"],
 
@@ -21525,16 +21640,16 @@
 	};
 
 /***/ },
-/* 18 */
+/* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __vue_script__, __vue_template__
-	__vue_script__ = __webpack_require__(19)
+	__vue_script__ = __webpack_require__(24)
 	if (__vue_script__ &&
 	    __vue_script__.__esModule &&
 	    Object.keys(__vue_script__).length > 1) {
 	  console.warn("[vue-loader] app/components/item/create/create-scale.vue: named exports in *.vue files are ignored.")}
-	__vue_template__ = __webpack_require__(20)
+	__vue_template__ = __webpack_require__(25)
 	module.exports = __vue_script__ || {}
 	if (module.exports.__esModule) module.exports = module.exports.default
 	if (__vue_template__) {
@@ -21553,7 +21668,7 @@
 	})()}
 
 /***/ },
-/* 19 */
+/* 24 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -21604,22 +21719,22 @@
 	};
 
 /***/ },
-/* 20 */
+/* 25 */
 /***/ function(module, exports) {
 
 	module.exports = "\n\n  <mdl-textfield\n    floating-label=\"Item Text\"\n    :value.sync=\"item.text\"\n    class=\"uk-form-width-small\">\n  </mdl-textfield>\n\n  <br>\n\n  <mdl-textfield\n    floating-label=\"Option Text\"\n    :value.sync=\"option.text\"\n    class=\"uk-form-width-small\"\n    @keyup.enter=\"addOption(option)\">\n  </mdl-textfield>\n\n  <mdl-textfield\n    floating-label=\"Option Value\"\n    :value.sync=\"option.value\"\n    class=\"uk-form-width-small\"\n    pattern=\"-?[0-9]*(\\.[0-9]+)?\"\n    error=\"Input is not a number!\"\n    @keyup.enter=\"addOption(option)\">\n  </mdl-textfield>\n\n  <mdl-button\n    icon\n    mini-fab\n    accent\n    @click.prevent=\"addOption(option)\">\n      <i class=\"material-icons\">add</i>\n  </mdl-button>\n\n\n  <mdl-textfield\n    floating-label=\"Suboption Text\"\n    :value.sync=\"suboption.text\"\n    class=\"uk-form-width-small\"\n    @keyup.enter=\"addSubOption(suboption)\">\n  </mdl-textfield>\n\n  <mdl-button\n    icon\n    mini-fab\n    accent\n    @click.prevent=\"addSubOption(suboption)\">\n      <i class=\"material-icons\">add</i>\n  </mdl-button>\n\n  <!-- Rendered Table -->\n  <table class=\"mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp\">\n    <thead>\n      <tr>\n        <th></th>\n        <th\n        class=\"mdl-data-table__cell--non-numeric\"\n        v-for=\"option in item.data.options\"\n        >\n        {{option.text}}\n      </th>\n    </tr>\n  </thead>\n\n  <tbody>\n    <tr v-for=\"suboption in item.data.suboptions\">\n      <td class=\"mdl-data-table__cell--non-numeric\">{{suboption.text}}</td>\n      <td v-for=\"option in item.data.options\">\n        <mdl-radio\n        class=\"table_radio\"\n        :checked.sync=\"check[suboption.text]\"\n        value=\"\"\n        :value=\"option.text\">\n      </mdl-radio>\n    </td>\n  </tr>\n</tbody>\n</table>\n\n\n";
 
 /***/ },
-/* 21 */
+/* 26 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __vue_script__, __vue_template__
-	__vue_script__ = __webpack_require__(22)
+	__vue_script__ = __webpack_require__(27)
 	if (__vue_script__ &&
 	    __vue_script__.__esModule &&
 	    Object.keys(__vue_script__).length > 1) {
 	  console.warn("[vue-loader] app/components/item/create/create-slider.vue: named exports in *.vue files are ignored.")}
-	__vue_template__ = __webpack_require__(23)
+	__vue_template__ = __webpack_require__(28)
 	module.exports = __vue_script__ || {}
 	if (module.exports.__esModule) module.exports = module.exports.default
 	if (__vue_template__) {
@@ -21638,7 +21753,7 @@
 	})()}
 
 /***/ },
-/* 22 */
+/* 27 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -21687,22 +21802,22 @@
 	};
 
 /***/ },
-/* 23 */
+/* 28 */
 /***/ function(module, exports) {
 
 	module.exports = "\n\n<div class=\"uk-form-row\">\n    <mdl-textfield\n            required\n            floating-label=\"Item Text\"\n            :value.sync=\"item.text\"\n    >\n    </mdl-textfield>\n</div>\n\n<div data-uk-margin>\n    <mdl-textfield\n            floating-label=\"Step\"\n            :value.sync=\"slider_params.step\"\n            class=\"uk-form-width-small\"\n            pattern=\"-?[0-9]*(\\.[0-9]+)?\"\n            error=\"Input is not a number!\"\n    >\n    </mdl-textfield>\n\n    <mdl-textfield\n            floating-label=\"min value\"\n            :value.sync=\"slider_params.min\"\n            class=\"uk-form-width-small\"\n            pattern=\"-?[0-9]*(\\.[0-9]+)?\"\n            error=\"Input is not a number!\"\n    >\n    </mdl-textfield>\n\n    <mdl-textfield\n            floating-label=\"max value\"\n            :value.sync=\"slider_params.max\"\n            required\n            class=\"uk-form-width-small\"\n            pattern=\"-?[0-9]*(\\.[0-9]+)?\"\n            error=\"Input is not a number!\"\n    >\n    </mdl-textfield>\n</div>\n\n\n<div class=\"uk-form-row\">\n\n    <mdl-textfield\n            floating-label=\"Value\"\n            :value.sync=\"slider_params.amount\"\n            readonly\n    >\n    </mdl-textfield>\n\n    <mdl-slider\n            :value.sync=\"slider_params.amount\"\n            :min.sync=\"slider_params.min\"\n            :max.sync=\"slider_params.max\"\n            :step.sync=\"slider_params.step\"\n    >\n    </mdl-slider>\n\n</div>\n";
 
 /***/ },
-/* 24 */
+/* 29 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __vue_script__, __vue_template__
-	__vue_script__ = __webpack_require__(25)
+	__vue_script__ = __webpack_require__(30)
 	if (__vue_script__ &&
 	    __vue_script__.__esModule &&
 	    Object.keys(__vue_script__).length > 1) {
 	  console.warn("[vue-loader] app/components/item/create/create-single.vue: named exports in *.vue files are ignored.")}
-	__vue_template__ = __webpack_require__(26)
+	__vue_template__ = __webpack_require__(31)
 	module.exports = __vue_script__ || {}
 	if (module.exports.__esModule) module.exports = module.exports.default
 	if (__vue_template__) {
@@ -21721,7 +21836,7 @@
 	})()}
 
 /***/ },
-/* 25 */
+/* 30 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -21738,22 +21853,22 @@
 	};
 
 /***/ },
-/* 26 */
+/* 31 */
 /***/ function(module, exports) {
 
 	module.exports = "\n  <div class=\"mdl-card card-wide mdl-shadow--4dp\">\n    <div class=\"mdl-card__title\">\n      <h2 class=\"mdl-card__title-text\">\n          <mdl-textfield\n                  required\n                  floating-label=\"Item Text\"\n                  :value.sync=\"item.text\"\n          >\n          </mdl-textfield>\n          {{item.text}}\n      </h2>\n    </div>\n    <div class=\"mdl-card__supporting-text\">\n        <ul class=\"mdl-list\" v-for=\"option in item.data.options\">\n            <li class=\"mdl-list__item\">\n                <mdl-radio\n                    :checked.sync=\"check\"\n                    class=\"mdl-js-ripple-effect\"\n                    value=\"\"\n                    :value=\"option.text\"\n                    v-if=\"!(option.input.textarea.active) && !(option.input.textfield.active)\">\n                    {{option.text}}\n                </mdl-radio>\n\n                <mdl-textfield\n                    label=\"Other\"\n                    class=\"full_width\"\n                    :value.sync=\"option.input.textfield.input_text\"\n                    v-if=\"option.input.textfield.active\">\n                </mdl-textfield>\n\n                <mdl-textfield\n                    class=\"full_width list_textarea_padding\"\n                    floating-label=\"Textarea\"\n                    textarea rows=\"4\"\n                    v-if=\"option.input.textarea.active\">\n                </mdl-textfield>\n\n                <span class=\"mdl-list__item-secondary-action\">\n                    <mdl-button\n                    class=\"mdl-button--icon\"\n                    primary\n                    @click.prevent=\"this.$dispatch('removeOption',option)\">\n                        <i class=\"material-icons\">delete</i>\n                    </mdl-button>\n                </span>\n            </li>\n        </ul>\n    </div>\n    <div class=\"mdl-card__actions mdl-card--border\">\n        <mdl-textfield\n               floating-label=\"Add Option\"\n                :value.sync=\"option.text\"\n                v-show=\"!option.input.textfield.active\"\n                @keyup.enter.stop=\"this.$dispatch('addOption', option)\">\n        </mdl-textfield>\n\n        <mdl-textfield\n          class=\"uk-form-width-small\"\n          floating-label=\"Add Value\"\n          :value.sync=\"option.value\"\n          v-show=\"!option.input.textfield.active\"\n          @keyup.enter.stop=\"this.$dispatch('addOption', option)\">\n        </mdl-textfield>\n\n        <mdl-button\n            v-show=\"option.text || option.input.textfield.active || option.input.textarea.active\"\n            icon\n            mini-fab\n            accent\n            @click.prevent=\"this.$dispatch('addOption', option)\">\n                <i class=\"material-icons\">add</i>\n        </mdl-button>\n\n        <form class=\"uk-form\" @submit.prevent=\"this.$dispatch('saveItem', 'data')\">\n            <mdl-button class=\"card_save_button mdl-button--icon\" fab primary>\n                <i class=\"material-icons\">save</i>\n            </mdl-button>\n        </form>\n    </div>\n  </div>\n\n<div class=\"uk-form-row\">\n\n\n\n  <mdl-switch :checked.sync=\"option.input.textfield.active\" value=\"true\">Textfield</mdl-switch>\n  <mdl-switch :checked.sync=\"option.input.textarea.active\" value=\"true\">Textarea</mdl-switch>\n\n</div>\n\n\n\n";
 
 /***/ },
-/* 27 */
+/* 32 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __vue_script__, __vue_template__
-	__vue_script__ = __webpack_require__(28)
+	__vue_script__ = __webpack_require__(33)
 	if (__vue_script__ &&
 	    __vue_script__.__esModule &&
 	    Object.keys(__vue_script__).length > 1) {
 	  console.warn("[vue-loader] app/components/item/create/create-multiple.vue: named exports in *.vue files are ignored.")}
-	__vue_template__ = __webpack_require__(29)
+	__vue_template__ = __webpack_require__(34)
 	module.exports = __vue_script__ || {}
 	if (module.exports.__esModule) module.exports = module.exports.default
 	if (__vue_template__) {
@@ -21772,7 +21887,7 @@
 	})()}
 
 /***/ },
-/* 28 */
+/* 33 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -21814,153 +21929,31 @@
 	};
 
 /***/ },
-/* 29 */
+/* 34 */
 /***/ function(module, exports) {
 
 	module.exports = "\n\n<div class=\"uk-form-row\">\n  <mdl-textfield\n          required\n          floating-label=\"Item Text\"\n          :value.sync=\"item.text\"\n  >\n  </mdl-textfield>\n</div>\n\n<div class=\"uk-form-row\">\n\n  <mdl-textfield\n          floating-label=\"Add Option\"\n          :value.sync=\"option.text\"\n          id=\"{{ item.id }}\"\n          v-show=\"!option.input.textfield.active\"\n  >\n  </mdl-textfield>\n\n  <mdl-button\n          v-show=\"option.text || option.input.textfield.active || option.input.textarea.active\"\n          icon\n          mini-fab\n          accent\n          @click.prevent=\"addOption(option)\">\n    <i class=\"material-icons\">add</i>\n  </mdl-button>\n\n  <mdl-switch :checked.sync=\"option.input.textfield.active\" value=\"true\">Textfield</mdl-switch>\n  <mdl-switch :checked.sync=\"option.input.textarea.active\" value=\"true\">Textarea</mdl-switch>\n\n</div>\n\n<ul class=\"mdl-list\" v-for=\"option in item.data.options\">\n\n  <li class=\"mdl-list__item\">\n\n    <!--\n    **To Do: Change\n    **:value (do not use option.text)\n    **better: unique option identifier (id)\n    -->\n    <mdl-checkbox\n            :checked.sync=\"checks\"\n            value=\"\"\n            :value=\"option.text\"\n            v-if=\"types.multiple.active\"\n    >\n      {{option.text}}\n    </mdl-checkbox>\n\n                              <span class=\"mdl-list__item-secondary-action\">\n\n                                  <mdl-button\n                                          class=\"mdl-button--icon\"\n                                          primary\n                                          @click.prevent=\"removeOption(option)\"\n                                  >\n                                      <i class=\"material-icons\">delete</i>\n\n                                  </mdl-button>\n\n                              </span>\n\n  </li>\n\n</ul>\n\n\n";
 
 /***/ },
-/* 30 */
+/* 35 */
 /***/ function(module, exports) {
 
 	module.exports = "\n\n    <create-scale v-if=\"types.scale.active\"\n    :option=\"option\"\n    :suboption=\"suboption\"\n    :item=\"item\">\n    </create-scale>\n\n<create-slider v-if=\"types.slider.active\"\n:option=\"option\"\n:item=\"item\"\n>\n</create-slider>\n\n<create-single v-if=\"types.single.active\"\n:option=\"option\"\n:item=\"item\"\n>\n</create-single>\n\n<create-multiple v-if=\"types.multiple.active\"\n:option=\"option\"\n:item=\"item\"\n>\n</create-multiple>\n\n";
 
 /***/ },
-/* 31 */
+/* 36 */
 /***/ function(module, exports) {
 
 	module.exports = "\n\n<div class=\"container\">\n  <h1>Create a new Item</h1>\n\n  <h3>Choose an Item Type</h3>\n\n  <!-- select item type component -->\n  <select-item-type\n    :module=\"module\"\n    :item=\"item\"\n    :types=\"types\">\n  </select-item-type>\n\n  <h2>Selected: {{ item.data.type }}</h2>\n\n\n    <create-item :item=\"item\" :types=\"types\" :module=\"module\"></create-item>\n\n\n</div>\n";
 
 /***/ },
-/* 32 */
+/* 37 */
 /***/ function(module, exports) {
 
 	module.exports = "\n\n<!-- This is the modal -->\n<div id=\"{{ module.id }}\" class=\"uk-modal\">\n    <div class=\"uk-modal-dialog uk-modal-dialog-blank uk-height-viewport\">\n        <a class=\"uk-modal-close uk-close\"></a>\n\n        <div class=\"mdl-grid\">\n            <!-- This is the left half -->\n            <div class=\"mdl-cell mdl-cell--12-col mdl-cell--12-col-tablet mdl-cell--12-col-phone\">\n\n              <create-frame :module=\"module\"></create-frame>\n\n                <hr>\n\n                    <template v-if=\"types.multiple.active || types.single.active\">\n\n\n\n                        <div class=\"uk-form-row\">\n\n                            <mdl-textfield\n                                floating-label=\"Add Option\"\n                                :value.sync=\"option.text\"\n                                id=\"{{ item.id }}\"\n                                v-show=\"!option.input.textfield.active\"\n                            >\n                            </mdl-textfield>\n\n                            <mdl-button\n                                v-show=\"option.text || option.input.textfield.active || option.input.textarea.active\"\n                                icon\n                                mini-fab\n                                accent\n                                @click.prevent=\"addOption(option)\">\n                                    <i class=\"material-icons\">add</i>\n                            </mdl-button>\n\n                            <mdl-switch :checked.sync=\"option.input.textfield.active\" value=\"true\">Textfield</mdl-switch>\n                            <mdl-switch :checked.sync=\"option.input.textarea.active\" value=\"true\">Textarea</mdl-switch>\n\n                        </div>\n\n                    </template>\n\n                    <template v-if=\"types.scale.active\">\n\n                        <mdl-textfield\n                          floating-label=\"Item Text\"\n                          :value.sync=\"item.text\"\n                          class=\"uk-form-width-small\"\n                        >\n                        </mdl-textfield>\n\n                        <br>\n\n                        <mdl-textfield\n                            floating-label=\"Option Text\"\n                            :value.sync=\"option.text\"\n                            class=\"uk-form-width-small\"\n                            @keyup.enter=\"addOption(option)\"\n                        ></mdl-textfield>\n\n                        <mdl-textfield\n                            floating-label=\"Option Value\"\n                            :value.sync=\"option.value\"\n                            class=\"uk-form-width-small\"\n                            pattern=\"-?[0-9]*(\\.[0-9]+)?\"\n                            error=\"Input is not a number!\"\n                            @keyup.enter=\"addOption(option)\"\n                        ></mdl-textfield>\n\n                        <mdl-button\n                            icon\n                            mini-fab\n                            accent\n                            @click.prevent=\"addOption(option)\">\n                                <i class=\"material-icons\">add</i>\n                        </mdl-button>\n\n\n                        <mdl-textfield\n                            floating-label=\"Suboption Text\"\n                            :value.sync=\"suboption.text\"\n                            class=\"uk-form-width-small\"\n                            @keyup.enter=\"addSubOption(suboption)\"\n                        ></mdl-textfield>\n\n                        <mdl-button\n                            icon\n                            mini-fab\n                            accent\n                            @click.prevent=\"addSubOption(suboption)\">\n                                <i class=\"material-icons\">add</i>\n                        </mdl-button>\n\n                    </template>\n\n                    <template v-if=\"types.slider.active\">\n\n                        <div class=\"uk-form-row\">\n                            <mdl-textfield\n                            required\n                            floating-label=\"Item Text\"\n                            :value.sync=\"item.text\"\n                            >\n                            </mdl-textfield>\n                        </div>\n\n                        <div data-uk-margin>\n                            <mdl-textfield\n                                floating-label=\"Step\"\n                                :value.sync=\"slider_params.step\"\n                                class=\"uk-form-width-small\"\n                                pattern=\"-?[0-9]*(\\.[0-9]+)?\"\n                                error=\"Input is not a number!\"\n                            >\n                            </mdl-textfield>\n\n                            <mdl-textfield\n                                floating-label=\"min value\"\n                                :value.sync=\"slider_params.min\"\n                                class=\"uk-form-width-small\"\n                                pattern=\"-?[0-9]*(\\.[0-9]+)?\"\n                                error=\"Input is not a number!\"\n                            >\n                            </mdl-textfield>\n\n                            <mdl-textfield\n                                floating-label=\"max value\"\n                                :value.sync=\"slider_params.max\"\n                                required\n                                class=\"uk-form-width-small\"\n                                pattern=\"-?[0-9]*(\\.[0-9]+)?\"\n                                error=\"Input is not a number!\"\n                            >\n                            </mdl-textfield>\n                        </div>\n\n                    </template>\n\n            </div>\n\n        </div>\n\n    </div>\n\n</div>\n\n";
 
 /***/ },
-/* 33 */,
-/* 34 */,
-/* 35 */,
-/* 36 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var __vue_script__, __vue_template__
-	__vue_script__ = __webpack_require__(37)
-	if (__vue_script__ &&
-	    __vue_script__.__esModule &&
-	    Object.keys(__vue_script__).length > 1) {
-	  console.warn("[vue-loader] app/components/admin/modules/add-module.vue: named exports in *.vue files are ignored.")}
-	__vue_template__ = __webpack_require__(38)
-	module.exports = __vue_script__ || {}
-	if (module.exports.__esModule) module.exports = module.exports.default
-	if (__vue_template__) {
-	(typeof module.exports === "function" ? (module.exports.options || (module.exports.options = {})) : module.exports).template = __vue_template__
-	}
-	if (false) {(function () {  module.hot.accept()
-	  var hotAPI = require("vue-hot-reload-api")
-	  hotAPI.install(require("vue"), false)
-	  if (!hotAPI.compatible) return
-<<<<<<< HEAD
-	  var id = "_v-49e27180/card-module.vue"
-=======
-	  var id = "_v-66f586a6/add-module.vue"
->>>>>>> 8653079e74b8706eb61bfdd52a107f531463ea95
-	  if (!module.hot.data) {
-	    hotAPI.createRecord(id, module.exports)
-	  } else {
-	    hotAPI.update(id, module.exports, __vue_template__)
-	  }
-	})()}
-
-/***/ },
-/* 37 */
-/***/ function(module, exports) {
-
-	'use strict';
-
-	module.exports = {
-
-	    props: ["module"],
-
-	    data: function data() {
-	        return {};
-	    },
-
-	    methods: {
-	        save: function save() {
-	            var data = { module: this.module };
-	            this.$http.post('admin/osamaker/api/module/save', data).then(function () {
-	                this.$dispatch('getModules', 'data');
-	                UIkit.notify('Saved');
-	            }).catch(function () {
-	                UIkit.notify('Something went wrong');
-	            });
-
-	            this.module = {
-	                id: '',
-	                title: '',
-	                roles: ''
-	            };
-	        }
-	    }
-	};
-
-/***/ },
 /* 38 */
-/***/ function(module, exports) {
-
-	module.exports = "\n<div class=\"uk-form uk-form-horizontal\">\n    <form class=\"uk-form\" @submit.prevent=\"save\">\n        <fieldset data-uk-margin>\n            <legend>Create a new Module</legend>\n            <div class=\"form-group\">\n                <label>Name:</label>\n                <input class=\"uk-input-large uk-width-1-4\" placeholder=\"\" v-model=\"module.title\">\n            </div>\n        </fieldset>\n        <button class=\"mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--primary\">\n            <i class=\"material-icons\">add</i>\n        </button>\n    </form>\n</div>\n";
-
-/***/ },
-/* 39 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var __vue_script__, __vue_template__
-	__vue_script__ = __webpack_require__(40)
-	if (__vue_script__ &&
-	    __vue_script__.__esModule &&
-	    Object.keys(__vue_script__).length > 1) {
-	  console.warn("[vue-loader] app/components/admin/modules/list-modules.vue: named exports in *.vue files are ignored.")}
-	__vue_template__ = __webpack_require__(41)
-	module.exports = __vue_script__ || {}
-	if (module.exports.__esModule) module.exports = module.exports.default
-	if (__vue_template__) {
-	(typeof module.exports === "function" ? (module.exports.options || (module.exports.options = {})) : module.exports).template = __vue_template__
-	}
-	if (false) {(function () {  module.hot.accept()
-	  var hotAPI = require("vue-hot-reload-api")
-	  hotAPI.install(require("vue"), false)
-	  if (!hotAPI.compatible) return
-	  var id = "_v-5bc1ed66/list-modules.vue"
-	  if (!module.hot.data) {
-	    hotAPI.createRecord(id, module.exports)
-	  } else {
-	    hotAPI.update(id, module.exports, __vue_template__)
-	  }
-	})()}
-
-/***/ },
-/* 40 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	module.exports = {
-
-	    components: {
-	        'list-item': __webpack_require__(6),
-	        'add-item': __webpack_require__(9)
-	    },
-	    props: ["modules"],
-
-	    data: function data() {
-	        return {};
-	    },
-	    methods: {}
-	};
-
-/***/ },
-/* 41 */
 /***/ function(module, exports) {
 
 	module.exports = "\n<h2>Your Modules</h2>\n<div class=\"mdl-grid\" v-cloak>\n\n    <template v-for=\"module in modules\">\n\n      <!-- This is the add-item modal -->\n      <add-item :module=\"module\" >\n      </add-item>\n\n        <!-- This is the off-canvas sidebar -->\n      <list-item :module.sync=\"module\" >\n      </list-item>\n\n\n        <div class=\"mdl-cell mdl-cell--top mdl-cell--6-col mdl-cell--8-col-tablet mdl-cell--4-col-phone\">\n\n            <div class=\"mdl-card mdl-cell--top mdl-cell--stretch mdl-cell--12-col mdl-cell--8-col-tablet mdl-cell--4-col-phone mdl-shadow--8dp\">\n\n                <div class=\"mdl-card__title card-background\">\n                    <div class=\"mdl-card__title-text title-text\">\n                        {{module.title}} <br>\n                    </div>\n                </div>\n                <div class=\"mdl-card__supporting-text card-text-background\">\n                    <p>\n                        Description: Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquam accusamus, consectetur.\n                    </p>\n                </div>\n\n\n                <div class=\"mdl-card__actions\">\n                    <div class=\"mdl-grid\">\n\n                        <div class=\"mdl-cell mdl-cell--top mdl-cell--8-col mdl-cell--4-col-tablet mdl-cell--4-col-phone\">\n                            <!-- This is a button toggling the modal -->\n                            <mdl-button colored accent raised data-uk-modal=\"{target:'#{{ module.id }}'}\">\n                                <i class=\"material-icons\">add</i>\n                            </mdl-button>\n\n                            <!-- This is the button toggling the off-canvas sidebar -->\n                            <mdl-button colored accent raised data-uk-offcanvas=\"{target:'#Module{{ module.id }}'}\">\n                                <i class=\"material-icons\">list</i>\n                            </mdl-button>\n                        </div>\n\n\n                        <div class=\"mdl-cell mdl-cell--top mdl-cell--4-col mdl-cell--4-col-tablet mdl-cell--4-col-phone\">\n                            <mdl-button  v-mdl-ripple-effect raised accent @click=\"remove(module, modules)\">\n                                <i class=\"material-icons\">delete</i>\n                            </mdl-button>\n\n                            <mdl-button  v-mdl-ripple-effect raised accent @click=\"update(module)\"><i class=\"material-icons\">save</i></mdl-button>\n                        </div>\n\n                    </div>\n\n                </div>\n\n                <div class=\"mdl-card__menu\">\n\n                </div>\n            </div>\n        </div>\n\n    </template>\n\n</div>\n";

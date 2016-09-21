@@ -3,27 +3,10 @@
     <!--{{ $data | json }}-->
     <!--</pre>-->
 
-    <!--<div class="uk-accordion" data-uk-accordion>-->
 
-    <!--<h3 class="uk-accordion-title">tita</h3>-->
-    <!--<div class="uk-accordion-content">lala</div>-->
-
-    <!--<h3 class="uk-accordion-title">huhu</h3>-->
-    <!--<div class="uk-accordion-content">asdfasdf</div>-->
-
-    <!--</div>-->
-
-    <ul class="collapsible" data-collapsible="expandable">
-        <li @click="getModules(assessment.id)" v-for="assessment in assessments">
-            <div class="collapsible-header">{{ assessment.title }}</div>
-            <div class="collapsible-body">
-                <ul>
-                    <li v-for="module in assessment.modules">{{ module.title }}</li>
-                </ul>
-                <div v-if="!assessment.modules">
-                    loading ...
-                </div>
-            </div>
+    <ul>
+        <li v-for="assessment in assessments">
+            <a v-link="{ path: '/' + assessment.id }">{{ assessment.title }}</a>
         </li>
     </ul>
 
@@ -60,22 +43,7 @@
                         });
             },
 
-            getModules: function (assessmentId) {
-                if(_.isNull(this.assessments[assessmentId].modules)){
-                    this.assessments[assessmentId].modules = { };
 
-                    this.$http.get('assessments/getmodules/'+assessmentId)
-                            .then(function (modules) {
-                                console.log(modules.data);
-
-                                this.$set('assessments['+assessmentId+'].modules', modules.data);
-                            })
-                            .catch(function (err) {
-                                console.log(err);
-                            });
-                }
-
-            },
 
             getItems: function () {
                 this.$http.get('admin/osamaker/api/item/get')
@@ -148,8 +116,8 @@
         },
 
         computed: {
-            isDisplayLoading: function (object) {
-                return !_.size(object);
+            isDisplayLoading: function () {
+                return !_.size(this.assessments);
             }
         },
 

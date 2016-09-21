@@ -4,110 +4,51 @@
 // Vue.use(require('vuikit'));
 // Vue.use(require('vue-material-components'));
 
+module.exports = function () {
 
-module.exports = {
-    el: '#public',
-    
-    components: {
-        Assessments: require('./components/public/Assessments.vue')
-    },
-    
-    data: {
-        // assessments: []
-    },
+    var VueRouter = require('vue-router');
 
-    created: function() {
-    //     this.resource = this.$resource('osamaker/api/module');
-    },
+    Vue.use(VueRouter);
 
-    methods: {
+    var router = new VueRouter();
 
-        // getAssessments: function () {
-        //     this.$http.get('assessments/getassessments')
-        //         .then(function (data) {
-        //             this.$set('assessments', data.data);
-        //         })
-        //         .catch(function (err) {
-        //             console.log(err);
-        //         });
-        // },
-        //
-        // getItems: function () {
-        //     this.$http.get('admin/osamaker/api/item/get')
-        //         .then(function (data) {
-        //             this.$set('items', data.data);
-        //         })
-        //         .catch(function (err) {
-        //             console.log(err);
-        //         });
-        // },
-        //
-        //
-        // save: function () {
-        //
-        //     var data = {module: this.module};
-        //
-        //     this.$http.post('admin/osamaker/api/module/save', data)
-        //         .then(function () {
-        //             // use the getModules method for updating
-        //             // the modules-array
-        //             // the view gets an update without a refresh
-        //             this.getModules();
-        //             UIkit.notify('Saved')
-        //         })
-        //         .catch(function () {
-        //             UIkit.notify('Something went wrong');
-        //         });
-        //
-        //     this.module = {
-        //         id: '',
-        //         title: '',
-        //         roles: '',
-        //     };
-        //
-        // },
-        //
-        // deleteItem: function (item, items, id) {
-        //     items.$remove(item);
-        //     // console.log(items);
-        //     // var index = items.indexOf(item)
-        //     // console.log(index);
-        //     //   if (index !== -1) {
-        //     //     items.splice(index, 1)
-        //     //   }
-        // },
-        //
-        // remove: function (module, modules) {
-        //
-        //     var data = module;
-        //
-        //     this.$http.post('admin/osamaker/api/module/delete', data)
-        //         .then(function () {
-        //             modules.$remove(module);
-        //             UIkit.notify('Module removed');
-        //         })
-        //         .catch(function () {
-        //             UIkit.notify('Something went wrong');
-        //         });
-        //
-        // },
-        //
-        // update: function (module) {
-        //     var data = {module: module};
-        //     this.$http.post('admin/osamaker/api/module/edit', data)
-        //         .then(function () {
-        //             UIkit.notify('Saved');
-        //         })
-        //         .catch(function () {
-        //             UIkit.notify('Something went wrong');
-        //         });
-        // }
+    router.map({
+        '/': {
+            component: require('./components/public/Assessments.vue')
+        },
+        '/:id': {
+            component: require('./components/public/Assessment.vue')
+        },
+        '*': {
+            component: require('./components/public/Assessments.vue')
+        }
+    });
 
-    },
+    router.start({}, '#public');
 
-    ready: function () {
-        // this.getAssessments();
-    }
+    // return {
+    //     el: '#public',
+    //
+    //     components: {
+    //         Assessments: require('./components/public/Assessments.vue')
+    //     },
+    //
+    //     data: {
+    //     },
+    //
+    //     created: function() {
+    //     },
+    //
+    //     methods: {
+    //
+    //
+    //
+    //     },
+    //
+    //     ready: function () {
+    //     }
+    // }
+
 
 };
 Vue.ready(module.exports);
