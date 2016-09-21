@@ -1,9 +1,11 @@
 <template>
     <h2>Your Modules</h2>
+
     <div class="mdl-grid" v-cloak>
 
         <template v-for="module in modules">
 
+          <modal-frame :module="module"></modal-frame>
           <!-- This is the add-item modal -->
           <add-item :module="module" >
           </add-item>
@@ -38,10 +40,13 @@
                                     <i class="material-icons">add</i>
                                 </mdl-button>
 
+                            <ui-button @click="toggle_modal(module)" data-uk-modal="{target:'#Modal{{ module.id }}'}">Edit Module</ui-button>
+
                                 <!-- This is the button toggling the off-canvas sidebar -->
                                 <mdl-button colored accent raised data-uk-offcanvas="{target:'#Module{{ module.id }}'}">
                                     <i class="material-icons">list</i>
                                 </mdl-button>
+
                             </div>
 
 
@@ -74,14 +79,21 @@ module.exports = {
     components: {
         'list-item': require('../../../components/item/list-item.vue'),
         'add-item': require('../../../components/item/add-item.vue'),
+        'modal-frame': require('../../../components/admin/modules/modal-frame.vue'),
     },
   props: ["modules"],
 
   data: function() {
-    return {};
+    return {
+      show: {
+        module: false
+      }
+    };
   },
   methods: {
-
+    toggle_modal: function(module) {
+      this.show = true;
+    }
   }
 };
 

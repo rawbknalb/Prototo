@@ -1,4 +1,5 @@
 Vue.use(require('vue-mdl').default);
+Vue.use(require('keen-ui'));
 // Vue.use(require('vue-sortable'));
 Vue.use(require('VueDragableFor'));
 // Vue.use(require('vuikit'));
@@ -19,6 +20,7 @@ module.exports = {
                 modules: [],
                 items: '',
                 edit: false,
+                show: false,
                 // data: window.$data,
             },
 

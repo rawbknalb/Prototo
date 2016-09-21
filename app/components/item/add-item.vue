@@ -2,145 +2,49 @@
 
     <!-- This is the modal -->
     <div id="{{ module.id }}" class="uk-modal">
-        <div class="uk-modal-dialog uk-modal-dialog-blank uk-height-viewport">
+        <div class="uk-modal-dialog uk-modal-dialog-blank uk-height-viewport modal-backround">
             <a class="uk-modal-close uk-close"></a>
+            <h4>Icon only, fullwidth</h4>
 
+<ui-tabs type="icon" fullwidth>
+    <ui-tab icon="book">
+        My books
+    </ui-tab>
+
+    <ui-tab icon="person">
+        Authors
+    </ui-tab>
+
+    <ui-tab icon="collections_bookmark">
+        My collections
+    </ui-tab>
+
+    <ui-tab icon="favorite">
+        <b>Favourite with longer content</b>
+
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Beatae dolorum laudantium nulla ex asperiores, deserunt quidem perspiciatis eligendi, dolores repudiandae.</p>
+
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Perferendis hic, aspernatur placeat eligendi delectus laudantium omnis nam consequatur aperiam numquam!</p>
+    </ui-tab>
+</ui-tabs>
             <div class="mdl-grid">
-                <!-- This is the left half -->
-                <div class="mdl-cell mdl-cell--12-col mdl-cell--12-col-tablet mdl-cell--12-col-phone">
 
-                  <create-frame :module="module"></create-frame>
+              <div class="mdl-components mdl-js-components mdl-cell--top mdl-cell--stretch mdl-cell--2-col mdl-cell--8-col-tablet mdl-cell--4-col-phone">
+                <aside class="mdl-components__nav docs-text-styling mdl-shadow--4dp">
+                  <h2>Items</h2>
 
-                    <hr>
+                    <a v-for="item in module.items" href="#{{ category.name }}-section" class="mdl-components__link mdl-component badges">
+                      <!-- <div class="mdl-components__link-image">
+                      {{item.text}}
+                    </div> -->
+                    <span class="mdl-components__link-text">{{ item.text }}</span>
+                  </a>
 
-                        <template v-if="types.multiple.active || types.single.active">
-
-
-
-                            <div class="uk-form-row">
-
-                                <mdl-textfield
-                                    floating-label="Add Option"
-                                    :value.sync="option.text"
-                                    id="{{ item.id }}"
-                                    v-show="!option.input.textfield.active"
-                                >
-                                </mdl-textfield>
-
-                                <mdl-button
-                                    v-show="option.text || option.input.textfield.active || option.input.textarea.active"
-                                    icon
-                                    mini-fab
-                                    accent
-                                    @click.prevent="addOption(option)">
-                                        <i class="material-icons">add</i>
-                                </mdl-button>
-
-                                <mdl-switch :checked.sync="option.input.textfield.active" value="true">Textfield</mdl-switch>
-                                <mdl-switch :checked.sync="option.input.textarea.active" value="true">Textarea</mdl-switch>
-
-                            </div>
-
-                        </template>
-
-                        <template v-if="types.scale.active">
-
-                            <mdl-textfield
-                              floating-label="Item Text"
-                              :value.sync="item.text"
-                              class="uk-form-width-small"
-                            >
-                            </mdl-textfield>
-
-                            <br>
-
-                            <mdl-textfield
-                                floating-label="Option Text"
-                                :value.sync="option.text"
-                                class="uk-form-width-small"
-                                @keyup.enter="addOption(option)"
-                            ></mdl-textfield>
-
-                            <mdl-textfield
-                                floating-label="Option Value"
-                                :value.sync="option.value"
-                                class="uk-form-width-small"
-                                pattern="-?[0-9]*(\.[0-9]+)?"
-                                error="Input is not a number!"
-                                @keyup.enter="addOption(option)"
-                            ></mdl-textfield>
-
-                            <mdl-button
-                                icon
-                                mini-fab
-                                accent
-                                @click.prevent="addOption(option)">
-                                    <i class="material-icons">add</i>
-                            </mdl-button>
-
-
-                            <mdl-textfield
-                                floating-label="Suboption Text"
-                                :value.sync="suboption.text"
-                                class="uk-form-width-small"
-                                @keyup.enter="addSubOption(suboption)"
-                            ></mdl-textfield>
-
-                            <mdl-button
-                                icon
-                                mini-fab
-                                accent
-                                @click.prevent="addSubOption(suboption)">
-                                    <i class="material-icons">add</i>
-                            </mdl-button>
-
-                        </template>
-
-                        <template v-if="types.slider.active">
-
-                            <div class="uk-form-row">
-                                <mdl-textfield
-                                required
-                                floating-label="Item Text"
-                                :value.sync="item.text"
-                                >
-                                </mdl-textfield>
-                            </div>
-
-                            <div data-uk-margin>
-                                <mdl-textfield
-                                    floating-label="Step"
-                                    :value.sync="slider_params.step"
-                                    class="uk-form-width-small"
-                                    pattern="-?[0-9]*(\.[0-9]+)?"
-                                    error="Input is not a number!"
-                                >
-                                </mdl-textfield>
-
-                                <mdl-textfield
-                                    floating-label="min value"
-                                    :value.sync="slider_params.min"
-                                    class="uk-form-width-small"
-                                    pattern="-?[0-9]*(\.[0-9]+)?"
-                                    error="Input is not a number!"
-                                >
-                                </mdl-textfield>
-
-                                <mdl-textfield
-                                    floating-label="max value"
-                                    :value.sync="slider_params.max"
-                                    required
-                                    class="uk-form-width-small"
-                                    pattern="-?[0-9]*(\.[0-9]+)?"
-                                    error="Input is not a number!"
-                                >
-                                </mdl-textfield>
-                            </div>
-
-                        </template>
-
-                </div>
-
+              </aside>
+            </div>
+            <div class="mdl-cell--top mdl-cell--stretch mdl-cell--10-col mdl-cell--8-col-tablet mdl-cell--4-col-phone">
+              <h1>TestTest</h1>
+            </div>
             </div>
 
         </div>
