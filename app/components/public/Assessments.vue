@@ -3,36 +3,10 @@
     <!--{{ $data | json }}-->
     <!--</pre>-->
 
-<<<<<<< HEAD
 
     <ul>
         <li v-for="assessment in assessments">
             <a v-link="{ path: '/' + assessment.id }">{{ assessment.title }}</a>
-=======
-    <!--<div class="uk-accordion" data-uk-accordion>-->
-
-    <!--<h3 class="uk-accordion-title">tita</h3>-->
-    <!--<div class="uk-accordion-content">lala</div>-->
-
-    <!--<h3 class="uk-accordion-title">huhu</h3>-->
-    <!--<div class="uk-accordion-content">asdfasdf</div>-->
-
-    <!--</div>-->
-
-    <ul class="">
-        <li @click="getModules(assessment.id)" v-for="assessment in assessments">
-            <div class="">{{ assessment.title }}</div>
-            <div class="">
-                <ul>
-                    <li v-for="module in assessment.modules">
-                        {{ module.title }}
-                    </li>
-                </ul>
-                <!-- <div v-if="!assessment.modules">
-                    loading ...
-                </div> -->
-            </div>
->>>>>>> bf8d28fea5e7986ff3fcbcff3f1ee6017eeb2701
         </li>
     </ul>
 
@@ -47,7 +21,7 @@
     module.exports = {
 
         components: {
-            'single': require('../item/create/create-single.vue'),
+//            'single': require('../item/create/create-single.vue'),
           },
 
         data: function () {
@@ -63,8 +37,8 @@
 
             getAssessments: function () {
                 this.$http.get('assessments/getassessments')
-                        .then(function (data) {
-                            this.$set('assessments', data.data);
+                        .then(function (response) {
+                            this.$set('assessments', response.data);
                         })
                         .catch(function (err) {
                             console.log(err);
@@ -151,6 +125,7 @@
 
         ready: function () {
             this.getAssessments();
+//            console.log(this.$route);
         }
     };
 

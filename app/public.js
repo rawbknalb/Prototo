@@ -1,16 +1,12 @@
-// Vue.use(require('vue-mdl').default);
-// Vue.use(require('vue-sortable'));
-// Vue.use(require('VueDragableFor'));
-// Vue.use(require('vuikit'));
-// Vue.use(require('vue-material-components'));
-
 module.exports = function () {
+    Vue.use(require('vue-mdl').default);
+    Vue.use(require('keen-ui'));
 
     var VueRouter = require('vue-router');
-
     Vue.use(VueRouter);
 
-    var router = new VueRouter();
+    var settings = {}; //{history: true};
+    var router = new VueRouter(settings);
 
     router.map({
         '/': {
@@ -18,37 +14,13 @@ module.exports = function () {
         },
         '/:id': {
             component: require('./components/public/Assessment.vue')
-        },
-        '*': {
-            component: require('./components/public/Assessments.vue')
-        }
+        }//,
+        // '*': {
+        //     component: require('./components/public/Assessments.vue')
+        // }
     });
 
     router.start({}, '#public');
-
-    // return {
-    //     el: '#public',
-    //
-    //     components: {
-    //         Assessments: require('./components/public/Assessments.vue')
-    //     },
-    //
-    //     data: {
-    //     },
-    //
-    //     created: function() {
-    //     },
-    //
-    //     methods: {
-    //
-    //
-    //
-    //     },
-    //
-    //     ready: function () {
-    //     }
-    // }
-
 
 };
 Vue.ready(module.exports);

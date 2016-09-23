@@ -1,12 +1,9 @@
 <template>
-        <!--{{ assessment | json }}-->
+    <!--{{ assessment | json }}-->
 
     <ul>
         <li v-for="module in assessment">
-            <div>{{ module.title }}</div>
-            <ul>
-                <li v-for="item in module.items"> {{ item.text }}</li>
-            </ul>
+            <module :module.sync="module"></module>
         </li>
     </ul>
 
@@ -16,7 +13,9 @@
 
     module.exports = {
 
-        components: {},
+        components: {
+            Module: require('./Module.vue')
+        },
 
         data: function () {
             return {
@@ -33,27 +32,25 @@
 //                if(_.isNull(this.assessments[assessmentId].modules)){
 //                    this.assessments[assessmentId].modules = { };
 
-                    this.$http.get('assessments/getmodules/'+assessmentId)
-                            .then(function (modules) {
-                                console.log(modules.data);
+                this.$http.get('assessments/getmodules/' + assessmentId)
+                        .then(function (modules) {
+//                                console.log(modules.data);
 
-                                this.$set('assessment', modules.data);
-                            })
-                            .catch(function (err) {
-                                console.log(err);
-                            });
+                            this.$set('assessment', modules.data);
+                        })
+                        .catch(function (err) {
+                            console.log(err);
+                        });
 //                }
 
             }
 
         },
 
-        computed: {
-
-        },
+        computed: {},
 
         ready: function () {
-            console.log(this.$route.params);
+//            console.log(this.$route.params);
             this.getModules(this.$route.params.id);
 //            this.stuff();
         }

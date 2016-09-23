@@ -54,4 +54,33 @@ class PublicController
 
     }
 
+    /**
+     * @Request({"results": "array", "module": "integer"}, csrf=true)
+     */
+    public function saveAction($results, $module)
+    {
+        $userId = 1; //todo: get real user_id but from where? session? if user ist not authenticated?
+
+        $query = App::db();
+
+        $hasBeenFilledIn = false;
+
+
+        if($hasBeenFilledIn){
+            // update current result
+        } else {
+            // create new result
+
+            $query->insert('@osa_users_modules_mapping', [
+                'user_id' => $userId,
+                'module_id' => $module,
+                'data' => json_encode($results),
+                'created_at' => '2016-01-01' // new \DateTime() //
+            ]);
+        }
+
+        return ['message' => 'success'];
+
+    }
+
 }
