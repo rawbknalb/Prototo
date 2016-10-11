@@ -59,8 +59,7 @@ class PublicController
      */
     public function saveAction($results, $module)
     {
-        $userId = 1; //todo: get real user_id but from where? session? if user ist not authenticated?
-
+        $userId = App::user()->id;
         $query = App::db();
 
         $hasBeenFilledIn = false;

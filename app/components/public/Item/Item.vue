@@ -9,6 +9,7 @@
 
     </div>
 
+    <ui-button color="primary" @click="save">Save</ui-button>
 
 </template>
 
@@ -23,14 +24,28 @@
             Scale: require('./Scale.vue')
         },
 
-        props: ['item', 'results'],
+        props: ['item' /*, 'results'*/],
 
         data: function () {
             return {
-
+                results: {}
             };
         },
         methods: {
+
+            save: function () {
+
+                var data = {results: this.results, module: this.item.module_id};
+                this.$http.post('assessments/save', data)
+                        .then(function (response) {
+                            console.log(response);
+                            this.$dispatch('continue');
+                        })
+                        .catch(function (err) {
+                            console.log(err);
+                        });
+
+            },
 
             stuff: function () {
                 console.log('stuff');
@@ -44,7 +59,6 @@
         },
 
         ready: function () {
-
         }
     };
 
