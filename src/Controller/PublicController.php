@@ -62,20 +62,35 @@ class PublicController
         $userId = App::user()->id;
         $query = App::db();
 
-        $hasBeenFilledIn = false;
+        $modulesQuery = App::db()->createQueryBuilder()
+            ->select()
+            ->from('@osa_users_modules_mapping')
+            ->where('user_id = ?', [$userId])
+            ->where('module_id = ?', [$module]);
+
+        $hasBeenFinished = false;
+        if ($modulesQuery->count() > 0) {
+            $row = $modulesQuery->first();
+            $data = json_decode($row['data']); //TODO: multiple can exist! design?
+            $hasBeenFinished = isset($data['finished']);
+
+            if(!$hasBeenFinished){
+                // update current result
+                $row->update(['data' => json_encode($results)]); //TODO: how to update query? this throws error
+            }
+        }
 
 
-        if($hasBeenFilledIn){
-            // update current result
-        } else {
+        if (!$hasBeenFinished) {
             // create new result
 
             $query->insert('@osa_users_modules_mapping', [
                 'user_id' => $userId,
                 'module_id' => $module,
                 'data' => json_encode($results),
-                'created_at' => '2016-01-01' // new \DateTime() //
+                'created_at' => '2016-01-01' // new \DateTime() //TODO: real timestamp
             ]);
+
         }
 
         return ['message' => 'success'];

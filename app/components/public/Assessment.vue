@@ -57,6 +57,8 @@
             continue: function() {
 
                 if(this.itemIndex >= this.currentItemsKeys.length - 1){
+                    this.assessment[this.modulesKeys[this.moduleIndex]].data.finished = true;
+
                     this.moduleIndex++;
                     this.itemIndex = 0;
 
